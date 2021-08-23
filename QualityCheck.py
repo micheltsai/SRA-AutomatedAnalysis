@@ -58,35 +58,40 @@ def getRefListPath(refSeqPath,outdir):
     return refListPath
 
 #get qenome list and path of qenome list
-def getQenomeListPath(qenome_Path,outdir):
+def getQenomeListPath(genome_Path,outdir):
     print("getQenomeListPath:\n")
-    print("refSeqPath: " + qenome_Path + "\n")
-    qenListPath = os.path.join(outdir, 'qen.txt')
-    run_cmd2("find {}>{}".format(qenome_Path,qenListPath))
-    print("qenListPath: "+qenListPath+"\n")
-    return qenListPath
+    print("refSeqPath: " + genome_Path + "\n")
+    genListPath = os.path.join(outdir, 'qen.txt')
+    run_cmd2("find {}>{}".format(genome_Path,genListPath))
+    print("qenListPath: "+genListPath+"\n")
+    return genListPath
 
 def main():
     start = time.time()
     #get ref_path, qen_path, and outdir
-    parser = argparse.ArgumentParser("Analytics")
+    parser = argparse.ArgumentParser("python3 QualityCheck.py -r {path/to/referenceSequencefiles} -g {path/to/genomefiles} -db {database} -m {mode} -o {outduir}")
     parser.add_argument("-r","--ref", required=True, help="Path of reference Sequence files")
-    parser.add_argument("-g","--qenome", required=True, help="Path of qenome files")
+    parser.add_argument("-g","--genome", required=True, help="Path of qenome files")
+    parser.add_argument("-db", "--database", required=True, help="busco database")
+    parser.add_argument("-m","--mode", required=True, help="busco mode")
     parser.add_argument("-o","--outdir", required=True, help="Output folder")
     args = parser.parse_args()
 
     refPath=getRefListPath(args.ref,args.outdir)
-    qenome_Path=getQenomeListPath(args.qenome,args.outdir)
+    genome_Path=getQenomeListPath(args.genome,args.outdir)
     outdir = args.outdir
-    out_txt=os.path.join(outdir, 'out.txt')
+    outdir_ani=out_txt=os.path.join(outdir, 'fastani')
+    out_txt=os.path.join(outdir_ani, 'out.txt')
+    db=args.database
+    mode=args.mode
     progress_bar("load args")
 
     #fastANI
     print("-------------------------------fastANI start.-------------------------------")
-    print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, qenome_Path, outdir,out_txt))
+    print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, genome_Path, outdir,out_txt))
     progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
-    fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,qenome_Path,out_txt)
+    fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
     print(fastani_+"\n")
     run_cmd(fastani_)
     print("fastANI done.\n")
@@ -104,7 +109,7 @@ def main():
         if(tmp>=95.0):
             num+=1
             ANI_total+=tmp
-        else
+        else:
             not_num+=1
     AverageANI=ANI_total/num
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
@@ -113,10 +118,18 @@ def main():
     print("targetPath: {}\n".format(targetPath))
     f.close()
 
-
-
-
-
+    #BUSCO
+    print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
+    #use conda enterring the busco VM(vm name is "busco")
+    run_cmd2("conda activate busco")
+    #db="enterobacterales_odb10"
+    #mode="geno"
+    outdir_bus = out_txt = os.path.join(outdir, 'busco')
+    busco_db= os.path.join(outdir, 'busco_db')
+    cmd_bus="busco -i {} -o bus_out --out_path {} -l  -m {} --download_path {}".format(targetPath, outdir_bus, db, mode, busco_db)
+    print (cmd_bus,"\n")
+    run_cmd(cmd_bus)
+    run_cmd2("conda deactivate")
 
     print('Done,total cost', time.time() - start, 'secs\n')
 
