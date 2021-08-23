@@ -7,6 +7,9 @@ import sys
 import time
 
 # -*- coding: utf-8 -*-
+
+
+#show program running
 def progress_bar(Category):
     for i in range(1, 101):
         print("\r{}: ".format(Category),end="")
@@ -15,12 +18,13 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
-
+#excute subprogram
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
     return p
 
 
+#show subprogram running status
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -43,6 +47,7 @@ def run_cmd(cmd):
     print ("-------------------------\n")
     return p
 
+#get reference list and path of reference list
 def getRefListPath(refSeqPath,outdir):
     print("getRefListPath:\n")
     print("refSeqPath: " + refSeqPath + "\n")
@@ -52,6 +57,7 @@ def getRefListPath(refSeqPath,outdir):
     #run_cmd2("cat {}".format(refListPath))
     return refListPath
 
+#get qenome list and path of qenome list
 def getQenomeListPath(qenome_Path,outdir):
     print("getQenomeListPath:\n")
     print("refSeqPath: " + qenome_Path + "\n")
@@ -67,7 +73,6 @@ def main():
     parser.add_argument("-r","--ref", required=True, help="Path of reference Sequence files")
     parser.add_argument("-g","--qenome", required=True, help="Path of qenome files")
     parser.add_argument("-o","--outdir", required=True, help="Output folder")
-
     args = parser.parse_args()
 
     refPath=getRefListPath(args.ref,args.outdir)
@@ -77,8 +82,8 @@ def main():
     progress_bar("load args")
 
     #fastANI
+    print("-------------------------------fastANI start.-------------------------------")
     print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, qenome_Path, outdir,out_txt))
-    print("fastANI start.")
     progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,qenome_Path,out_txt)
@@ -86,11 +91,26 @@ def main():
     run_cmd(fastani_)
     print("fastANI done.\n")
 
-    #ANI>=95, get out.txt line 1
-    print ("----------------fastANI end----------------\nget maxANI refseqPath:")
+    # ANI>=95
+    print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANI refseqPath:\n")
     f = open(out_txt, 'r')
-    targetPath=f.readline().split("\t")[1]
-    print(targetPath,"\n")
+    AverageANI=0.0
+    num=0
+    not_num=0
+    ANI_total=0.0
+    ANI_=f.readlines()
+    for x in ANI_:
+        tmp=float(x.split("\t")[2])
+        if(tmp>=95.0):
+            num+=1
+            ANI_total+=tmp
+        else
+            not_num+=1
+    AverageANI=ANI_total/num
+    print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
+    targetPath=ANI_[0].split("\t")[1]
+    #get out.txt line 1 (max ANI)
+    print("targetPath: {}\n".format(targetPath))
     f.close()
 
 
