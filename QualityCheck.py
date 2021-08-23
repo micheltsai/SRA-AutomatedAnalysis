@@ -10,6 +10,9 @@ import time
 
 
 #show program running
+from builtins import FileExistsError
+
+
 def progress_bar(Category):
     for i in range(1, 101):
         print("\r{}: ".format(Category),end="")
@@ -17,6 +20,15 @@ def progress_bar(Category):
         sys.stdout.flush()
         time.sleep(0.02)
     print ("\n")
+
+def mkdir_join(dir, add_dir):
+    final=os.path.join(dir, add_dir)
+    try:
+            os.makedirs(final)
+    # 檔案已存在的例外處理
+    except FileExistsError:
+        print("is exist")
+    return final
 
 #excute subprogram
 def run_cmd2(cmd):
@@ -68,6 +80,8 @@ def getQenomeListPath(genome_Path,outdir):
 
 def main():
     start = time.time()
+    #subprocess.run('bash -c "conda activate busco"', shell=True)
+    run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
     #get ref_path, qen_path, and outdir
     parser = argparse.ArgumentParser("python3 QualityCheck.py -r {path/to/referenceSequencefiles} -g {path/to/genomefiles} -db {database} -m {mode} -o {outduir}")
     parser.add_argument("-r","--ref", required=True, help="Path of reference Sequence files")
@@ -80,8 +94,10 @@ def main():
     refPath=getRefListPath(args.ref,args.outdir)
     genome_Path=getQenomeListPath(args.genome,args.outdir)
     outdir = args.outdir
-    outdir_ani=out_txt=os.path.join(outdir, 'fastani')
+    outdir_ani=mkdir_join(outdir, 'fastani')
+    #outdir_ani=os.path.join(outdir, 'fastani')
     out_txt=os.path.join(outdir_ani, 'out.txt')
+
     db=args.database
     mode=args.mode
     progress_bar("load args")
@@ -121,15 +137,17 @@ def main():
     #BUSCO
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
     #use conda enterring the busco VM(vm name is "busco")
-    run_cmd2("conda activate busco")
+
     #db="enterobacterales_odb10"
     #mode="geno"
-    outdir_bus = out_txt = os.path.join(outdir, 'busco')
-    busco_db= os.path.join(outdir, 'busco_db')
-    cmd_bus="busco -i {} -o bus_out --out_path {} -l  -m {} --download_path {}".format(targetPath, outdir_bus, db, mode, busco_db)
+    outdir_bus = mkdir_join(outdir, 'busco')
+    #outdir_bus = os.path.join(outdir, 'busco')
+    busco_db = mkdir_join(outdir, 'busco_db')
+    #busco_db= os.path.join(outdir, 'busco_db')
+    cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {}".format(targetPath, outdir_bus, db, mode, busco_db)
     print (cmd_bus,"\n")
     run_cmd(cmd_bus)
-    run_cmd2("conda deactivate")
+    #subprocess.run('bash -c "conda deactivate"',shell=True)
 
     print('Done,total cost', time.time() - start, 'secs\n')
 
