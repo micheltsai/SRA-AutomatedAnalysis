@@ -5,7 +5,6 @@ import shlex
 import subprocess
 import sys
 import time
-
 # -*- coding: utf-8 -*-
 
 
@@ -25,9 +24,8 @@ def mkdir_join(dir, add_dir):
     final=os.path.join(dir, add_dir)
     try:
             os.makedirs(final)
-    # 檔案已存在的例外處理
     except FileExistsError:
-        print("is exist")
+        print("folder is exist")
     return final
 
 #excute subprogram
@@ -82,6 +80,8 @@ def main():
     start = time.time()
     #subprocess.run('bash -c "conda activate busco"', shell=True)
     run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
+
+    #read command arguments------
     #get ref_path, qen_path, and outdir
     parser = argparse.ArgumentParser("python3 QualityCheck.py -r {path/to/referenceSequencefiles} -g {path/to/genomefiles} -db {database} -m {mode} -o {outduir}")
     parser.add_argument("-r","--ref", required=True, help="Path of reference Sequence files")
@@ -96,13 +96,13 @@ def main():
     outdir = args.outdir
     outdir_ani=mkdir_join(outdir, 'fastani')
     #outdir_ani=os.path.join(outdir, 'fastani')
-    out_txt=os.path.join(outdir_ani, 'out.txt')
+    out_txt=os.path.join(outdir_ani, 'out.txt') #將檔案統一儲存
 
     db=args.database
     mode=args.mode
     progress_bar("load args")
 
-    #fastANI
+    #fastANI-------
     print("-------------------------------fastANI start.-------------------------------")
     print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, genome_Path, outdir,out_txt))
     progress_bar("fastANI excuting")
@@ -112,29 +112,30 @@ def main():
     run_cmd(fastani_)
     print("fastANI done.\n")
 
-    # ANI>=95
+    # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANI refseqPath:\n")
+    #open fastANI output
     f = open(out_txt, 'r')
     AverageANI=0.0
-    num=0
-    not_num=0
-    ANI_total=0.0
-    ANI_=f.readlines()
+    num=0   #quantity of ANI>=95
+    not_num=0 #quantity of ANI<95
+    ANI_total=0.0 #total of all ANI value
+    ANI_=f.readlines() #read file stored in ANI_
     for x in ANI_:
-        tmp=float(x.split("\t")[2])
+        tmp=float(x.split("\t")[2])#temporarily ANI value
         if(tmp>=95.0):
             num+=1
             ANI_total+=tmp
         else:
             not_num+=1
-    AverageANI=ANI_total/num
+    AverageANI=ANI_total/num #if ANI>=95 ,calulate average value of ANI
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
     #get out.txt line 1 (max ANI)
     print("targetPath: {}\n".format(targetPath))
     f.close()
 
-    #BUSCO
+    #BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
     #use conda enterring the busco VM(vm name is "busco")
 
