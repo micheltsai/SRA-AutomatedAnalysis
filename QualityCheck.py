@@ -150,10 +150,11 @@ def main():
     outdir_bus = mkdir_join(outdir, 'busco')
 
     #outdir_bus = os.path.join(outdir, 'busco')
-    busco_db = mkdir_join(outdir, 'busco_db')
+    busco_db = mkdir_join(args.outdir, 'busco_db')
     #busco_db= os.path.join(outdir, 'busco_db')
     # subprocess.run('bash -c "conda activate busco"', shell=True)
     #run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
+    #-f overwrite
     cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, outdir_bus,
                                                                                               db, mode, busco_db)
     #cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f".format(targetPath, outdir_bus, db, mode, busco_db)
