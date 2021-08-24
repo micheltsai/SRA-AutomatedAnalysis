@@ -5,6 +5,7 @@ import shlex
 import subprocess
 import sys
 import time
+from datetime import datetime
 # -*- coding: utf-8 -*-
 
 
@@ -77,9 +78,10 @@ def getQenomeListPath(genome_Path,outdir):
     return genListPath
 
 def main():
+    current_time = datetime.now().strftime("%Y%m%d-%I:%M:%S")
+    print(current_time)
+
     start = time.time()
-    #subprocess.run('bash -c "conda activate busco"', shell=True)
-    run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
 
     #read command arguments------
     #get ref_path, qen_path, and outdir
@@ -91,12 +93,16 @@ def main():
     parser.add_argument("-o","--outdir", required=True, help="Output folder")
     args = parser.parse_args()
 
-    refPath=getRefListPath(args.ref,args.outdir)
-    genome_Path=getQenomeListPath(args.genome,args.outdir)
+
     outdir = args.outdir
+    outdir = mkdir_join(outdir, str(current_time))
+    print("outdir: ",outdir)
+    refPath = getRefListPath(args.ref, outdir)
+    genome_Path = getQenomeListPath(args.genome, outdir)
+
     outdir_ani=mkdir_join(outdir, 'fastani')
     #outdir_ani=os.path.join(outdir, 'fastani')
-    out_txt=os.path.join(outdir_ani, 'out.txt') #將檔案統一儲存
+    out_txt=os.path.join(outdir_ani, 'out.txt') #stroed fastANI output in out.txt
 
     db=args.database
     mode=args.mode
@@ -142,10 +148,15 @@ def main():
     #db="enterobacterales_odb10"
     #mode="geno"
     outdir_bus = mkdir_join(outdir, 'busco')
+
     #outdir_bus = os.path.join(outdir, 'busco')
     busco_db = mkdir_join(outdir, 'busco_db')
     #busco_db= os.path.join(outdir, 'busco_db')
-    cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {}".format(targetPath, outdir_bus, db, mode, busco_db)
+    # subprocess.run('bash -c "conda activate busco"', shell=True)
+    #run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
+    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, outdir_bus,
+                                                                                              db, mode, busco_db)
+    #cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f".format(targetPath, outdir_bus, db, mode, busco_db)
     print (cmd_bus,"\n")
     run_cmd(cmd_bus)
     #subprocess.run('bash -c "conda deactivate"',shell=True)
