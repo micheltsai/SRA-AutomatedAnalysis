@@ -69,7 +69,10 @@ def run_cmd(cmd):
 
 # 獲得分布和質量並生成數據?
 def bases_percentage(filepath, qscore=0):
-    p = run_cmd("seqtk fqchk -q {} {} | grep ALL | awk '{{print $NF}}'".format(qscore,filepath))
+    cmd=f"seqtk fqchk -q {qscore} {filepath} | grep ALL | awk '{{print $NF}}'"
+    print ("cmd: ",cmd)
+    p = run_cmd2(cmd)
+    print ("bases: ",p.stdout.decode())
     return float(p.stdout)
 
 
@@ -119,7 +122,7 @@ def trimming(forward_reads, reverse_reads, outdir, threads):
     paired_2 = os.path.join(outdir, 'R2.fq')
     cmd = f"java -jar trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
           f" {paired_2} /dev/null {opt}"
-    run_cmd(cmd)
+    run_cmd2(cmd)
     return paired_1, paired_2
 
 
@@ -226,7 +229,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     print ("srafile_path: {}\n".format(path_))
     try:
         print ("SequenceReadArchive\n")
-        sra = SequenceReadArchive("/data/usrhome/LabSSLin/user30/Desktop/SRA/SRR14651324/SRR14651324.sra")
+        sra = SequenceReadArchive(path_)
         #print("layout:", sra.layout)
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
@@ -253,12 +256,13 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     dump_fastq_from_sra(path_, fastq_dir)
     # os.listdir(fastq_dir) list files in dir
     forward_reads, reverse_reads = [os.path.join(fastq_dir, i) for i in os.listdir(fastq_dir)]
-
+    ## up ok
     # 資料前處理：刪除爛的序列
     # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
+
     print('Trim sequences.')
     r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
-
+    print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
     if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
         shutil.rmtree(outdir)
