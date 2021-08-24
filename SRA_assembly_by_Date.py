@@ -256,6 +256,7 @@ def main():
 
     runinfo = Get_RunInfo(idlist)
     run_list = list(runinfo['Run'])
+
     sra_dir = args.sra_dir
     assem_dir = args.assembly_dir
     check_log = args.log
@@ -265,7 +266,7 @@ def main():
     gsize = args.gsize
     n = args.n
 
-    f = open(check_log)
+    f = open(check_log,'a')
     d = f.read().split("\n")[1:-1]
     f.close()
     finish = list(filter(lambda x:len(x.split(" ")) >= 4 ,d))
