@@ -6,16 +6,19 @@ import sys
 import shutil
 import argparse
 import subprocess
+import traceback
 import xml.etree.cElementTree as ET
 from tempfile import TemporaryDirectory
 
 #於cmd執行程式,捕捉字串？
 def run_cmd(cmd):
+    print ("--------------------------------\ncmd: {} \n".format(cmd))
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
     return p
 
 #獲得分布和質量並生成數據?
 def bases_percentage(filepath, qscore=0):
+    print ("---------------bases_prercentage------------------\n")
     p = run_cmd(f"seqtk fqchk -q {qscore} {filepath} | grep ALL | awk '{{print $NF}}'")
     return float(p.stdout)
 
@@ -28,11 +31,14 @@ def crop_position(filepath, window_size=3, gap=10):
     p = run_cmd(f"seqtk fqchk {filepath}")
     #
     fq_check = p.stdout.decode().strip().split('\n')[3:]
+    print ("fq_check: {}\n".format(fq_check))
     fq_check = (line.split()[2:6] for line in fq_check)
+    print ("fq_check: {}\n".format(fq_check))
     content_gaps = []
     for line in fq_check:
         a, c, g, t = [float(value) for value in line]
         content_gaps.append(max(abs(a - t), abs(c - g)))
+    print ("content_gaps: {}\n".format(content_gaps))
     # check from forward
     for start in range(len(content_gaps)):
         #每四個做一次判斷
@@ -44,6 +50,7 @@ def crop_position(filepath, window_size=3, gap=10):
             break
         else:
             headcrop = 0
+    print ("headcrop: {}\n".format(headcrop))
     # check from revers
     for start in range(len(content_gaps), 0, -1):
         end = start - window_size
@@ -53,6 +60,7 @@ def crop_position(filepath, window_size=3, gap=10):
             break
         else:
             crop = len(content_gaps)
+    print ("crop: {}\n".format(crop))
     return crop, headcrop
 
 def trimming(forward_reads, reverse_reads, outdir, threads):
@@ -61,13 +69,16 @@ def trimming(forward_reads, reverse_reads, outdir, threads):
           f"SLIDINGWINDOW:4:20 MINLEN:36 TOPHRED33"
     paired_1 = os.path.join(outdir, 'R1.fq')
     paired_2 = os.path.join(outdir, 'R2.fq')
+
     cmd = f"java -jar trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
           f" {paired_2} /dev/null {opt}"
+    print ("crop: {}\nheadcrop: {}\nR1: {}\nR2: {}\ncmd: {}\n".format(cmd))
     run_cmd(cmd)
     return paired_1, paired_2
 
 #sra轉換成fastq
 def dump_fastq_from_sra(srafile, outdir):
+    print ("dump_fastq_from_sra")
     run_cmd(f'fastq-dump --split-files --outdir {outdir} {srafile}')
 
 class SequenceReadArchive:
@@ -129,16 +140,24 @@ def main():
         sra = SequenceReadArchive(sra_file)
         print("layout:",sra.layout)
     except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
         sys.exit(e)
-
+    print ("layout???\n")
     if sra.layout != '2':
         sys.exit(f'File layout is not pair-end')
-
+    print ("layout=2\n")
     #if sra_layout==2 continue
     #os.path.join(path, *paths)連接路徑
     fastq_dir = os.path.join(outdir,'fastq')
     os.makedirs(fastq_dir, exist_ok = True)
-
     #解壓縮成fastq
     print('Dump fastq.')
     #run_cmd

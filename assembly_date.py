@@ -9,6 +9,7 @@ import shutil
 import argparse
 import subprocess
 import traceback
+from pathlib import Path
 
 import pandas as pd
 from Bio import Entrez
@@ -36,9 +37,9 @@ def mkdir_join(dir):
 
 def prefetch_sra(sralist,outdir):
     ss = " ".join(sralist)
-    print("now download",ss,"runs.")
     cmd = "prefetch "+ss+" --output-directory "+outdir
     run_cmd2(cmd)
+    print("now download", ss, "runs.")
 
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
@@ -222,9 +223,12 @@ def Get_RunInfo(idlist):
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
+
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
+    outdir__=os.path.join(outdir, "out")
+    mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
     print ("srafile_path: {}\n".format(path_))
     try:
@@ -247,15 +251,23 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     print ("layout=2\n")
     # if sra_layout==2 continue
     # os.path.join(path, *paths)連接路徑
+
+    #outdir = assem_dir + "/" + "".join(sra_id)
+    print ("outdir = {}".format(outdir))
     fastq_dir = os.path.join(outdir, 'fastq')
+    fastq_dir = os.path.join(fastq_dir, sra_id)
     os.makedirs(fastq_dir, exist_ok=True)
     print ("fastq_dir = {}".format(fastq_dir))
+
     # 解壓縮成fastq
     print('Dump fastq.')
     # run_cmd
     dump_fastq_from_sra(path_, fastq_dir)
     # os.listdir(fastq_dir) list files in dir
-    forward_reads, reverse_reads = [os.path.join(fastq_dir, i) for i in os.listdir(fastq_dir)]
+    print (fastq_dir)
+
+    forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+
     ## up ok
     # 資料前處理：刪除爛的序列
     # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
@@ -272,16 +284,23 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     #                                 --- depth<80 ---------> SPAdes
     # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
     print("Run assembly pipline 'shovill'")
-    assemble_dir = os.path.join(outdir, 'assembly_result')
+    assemble_dir = os.path.join(outdir, "assembly_result")
+    assemble_dir=os.path.join(assemble_dir, sra_id)
+    mkdir_join(assemble_dir)
     # depth >= 80
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
     run_cmd(cmd)
-    contig_tmp = os.path.join(assemble_dir,"/contig.fa")
-    cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
+    contig_tmp = os.path.join(assemble_dir,"contigs.fa")
+    #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
+    final_dir=os.path.join(outdir__,"{}_contig.fa".format(sra_id))
+    cmd2="cp {} {}".format(contig_tmp,final_dir)
+    print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
     run_cmd(cmd2)
+    #cmd3 = "rm -rf {}".format(assemble_dir)
+    #run_cmd(cmd3)
     #f=open(check_log,"a")
     #f.write("Run {} is ok\n".format(sra_id))
     #f.close()
@@ -297,11 +316,11 @@ def main():
                         help="Searching condition.")
     # PDAT格式：YYYY/MM/DD
     parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
-    parser.add_argument("--sra_dir", required=True, help="Temp folder to save runs.")
-    parser.add_argument("--log", required=True, help="The file to recored runs which finished assembly each time.")
+    #parser.add_argument("--sra_dir", required=True, help="Temp folder to save runs.")
+    #parser.add_argument("--log", required=True, help="The file to recored runs which finished assembly each time.")
     parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
-    parser.add_argument("--assembly_dir", default=".", help="Temp folder to save assembly.")
-    parser.add_argument("--tmpdir", default="/tmp", help="Directory of temp folder default: '/tmp'")
+    #parser.add_argument("--assembly_dir", default=".", help="Temp folder to save assembly.")
+    #parser.add_argument("--tmpdir", default="/tmp", help="Directory of temp folder default: '/tmp'")
     parser.add_argument("--gsize", default='', help="Estimated genome size(MB) eg. 3.2M. default: ''")
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
     parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
@@ -310,18 +329,30 @@ def main():
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
-    sra_dir = args.sra_dir
-    assem_dir = args.assembly_dir
-    log_dir = args.log
+    #sra_dir = args.sra_dir
+    #assem_dir = args.assembly_dir
+    #log_dir = args.log
     output = args.output
-    tmpdir = args.tmpdir
+    #tmpdir = args.tmpdir
     threads = args.threads
     gsize = args.gsize
     n = args.n
     progress_bar("read arguments")
+    mkdir_join(output)
+    check_log = os.path.join(output,"check.log")
+    # commit
+    #run_cmd2("touch {}".format("check.log"))
+    myfile = Path(check_log)
+    myfile.touch(exist_ok=True)
+    f = open(check_log, 'a')
+    t = str(datetime.datetime.now()).split(".")[0]
+    f.write(t)
+    f.write("\n")
+    f.close()
 
-    mkdir_join(log_dir)
-    check_log = os.path.join(log_dir, "check.log")
+    #mkdir_join(log_dir)
+    #check_log = os.path.join(log_dir, "check.log")
+
 
     # print(date)
     pattern, count = count_egquery(pattern, date, date)
@@ -344,29 +375,43 @@ def main():
 
     print("Toal", len(need_run), "sra runs need to downlaod.")
 
-    os.makedirs(sra_dir, exist_ok=True)
-    os.makedirs(assem_dir, exist_ok=True)
+    mkdir_join(output)
 
-    #f = open(check_log, 'a')
-    #t = str(datetime.datetime.now()).split(".")[0]
-    #f.write(t)
-    #f.write("\n")
-    #f.close()
+    sra_dir = os.path.join(output, "sra")  # .sra file
+    mkdir_join(sra_dir)
 
-    if os.path.exists(output) == False:
-        os.makedirs(output)
-
+    #k,每三個一輪迴
     k = list(range(0, len(need_run), n))
     print (k)
     for i in k:
         run_id = need_run[i:i+n]
-        prefetch_sra(run_id,sra_dir)
         print("###### i = {}\n".format(i))
         print("run_id: {}\n".format(run_id))
         time.sleep(1)
         for x in run_id:
             print ("x = {}".format(x))
+            try:
+                cmd = "prefetch {} --output-directory {}".format(x,sra_dir)
+                run_cmd2(cmd)
+            except Exception as e:
+                error_class = e.__class__.__name__  # 取得錯誤類型
+                detail = e.args[0]  # 取得詳細內容
+                cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                lineNum = lastCallStack[1]  # 取得發生的行號
+                funcName = lastCallStack[2]  # 取得發生的函數名稱
+                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+                print(errMsg)
+                sys.exit(e)
             run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
+            f = open(check_log, 'w')
+            f.write(x)
+            f.write("\n")
+            f.close()
+        #print("shutil.rmtree\n")
+        #shutil.rmtree(sra_dir)
+
 
 
 
