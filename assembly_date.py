@@ -280,7 +280,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     print(cmd)
     run_cmd(cmd)
     contig_tmp = os.path.join(assemble_dir,"/contig.fa")
-    cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + x + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
+    cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
     run_cmd(cmd2)
     #f=open(check_log,"a")
     #f.write("Run {} is ok\n".format(sra_id))
