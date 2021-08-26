@@ -7,6 +7,7 @@ import argparse
 import subprocess
 import traceback
 import xml.etree.cElementTree as ET
+from os.path import isfile
 from tempfile import TemporaryDirectory
 import pandas as pd
 import datetime
@@ -174,9 +175,14 @@ def run_dump_assembly(need_run,sra_dir,assem_dir,threads,gsize,output,check_log,
         print ("run_id: {}\nsra_dir: {}\n".format(run_id,sra_dir))
         for x in run_id:
             start = time.time()
+
+            while isfile(x):
+                prefetch_sra(x, sra_dir)
+
             path = sra_dir+"/"+x+"/*.sra"
-            #re_path = "".join(glob.glob(path))
-            #sra_file = os.path.abspath(re_path)
+            re_path = "".join(glob.glob(path))
+            sra_file = os.path.abspath(re_path)
+
             sra_file="{}/{}/{}.sra".format(sra_dir,x,x)
             print ("path: {}\nsra_file: {}\n".format(path,sra_file))
             try:
