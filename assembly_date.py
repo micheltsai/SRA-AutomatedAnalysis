@@ -399,7 +399,7 @@ def main():
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
     f = open(check_log, 'w+')
-    d = f.read().split("\n")[0:1]
+    d = f.read().split("\n")[1:-1]
     f.close()
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, d))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
