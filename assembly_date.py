@@ -239,7 +239,6 @@ def Get_RunInfo(idlist):
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
-
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
@@ -275,6 +274,12 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     os.makedirs(fastq_dir, exist_ok=True)
     print ("fastq_dir = {}".format(fastq_dir))
 
+    assemble_dir = os.path.join(outdir, "assembly_result")
+    assemble_dir = os.path.join(assemble_dir, sra_id)
+    mkdir_join(assemble_dir)
+    contig_tmp = os.path.join(assemble_dir, "contigs.fa")
+    final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
+
     # 解壓縮成fastq
     print('Dump fastq.')
     # run_cmd
@@ -282,7 +287,18 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir)
 
-    forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+    for fa in os.listdir(fastq_dir):
+            print ("{}\n".format(fa))
+    try:
+        forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+    except ValueError as e:
+        if os.path.isfile(final_dir):
+            return 0
+        else:
+            run_cmd("rm {}/R1.fq {}/R2.fq")
+            forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+            pass
+
 
     ## up ok
     # 資料前處理：刪除爛的序列
@@ -300,18 +316,16 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     #                                 --- depth<80 ---------> SPAdes
     # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
     print("Run assembly pipline 'shovill'")
-    assemble_dir = os.path.join(outdir, "assembly_result")
-    assemble_dir=os.path.join(assemble_dir, sra_id)
-    mkdir_join(assemble_dir)
+
     # depth >= 80
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
     run_cmd(cmd)
-    contig_tmp = os.path.join(assemble_dir,"contigs.fa")
+
     #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
-    final_dir=os.path.join(outdir__,"{}_contig.fa".format(sra_id))
+
     cmd2="cp {} {}".format(contig_tmp,final_dir)
     print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
     run_cmd(cmd2)
@@ -320,7 +334,11 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     #f=open(check_log,"a")
     #f.write("Run {} is ok\n".format(sra_id))
     #f.close()
+    f = open(check_log, 'a')
+    f.write("Run {} is ok\n".format(sra_id))
+    f.close()
     print ("Run {} is ok\n".format(sra_id))
+    shutil.rmtree(assemble_dir)
 
 def main():
     # 計算時間
@@ -360,7 +378,7 @@ def main():
     #run_cmd2("touch {}".format("check.log"))
     myfile = Path(check_log)
     myfile.touch(exist_ok=True)
-    f = open(check_log, 'a')
+    f = open(check_log, 'a+')
     t = str(datetime.datetime.now()).split(".")[0]
     f.write(t)
     f.write("\n")
@@ -381,7 +399,7 @@ def main():
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
     f = open(check_log, 'w+')
-    d = f.read().split("\n")[1:-1]
+    d = f.read().split("\n")[0:1]
     f.close()
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, d))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
@@ -399,6 +417,7 @@ def main():
     #k,每三個一輪迴
     k = list(range(0, len(need_run), n))
     print (k)
+
     for i in k:
         run_id = need_run[i:i+n]
         print("###### i = {}\n".format(i))
@@ -421,12 +440,11 @@ def main():
                 print(errMsg)
                 sys.exit(e)
             run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
-            f = open(check_log, 'w')
-            f.write(x)
-            f.write("\n")
-            f.close()
+
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
+        mkdir_join(sra_dir)
+
 
 
 

@@ -175,15 +175,20 @@ def run_dump_assembly(need_run,sra_dir,assem_dir,threads,gsize,output,check_log,
         print ("run_id: {}\nsra_dir: {}\n".format(run_id,sra_dir))
         for x in run_id:
             start = time.time()
-
-            while isfile(x):
-                prefetch_sra(x, sra_dir)
-
             path = sra_dir+"/"+x+"/*.sra"
             re_path = "".join(glob.glob(path))
             sra_file = os.path.abspath(re_path)
 
-            sra_file="{}/{}/{}.sra".format(sra_dir,x,x)
+            sra_file = "{}/{}/{}.sra".format(sra_dir, x, x)
+            tmp=str(x)
+            while isfile(sra_file) is False:
+                print ("not found\n")
+                print ("prefetch agian\n")
+                cmd = "prefetch {} --output-directory {}".format(x,sra_dir)
+                run_cmd2(cmd)
+                isfile(sra_file)
+                time.sleep(10)
+
             print ("path: {}\nsra_file: {}\n".format(path,sra_file))
             try:
                 sra = SequenceReadArchive(sra_file)
