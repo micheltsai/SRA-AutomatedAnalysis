@@ -54,6 +54,13 @@ def prefetch_sra(sralist,outdir):
         funcName = lastCallStack[2]  # 取得發生的函數名稱
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
+
+        #處理檔案已存在問題
+        current_path = os.path.join(os.path.abspath(os.getcwd()), sralist)
+        print(current_path, "\n")
+        print("shutil.rmtree({})\n".format(current_path))
+        shutil.rmtree(current_path)
+
         print("######run again\n")
         run_cmd2(cmd)
         time.sleep(1)
@@ -440,7 +447,10 @@ def main():
         print("###### i = {}\n".format(i))
         print("run_id: {}\n".format(run_id))
         time.sleep(1)
+        num=len(finish_run)
         for x in run_id:
+            print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
+            num+=1
             print ("x = {}".format(x))
             outdir__ = os.path.join(output, "out")
             final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
@@ -449,10 +459,15 @@ def main():
             else:
                 prefetch_sra(x,sra_dir)
                 run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
-
+                current_path = os.path.join(os.path.abspath(os.getcwd()), x)
+                print("current_path: ", current_path, "\n")
+                # print ("shutil.rmtree({})\n".format(current_path))
+                run_cmd2("rm -rf {}".format(current_path))
+                print ("remove {}\n".format(current_path))
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
         mkdir_join(sra_dir)
+
 
 
 
