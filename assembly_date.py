@@ -36,9 +36,11 @@ def mkdir_join(dir):
     return dir
 
 def prefetch_sra(sralist,outdir):
-    ss = " ".join(sralist)
+    #ss = " ".join(sralist)
+    #progress_bar("prefetch")
     try:
-        cmd = "prefetch "+ss+" --output-directory "+outdir
+        cmd = "prefetch "+sralist+" --output-directory "+outdir
+        print (cmd,"\n")
         run_cmd2(cmd)
         time.sleep(1)
     except Exception as e:
@@ -55,7 +57,7 @@ def prefetch_sra(sralist,outdir):
         print("######run again\n")
         run_cmd2(cmd)
         time.sleep(1)
-    print("now download", ss, "runs.")
+    print("now download", sralist, "runs.")
 
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
@@ -101,7 +103,7 @@ MIN_BQ = 3
 # 把DNA序列兩端定序結果比較差的序列去掉
 def crop_position(filepath, window_size=3, gap=10):
     p = run_cmd2("seqtk fqchk {}".format(filepath))
-    #
+    progress_bar("crop_postion")
     fq_check = p.stdout.decode().strip().split('\n')[3:]
     fq_check = (line.split()[2:6] for line in fq_check)
     content_gaps = []
@@ -140,11 +142,13 @@ def trimming(forward_reads, reverse_reads, outdir, threads):
     cmd = f"java -jar /data/usrhome/LabSSLin/user30/Desktop/SRA/trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
           f" {paired_2} /dev/null {opt}"
     run_cmd2(cmd)
+    progress_bar("trimming")
     return paired_1, paired_2
 
 
 # sra轉換成fastq
 def dump_fastq_from_sra(srafile, outdir):
+    progress_bar("dump_fastq_from_sra")
     run_cmd(f'fastq-dump --split-files --outdir {outdir} {srafile}')
 
 
@@ -183,6 +187,7 @@ class SequenceReadArchive:
 
 def count_egquery(term, date_from , date_to, db = 'sra'):
     pattern = term+f" AND {date_from}[PDAT]:{date_to}[PDAT]"
+    progress_bar("count_egquery")
     print('Searching pattern:',pattern)
     #查詢PubMed中所有和pattern變數內容相關的文章
     handle = Entrez.egquery(term = pattern)
@@ -279,6 +284,10 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     mkdir_join(assemble_dir)
     contig_tmp = os.path.join(assemble_dir, "contigs.fa")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
+    #如果做過則下一個
+    if os.path.isfile(final_dir):
+        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+        return 0
 
     # 解壓縮成fastq
     print('Dump fastq.')
@@ -293,9 +302,10 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
         forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
     except ValueError as e:
         if os.path.isfile(final_dir):
+            print ("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
             return 0
         else:
-            run_cmd("rm {}/R1.fq {}/R2.fq")
+            run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
             forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
             pass
 
@@ -304,7 +314,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     # 資料前處理：刪除爛的序列
     # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
 
-    print('Trim sequences.')
+    #print('Trim sequences.')
     r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
@@ -315,8 +325,8 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
     #                                 --- depth<80 ---------> SPAdes
     # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
-    print("Run assembly pipline 'shovill'")
-
+    #print("Run assembly pipline 'shovill'")
+    progress_bar("Run assembly pipline 'shovill'")
     # depth >= 80
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
@@ -338,7 +348,11 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     f.write("Run {} is ok\n".format(sra_id))
     f.close()
     print ("Run {} is ok\n".format(sra_id))
+
+    shutil.rmtree(fastq_dir)
+    progress_bar("remove fastq dir")
     shutil.rmtree(assemble_dir)
+    progress_bar("remove assemble dir")
 
 def main():
     # 計算時間
@@ -394,19 +408,22 @@ def main():
     idlist = IdList_esearch(pattern, 'sra', count)
     print(idlist)
     runinfo = Get_RunInfo(idlist)
-    progress_bar("get SRAfile name List stored in run_list")
+    #progress_bar("get SRAfile name List stored in run_list")
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-    f = open(check_log, 'w+')
-    d = f.read().split("\n")[1:-1]
+    f = open(check_log, 'r+')
+    d = f.readlines()
+    print("chcke log :{}\n".format(d))
     f.close()
+
+    for s in d:
+        print ("{}\n".format(s))
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, d))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, run_list))
     print("finish: {}\nfinish_run: {}\nneed_run".format(finish,finish_run,need_run))
     print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run), len(need_run)))
-
     print("Toal", len(need_run), "sra runs need to downlaod.")
 
     mkdir_join(output)
@@ -425,21 +442,13 @@ def main():
         time.sleep(1)
         for x in run_id:
             print ("x = {}".format(x))
-            try:
-                cmd = "prefetch {} --output-directory {}".format(x,sra_dir)
-                run_cmd2(cmd)
-            except Exception as e:
-                error_class = e.__class__.__name__  # 取得錯誤類型
-                detail = e.args[0]  # 取得詳細內容
-                cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                lineNum = lastCallStack[1]  # 取得發生的行號
-                funcName = lastCallStack[2]  # 取得發生的函數名稱
-                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
-                print(errMsg)
-                sys.exit(e)
-            run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
+            outdir__ = os.path.join(output, "out")
+            final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+            if os.path.isfile(final_dir):
+                print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+            else:
+                prefetch_sra(x,sra_dir)
+                run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
