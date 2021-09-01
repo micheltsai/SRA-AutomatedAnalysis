@@ -64,6 +64,7 @@ def prefetch_sra(sralist,outdir):
         print("######run again\n")
         run_cmd2(cmd)
         time.sleep(1)
+        pass
     print("now download", sralist, "runs.")
 
 def run_cmd2(cmd):
@@ -303,8 +304,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir)
 
-    for fa in os.listdir(fastq_dir):
-            print ("{}\n".format(fa))
+
     try:
         forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
     except ValueError as e:
