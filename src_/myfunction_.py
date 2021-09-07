@@ -74,7 +74,8 @@ def run_cmd3(cmd):
         #print (line.decode(),"\n\n")
         for s in line_:
             print(str("{}".format(s)))
-    return p
+            err=s
+    return p,err
 
 def run_cmd4(cmd):
     cmd=shlex.split(cmd)
