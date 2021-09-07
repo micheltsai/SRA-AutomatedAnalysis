@@ -1,0 +1,2 @@
+Protein identifier	Contig id	Start	Stop	Strand	Gene symbol	Sequence name	Scope	Element type	Element subtype	Class	Subclass	Method	Target length	Reference sequence length	% Coverage of reference sequence	% Identity to reference sequence	Alignment length	Accession of closest sequence	Name of closest sequence	HMM id	HMM description
+NA	AM933173.1	2358649	2361282	-	gyrA_S83F	Salmonella quinolone/triclosan resistant GyrA	core	AMR	POINT	QUINOLONE/TRICLOSAN	QUINOLONE/TRICLOSAN	POINTX	878	878	100.00	99.89	878	WP_001281271.1	DNA gyrase subunit A GyrA	NA	NA
