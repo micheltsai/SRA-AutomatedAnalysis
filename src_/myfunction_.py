@@ -62,6 +62,43 @@ def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
     return p
 
+def run_cmd3(cmd):
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    returncode = p.poll()
+    while returncode is None:
+        line = p.stdout.readline()
+        returncode = p.poll()
+        line = line.strip()
+        line_ = line.decode().split("\n")
+        #print (line.decode(),"\n\n")
+        for s in line_:
+            print(str("{}".format(s)))
+    return p
+
+def run_cmd4(cmd):
+    cmd=shlex.split(cmd)
+    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #print (cmd)
+    print("--------------------------------------\nSubprogram output:\n")
+    while p.poll() is None:
+        progress_bar("sub excuting")
+        line = p.stdout.readline()
+        returncode = p.poll()
+        line = line.strip()
+        if line:
+            line_=line.decode().split("\n")
+            for s in line_:
+                print (str("{}\n".format(s)))
+
+    if p.returncode ==0:
+        print ("Subprogram sucess")
+    else:
+        print ("Subprogram failed")
+        print (returncode)
+    print ("-------------------------\n")
+    return p
+
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -81,7 +118,7 @@ def run_cmd(cmd):
         print ("Subprogram sucess")
     else:
         print ("Subprogram failed")
-
+        print (p.stderr)
     print ("-------------------------\n")
     return p
 

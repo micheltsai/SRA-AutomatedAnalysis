@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import argparse
 import os
+import sys
 import time
 
 import src_.myfunction_ as func_
@@ -18,7 +19,8 @@ def main():
     # read command arguments------
     # get ref_path, qen_path, and outdir
     func_.progress_bar("read command")
-    parser = argparse.ArgumentParser("python3 Analysis.py ")
+    #python3 analysis.py -i ./contigs.fa -o /data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/0906test -mlstS senterica -amrS Salmonella
+    parser = argparse.ArgumentParser("python3 analysis.py -i [./contigs.fa] -o [/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/0906test] -mlstS [senterica] -amrS [Salmonella]")
     parser.add_argument("--pattern",
                         default="salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]",
                         help="Searching condition.")
@@ -46,24 +48,35 @@ def main():
     func_.mkdir_join(outdir)
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
+
+    outdir_list=outdir.split("/")
+    relative_path="./"+outdir_list[len(outdir_list)-1]
+    print (relative_path)
     #run MLST
     print ("Now MLST analysis running--------")
     MLST_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
-    mlst_outdir=os.path.join(outdir,"mlst")
+    #mlst_outdir=os.path.join(outdir,"mlst")
+    mlst_outdir = os.path.join(relative_path, "mlst")
     func_.mkdir_join(mlst_outdir)
+
     mlst_datajson=os.path.join(mlst_outdir,"data.json")
     f=open(mlst_datajson,"a+")
     f.close()
-    mlst_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst-2 -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
+    mlst_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
     print (mlst_cmd,"\n")
-    func_.run_cmd(mlst_cmd)
+    mlst=func_.run_cmd3(mlst_cmd)
+    if mlst.returncode != 0:
+        print (mlst.stdout.readline())
+        sys.exit()
+
+
 
     #run plasmidfinder
     print("Now plasmidfinder analysis running--------")
     PLASMID_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
     plas_outdir=os.path.join(outdir,"plasmidfinder")
     func_.mkdir_join(plas_outdir)
-    plas_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder-2 -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+    plas_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
     print (plas_cmd,"\n")
     func_.run_cmd(plas_cmd)
 
