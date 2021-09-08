@@ -94,6 +94,9 @@ def run_cmd(cmd):
     print ("-------------------------\n")
     return p
 
+
+#assemble
+###############################
 # 獲得分布和質量並生成數據?
 def bases_percentage(filepath, qscore=0):
     cmd=f"seqtk fqchk -q {qscore} {filepath} | grep ALL | awk '{{print $NF}}'"
@@ -360,3 +363,25 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     progress_bar("remove fastq dir")
     shutil.rmtree(assemble_dir)
     progress_bar("remove assemble dir")
+
+#Qualitycheck.py
+##################################
+#get reference list and path of reference list
+def getRefListPath(refSeqPath,outdir):
+    print("getRefListPath:\n")
+    print("refSeqPath: " + refSeqPath + "\n")
+    refListPath = os.path.join(outdir, 'ref.txt')
+    run_cmd2("find {}>{}".format(refSeqPath,refListPath))
+    print("refListPath: "+refListPath+"\n")
+    #run_cmd2("cat {}".format(refListPath))
+    return refListPath
+
+#get qenome list and path of qenome list
+def getQenomeListPath(genome_Path,outdir):
+    print("getQenomeListPath:\n")
+    print("refSeqPath: " + genome_Path + "\n")
+    genListPath = os.path.join(outdir, 'qen.txt')
+    run_cmd2("find {}>{}".format(genome_Path,genListPath))
+    print("qenListPath: "+genListPath+"\n")
+    return genListPath
+
