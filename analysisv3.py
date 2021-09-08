@@ -11,6 +11,9 @@ from pathlib import Path
 import pandas as pd
 import utils_
 
+#python3 analysisv3.py -i ./contigs.fa -o /data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/analysis -mlstS senterica -amrS Salmonella
+
+
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -52,7 +55,7 @@ def main():
     #MLST -s
     parser.add_argument("-mlstS", "--mlstOrganism", help="MLST need -s organism....")
     #Inc type -p
-    parser.add_argument("-p", "--plasmidfinderDB", help="Path of plasmidfinder database")
+    #parser.add_argument("-p", "--plasmidfinderDB", help="Path of plasmidfinder database")
     #Resistance genes & Mutations identification -d
     parser.add_argument("-amrS", "--amrOrganism", help="Path of amrifinder organism")
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
@@ -68,21 +71,47 @@ def main():
     threads=args.threads
     mode=args.mode
     utils_.mkdir_join(outdir)
+
+    #get input id
+    inlist=input.split("/")
+    inId=inlist[len(inlist)-1]
+    print("input Id: {}\n".format(inId))
+    inId=inId.split(".")[0]
+    print("input Id: {}\n".format(inId))
+
+    #workdir
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
-    logpath=os.path.join(outdir,"log.txt")
-    outdir_list=outdir.split("/")
-    relative_path2=outdir.replace(current_path,".")
+
+    logpath = os.path.join(outdir, inId)
+    utils_.mkdir_join(logpath)
+    logpath=os.path.join(logpath,"analysis_log.txt")
+
+    origin_outdir=args.outdir
+    allinfopath=os.path.join(origin_outdir,"info.txt")
+
+    #add outpath "analysis"
+    outdir_=os.path.join(outdir,"analysis")
+    utils_.mkdir_join(outdir_)
+    print("analysis outdir: {}\n".format(outdir_))
+
+    #get relative output dir path
+    outdir_list=outdir_.split("/")
+    relative_path2=outdir_.replace(current_path,".")
     print ("relative2: {}\n".format(relative_path2))
-
     #relative_path="./"+outdir_list[len(outdir_list)-1]
+    print ("relative_path: {}".format(relative_path2))
 
-    print (relative_path2)
+    relative_path2=os.path.join(relative_path2,inId)
+    utils_.mkdir_join(relative_path2)
+    print ("relative_path: {}".format(relative_path2))
 
     #load log.txt read running state
     step=0
+
     filename = Path(logpath)
     filename.touch(exist_ok=True)
+
     with open(logpath,"r") as f:
         line=f.readlines()
         print (line)
@@ -154,7 +183,8 @@ def main():
         step += 1
         print("STEP{}\n".format(step))
         print("********** Now amrfinder analysis running. **********\n")
-        amr_outdir=os.path.join(outdir,"amrfinder")
+        #amr_outdir=os.path.join(outdir,"amrfinder")
+        amr_outdir = os.path.join(relative_path2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
@@ -177,7 +207,8 @@ def main():
         step += 1
         print("STEP{}\n".format(step))
         print("********** Now sistr analysis running. **********")
-        sistr_outdir=os.path.join(outdir, "sistr")
+        #sistr_outdir=os.path.join(outdir, "sistr")
+        sistr_outdir = os.path.join(relative_path2, "sistr")
         utils_.mkdir_join(sistr_outdir)
         sistr_outdir=os.path.join(sistr_outdir,"sistr_out")
         input_list=input.split("/")
@@ -198,7 +229,8 @@ def main():
     ################
 
     #read mlst 'Sequence Type'
-    mlst_file=os.path.join(outdir, "mlst/results.txt")
+    #mlst_file=os.path.join(outdir, "mlst/results.txt")
+    mlst_file = os.path.join(relative_path2, "mlst/results.txt")
     with open(mlst_file, "r") as f:
         data = f.readlines()
         print (data[6])
@@ -209,7 +241,8 @@ def main():
         print (sequenceType)
 
     #read plasmidfinder 'gene'
-    plas_file=os.path.join(outdir,"plasmidfinder/results_tab.tsv")
+    plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+    #plas_file=os.path.join(outdir,"plasmidfinder/results_tab.tsv")
     #plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
     pladf = pd.read_table(plas_file, sep='\t')
     #print(df)
@@ -218,14 +251,12 @@ def main():
     print(pladf.columns)
     print (pladf.Plasmid)
 
-    jsf=os.path.join(outdir,"plasmidfinder/data.json")
-    js=pd.read_json(jsf)
-    js=pd.DataFrame(js)
-    print(js)
+
 
 
     #read amrfinder 'Gene symbol', 'subtype'
-    amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
+    #amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
+    amr_file = os.path.join(relative_path2, "amrfinder/amrout.tsv")
     # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
     amrdf = pd.read_table(amr_file, sep='\t')
     # print(df)
@@ -247,7 +278,8 @@ def main():
     print(amrdf.Element_subtype)
 
     #read sistr 'serovar'
-    sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
+    #sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
+    sistr_file = os.path.join(relative_path2, "sistr/sistr_out.csv")
     # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
     sistrdf = pd.read_csv(sistr_file)
     # print(df)
@@ -258,8 +290,8 @@ def main():
     #dict={'Accession': pd.Series(input for a in range(0,3)),
     #      'mlst':sequenceType,
     #}
-
-    dict = {'Accession': pd.Series(input),
+    in_abspath=input.replace(".",current_path)
+    dict = {'Accession': in_abspath,
             'mlst':sequenceType,
             'plasmidfinder':pladf.Plasmid,
             'amr_gane':amrdf.Gene_symbol,
@@ -271,8 +303,13 @@ def main():
     finaldf=pd.DataFrame(dict)
     print(finaldf)
 
-    finalfile=os.path.join(outdir,"final.csv")
+    finalfile=os.path.join(origin_outdir,"analysis_final.csv")
     finaldf.to_csv(finalfile,mode='a')
+
+    ###info
+    #with open(allinfopath,"a+") as f:
+        #f.write("analysis outdir = {}\n".format(outdir_))
+        #f.write("analysis file path = {}\n".format(finalfile))
 
 if __name__ == '__main__':
     main()

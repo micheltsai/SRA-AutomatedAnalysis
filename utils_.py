@@ -94,6 +94,20 @@ def run_cmd(cmd):
     print ("-------------------------\n")
     return p
 
+def run_cmd3(cmd):
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    returncode = p.poll()
+    while returncode is None:
+        line = p.stdout.readline()
+        returncode = p.poll()
+        line = line.strip()
+        line_ = line.decode().split("\n")
+        #print (line.decode(),"\n\n")
+        for s in line_:
+            print(str("{}".format(s)))
+            err=s
+    return p,err
 
 #assemble
 ###############################
@@ -258,7 +272,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
-    outdir__=os.path.join(outdir, "out")
+    outdir__=os.path.join(outdir, "Assembled")
     mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
     print ("srafile_path: {}\n".format(path_))
@@ -377,11 +391,13 @@ def getRefListPath(refSeqPath,outdir):
     return refListPath
 
 #get qenome list and path of qenome list
-def getQenomeListPath(genome_Path,outdir):
+def getGenomeListPath(genome_Path,outdir):
     print("getQenomeListPath:\n")
     print("refSeqPath: " + genome_Path + "\n")
-    genListPath = os.path.join(outdir, 'qen.txt')
+    genListPath = os.path.join(outdir, 'gen.txt')
     run_cmd2("find {}>{}".format(genome_Path,genListPath))
     print("qenListPath: "+genListPath+"\n")
     return genListPath
+
+
 

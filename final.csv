@@ -1,0 +1,16 @@
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./contigs.fa,11,IncFIB(S),,,Enteritidis
+1,,11,IncFII(S),,,
+2,,11,IncX1,,,
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./contigs.fa,11,IncFIB(S),,,Enteritidis
+1,./contigs.fa,11,IncFII(S),,,
+2,./contigs.fa,11,IncX1,,,
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./contigs.fa,11,IncFIB(S),,,Enteritidis
+1,./contigs.fa,11,IncFII(S),,,
+2,./contigs.fa,11,IncX1,,,
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/contigs/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysisfa,11,IncFIB(S),,,Enteritidis
+1,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/contigs/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysisfa,11,IncFII(S),,,
+2,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/contigs/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysisfa,11,IncX1,,,
