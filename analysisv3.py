@@ -1,0 +1,278 @@
+from __future__ import print_function
+
+import argparse
+import json
+import os
+import shlex
+import subprocess
+import sys
+import time
+from pathlib import Path
+import pandas as pd
+import utils_
+
+def run_cmd(cmd):
+    cmd=shlex.split(cmd)
+    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #print (cmd)
+    print("--------------------------------------\nSubprogram output:\n")
+    utils_.progress_bar("sub excuting")
+    while p.poll() is None:
+        line = p.stdout.readline()
+        line = line.strip()
+        if line:
+            line_=line.decode().split("\n")
+            for s in line_:
+                print (str("{}".format(s)))
+            sys.stdout.flush()
+            sys.stderr.flush()
+            print ("\n")
+    if p.returncode ==0:
+        print ("Subprogram sucess")
+    else:
+        print ("Subprogram failed")
+        print (p.stderr)
+    print ("-------------------------\n")
+    return p
+
+def main():
+    start = time.time()
+
+    # read command arguments------
+    # get ref_path, qen_path, and outdir
+    utils_.progress_bar("read command")
+    #python3 analysis.py -i ./contigs.fa -o /data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/0906test -mlstS senterica -amrS Salmonella
+    parser = argparse.ArgumentParser("python3 analysis.py -i [./contigs.fa] -o [/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/0906test] -mlstS [senterica] -amrS [Salmonella]")
+    parser.add_argument("--pattern",
+                        default="salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]",
+                        help="Searching condition.")
+    # PDAT格式：YYYY/MM/DD
+    parser.add_argument("-i", "--input", required=True, help="genome")
+    parser.add_argument("-o", "--outdir", required=True, help="Output folder[absolute path]")
+    #MLST -s
+    parser.add_argument("-mlstS", "--mlstOrganism", help="MLST need -s organism....")
+    #Inc type -p
+    parser.add_argument("-p", "--plasmidfinderDB", help="Path of plasmidfinder database")
+    #Resistance genes & Mutations identification -d
+    parser.add_argument("-amrS", "--amrOrganism", help="Path of amrifinder organism")
+    parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
+    #serotype
+    parser.add_argument("-m", "--mode", default="geno", required=False, help="mode")
+    args = parser.parse_args()
+
+    input=args.input
+    outdir=args.outdir
+    mlst_organism=args.mlstOrganism
+    plasmidfinderDB=args.plasmidfinderDB
+    amr_organism=args.amrOrganism
+    threads=args.threads
+    mode=args.mode
+    utils_.mkdir_join(outdir)
+    current_path = os.path.abspath(os.getcwd())
+    print("current_path: ", current_path, "\n")
+    logpath=os.path.join(outdir,"log.txt")
+    outdir_list=outdir.split("/")
+    relative_path2=outdir.replace(current_path,".")
+    print ("relative2: {}\n".format(relative_path2))
+
+    #relative_path="./"+outdir_list[len(outdir_list)-1]
+
+    print (relative_path2)
+
+    #load log.txt read running state
+    step=0
+    filename = Path(logpath)
+    filename.touch(exist_ok=True)
+    with open(logpath,"r") as f:
+        line=f.readlines()
+        print (line)
+        for x in line:
+            ana=x.split(" ")[0]
+            if ana == "mlst":
+                step=1
+            elif ana == "plasmidfinder":
+                step=2
+            elif ana == "amr":
+                step=3
+            elif ana == "sistr":
+                step=4
+            print("ana: {}, step: {}\n".format(ana,step))
+
+
+    #run MLST
+    if step<1:
+        step += 1
+        print("STEP{}\n".format(step))
+        print ("********** Now MLST analysis running. **********\n")
+        MLST_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
+        #mlst_outdir=os.path.join(outdir,"mlst")
+        mlst_outdir = os.path.join(relative_path2, "mlst")
+        utils_.mkdir_join(mlst_outdir)
+        mlst_datajson=os.path.join(mlst_outdir,"data.json")
+        f=open(mlst_datajson,"a+")
+        f.close()
+        mlst_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
+        print (mlst_cmd,"\n")
+        mlst,err=utils_.run_cmd3(mlst_cmd)
+        with open(logpath, "a+") as f:
+            if mlst.returncode != 0:
+                #print(mlst.stdout.readline())
+                f.write(err+"\n")
+                sys.exit()
+            else:
+                f.write("mlst is ok\n")
+    else:
+        print ("**********       mlst was running.      **********\n next step\n")
+
+
+
+    #run plasmidfinder
+    if step<2:
+        step += 1
+        print("STEP{}\n".format(step))
+        print("********** Now plasmidfinder analysis running. **********\n")
+        PLASMID_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
+        #plas_outdir=os.path.join(outdir,"plasmidfinder")
+        plas_outdir = os.path.join(relative_path2, "plasmidfinder")
+        utils_.mkdir_join(plas_outdir)
+        plas_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        print (plas_cmd,"\n")
+        plas=run_cmd(plas_cmd)
+        with open(logpath, "a+") as f:
+            if plas.returncode != 0:
+                print(mlst.stdout.readline())
+
+                sys.exit()
+            else:
+                f.write("plasmidfinder is ok\n")
+    else:
+        print("********** plasmidfinder was running. **********\n next step\n")
+
+
+    #run amrfinder
+    if step < 3:
+        step += 1
+        print("STEP{}\n".format(step))
+        print("********** Now amrfinder analysis running. **********\n")
+        amr_outdir=os.path.join(outdir,"amrfinder")
+        utils_.mkdir_join(amr_outdir)
+        amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
+        amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
+        print(amr_cmd, "\n")
+        amr=run_cmd(amr_cmd)
+        with open(logpath,"a+") as f:
+            if amr.returncode != 0:
+                print (mlst.stdout.readline())
+                sys.exit()
+            else:
+                f.write("amr is ok\n")
+        step += 1
+    else:
+        print("**********   amrfinderr was running.   **********\n next step\n")
+
+
+
+    #run sistr
+    if step < 4:
+        step += 1
+        print("STEP{}\n".format(step))
+        print("********** Now sistr analysis running. **********")
+        sistr_outdir=os.path.join(outdir, "sistr")
+        utils_.mkdir_join(sistr_outdir)
+        sistr_outdir=os.path.join(sistr_outdir,"sistr_out")
+        input_list=input.split("/")
+        input_name=input_list[len(input_list)-1]
+        print ("name: ",input_name,"\n")
+        sistr_cmd="sistr -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
+        print(sistr_cmd,"\n")
+        sistr=run_cmd(sistr_cmd)
+        with open(logpath, "a+") as f:
+            if sistr.returncode != 0:
+                print(mlst.stdout.readline())
+                sys.exit()
+            else:
+                f.write("sistr is ok\n")
+    else:
+        print("********** sistr was running. **********\n next step\n")
+
+    ################
+
+    #read mlst 'Sequence Type'
+    mlst_file=os.path.join(outdir, "mlst/results.txt")
+    with open(mlst_file, "r") as f:
+        data = f.readlines()
+        print (data[6])
+            #Sequence Type: 11
+        sequenceType=data[6].split(" ")
+        sequenceType=sequenceType[len(sequenceType)-1].strip("\n")
+
+        print (sequenceType)
+
+    #read plasmidfinder 'gene'
+    plas_file=os.path.join(outdir,"plasmidfinder/results_tab.tsv")
+    #plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
+    pladf = pd.read_table(plas_file, sep='\t')
+    #print(df)
+    pladf=pd.DataFrame(pladf)
+    print(pladf)
+    print(pladf.columns)
+    print (pladf.Plasmid)
+
+    jsf=os.path.join(outdir,"plasmidfinder/data.json")
+    js=pd.read_json(jsf)
+    js=pd.DataFrame(js)
+    print(js)
+
+
+    #read amrfinder 'Gene symbol', 'subtype'
+    amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
+    # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
+    amrdf = pd.read_table(amr_file, sep='\t')
+    # print(df)
+    amrdf = pd.DataFrame(amrdf)
+    print(amrdf)
+    print(amrdf.columns)
+    #replace ' ' as '_'
+    amrdf.columns=['Protein_identifier', 'Contig_id', 'Start', 'Stop', 'Strand',
+       'Gene_symbol', 'Sequence_name', 'Scope', 'Element_type',
+       'Element_subtype', 'Class', 'Subclass', 'Method', 'Target_length',
+       'Reference_sequence_length', 'Coverage_of_reference_sequence',
+       'Identity_to_reference_sequence', 'Alignment_length',
+       'Accession_of_closest sequence', 'Name_of_closest sequence', 'HMM_id',
+       'HMM_description']
+
+    print(amrdf.columns)
+    #if list is [], show NaN
+    print(amrdf.Gene_symbol)
+    print(amrdf.Element_subtype)
+
+    #read sistr 'serovar'
+    sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
+    # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
+    sistrdf = pd.read_csv(sistr_file)
+    # print(df)
+    sistrdf = pd.DataFrame(sistrdf)
+    print(sistrdf)
+    print(sistrdf.columns)
+    print(sistrdf.serovar)
+    #dict={'Accession': pd.Series(input for a in range(0,3)),
+    #      'mlst':sequenceType,
+    #}
+
+    dict = {'Accession': pd.Series(input),
+            'mlst':sequenceType,
+            'plasmidfinder':pladf.Plasmid,
+            'amr_gane':amrdf.Gene_symbol,
+            'amr_subtype':amrdf.Element_subtype,
+            'sistr':sistrdf.serovar
+
+            }
+
+    finaldf=pd.DataFrame(dict)
+    print(finaldf)
+
+    finalfile=os.path.join(outdir,"final.csv")
+    finaldf.to_csv(finalfile,mode='a')
+
+if __name__ == '__main__':
+    main()
