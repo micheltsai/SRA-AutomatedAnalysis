@@ -109,5 +109,6 @@ def main():
 
     print('Done,total cost', time.time() - start, 'secs\n')
 
+    return targetPath
 if __name__ == '__main__':
     main()

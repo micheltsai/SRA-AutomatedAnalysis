@@ -259,6 +259,7 @@ def Get_RunInfo(idlist):
             print("counts_of_run:",len(df))
             time.sleep(2)
     else:
+        progress_bar("Entrez.efetch")
         handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
         d = handle.read()
         df = pd.read_csv(StringIO(d))
@@ -268,12 +269,12 @@ def Get_RunInfo(idlist):
 
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
-def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
+def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
-    outdir__=os.path.join(outdir, "Assembled")
-    mkdir_join(outdir__)
+    #outdir__=os.path.join(outdir, "Assembled")
+    #mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
     print ("srafile_path: {}\n".format(path_))
     try:
@@ -299,16 +300,16 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
 
     #outdir = assem_dir + "/" + "".join(sra_id)
     print ("outdir = {}".format(outdir))
-    fastq_dir = os.path.join(outdir, 'fastq')
+    #fastq_dir = os.path.join(outdir, 'fastq')
     fastq_dir = os.path.join(fastq_dir, sra_id)
     os.makedirs(fastq_dir, exist_ok=True)
     print ("fastq_dir = {}".format(fastq_dir))
 
-    assemble_dir = os.path.join(outdir, "assembly_result")
+    #assemble_dir = os.path.join(outdir, "assembly_result")
     assemble_dir = os.path.join(assemble_dir, sra_id)
     mkdir_join(assemble_dir)
     contig_tmp = os.path.join(assemble_dir, "contigs.fa")
-    final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
+    final_dir = os.path.join(outdir, "{}_contig.fa".format(sra_id))
     #如果做過則下一個
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -326,7 +327,7 @@ def run_for_114(sra_id,sra_dir,outdir,threads,gsize,start,check_log):
         forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
     except ValueError as e:
         if os.path.isfile(final_dir):
-            print ("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+            print ("was ran assembly ,r1 and r2 is exist\n------------------------------\n\n")
             return 0
         else:
             run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
@@ -392,11 +393,11 @@ def getRefListPath(refSeqPath,outdir):
 
 #get qenome list and path of qenome list
 def getGenomeListPath(genome_Path,outdir):
-    print("getQenomeListPath:\n")
-    print("refSeqPath: " + genome_Path + "\n")
+    print("getGenomeListPath:\n")
+    print("genSeqPath: " + genome_Path + "\n")
     genListPath = os.path.join(outdir, 'gen.txt')
     run_cmd2("find {}>{}".format(genome_Path,genListPath))
-    print("qenListPath: "+genListPath+"\n")
+    print("genListPath: "+genListPath+"\n")
     return genListPath
 
 

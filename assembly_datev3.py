@@ -49,11 +49,14 @@ def main():
     n = args.n
     utils_.progress_bar("read arguments")
     utils_.mkdir_join(output)
+    print("output: {}\n".format(output))
 
+    output = os.path.join(output, "Assembled")
+    utils_.mkdir_join(output)
     print("output: {}\n".format(output))
 
     check_log = os.path.join(output,"check.log")
-
+    print("check_log path: {}\n".format(check_log))
 
 
     # commit
@@ -66,9 +69,9 @@ def main():
     f.write("\n")
     f.close()
 
+
     #mkdir_join(log_dir)
     #check_log = os.path.join(log_dir, "check.log")
-
 
     # print(date)
     pattern, count = utils_.count_egquery(pattern, date, date)
@@ -76,7 +79,7 @@ def main():
     idlist = utils_.IdList_esearch(pattern, 'sra', count)
     print(idlist)
     runinfo = utils_.Get_RunInfo(idlist)
-    #progress_bar("get SRAfile name List stored in run_list")
+    utils_.progress_bar("get SRAfile name List stored in run_list")
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
@@ -98,19 +101,24 @@ def main():
 
     sra_dir = os.path.join(output, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
+    fastq_dir = os.path.join(output, 'fastq')   # .fastq file
+    utils_.mkdir_join(fastq_dir)
+    assemble_dir = os.path.join(output, "assembly_result") # cotigs.fa file
+    utils_.mkdir_join(assemble_dir)
 
     #k,每三個一輪迴
     k = list(range(0, len(need_run), n))
     print (k)
     num = len(finish_run)
     for i in k:
+        utils_.mkdir_join(sra_dir)
         run_id = need_run[i:i+n]
         print("###### i = {}\n".format(i))
         print("run_id: {}\n".format(run_id))
         time.sleep(1)
         for x in run_id:
-            print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
-            num+=1
+            num += 1
+            print ("---------------------\n---------------------[Now run {} / {} ]---------------------\n".format(num,len(idlist)))
             print ("x = {}".format(x))
             #outdir__ = os.path.join(output, "out")
             outdir__ = os.path.join(output, "Assembled")
@@ -119,7 +127,7 @@ def main():
                 print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
             else:
                 utils_.prefetch_sra(x,sra_dir)
-                utils_.run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
+                utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
                 # print ("shutil.rmtree({})\n".format(current_path))
@@ -127,15 +135,9 @@ def main():
                 print ("remove {}\n".format(current_path))
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
-        utils_.mkdir_join(sra_dir)
 
-
-
-
-
-
-
-
+        with open(check_log, "a+") as f:
+            f.write("ALL is ok.\n")
     print('Done,total cost', time.time() - start, 'secs')
 
     return 0
