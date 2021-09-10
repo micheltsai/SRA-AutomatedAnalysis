@@ -35,12 +35,15 @@ def main():
     outdir = args.outdir
     utils_.mkdir_join(outdir)
     outdir = os.path.join(outdir,"QualityCheck")
+    utils_.mkdir_join(outdir)
     #outdir = utils_.mkdir_join(outdir, str(current_time))
     print("outdir: ",outdir)
     refPath = utils_.getRefListPath(args.ref, outdir)
+
     genome_Path = utils_.getGenomeListPath(args.genome, outdir)
 
-    outdir_ani=utils_.mkdir_join(outdir, 'fastani')
+    outdir_ani=os.path.join(outdir, 'fastani')
+    utils_.mkdir_join(outdir_ani)
     #outdir_ani=os.path.join(outdir, 'fastani')
     out_txt=os.path.join(outdir_ani, 'out.txt') #stroed fastANI output in out.txt
     info_txt = os.path.join(outdir_ani, 'ANIinfo.txt')  # stroed fastANI output in out.txt
@@ -108,7 +111,6 @@ def main():
     #subprocess.run('bash -c "conda deactivate"',shell=True)
 
     print('Done,total cost', time.time() - start, 'secs\n')
-
     return targetPath
 if __name__ == '__main__':
     main()

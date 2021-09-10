@@ -1,0 +1,7 @@
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./SRAtest/20200704/Assembled/SRR12144668_contig.fa,1368,,fosA7,AMR,Djelfa|Skansen|Korbol|Nagoya
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./SRAtest/20200704/Assembled/SRR12145898_contig.fa,404,Col(pHAD28),,,"I 1,4,[5],12:b:-"
+1,./SRAtest/20200704/Assembled/SRR12145898_contig.fa,404,IncFII(p96A),,,
+,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
+0,./test_data/genomes/GCA_000009525.1.fa,331,,gyrA_S83F,POINT,Gallinarum

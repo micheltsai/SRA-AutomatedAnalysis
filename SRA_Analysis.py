@@ -80,9 +80,11 @@ def main():
     # ./YYYYMMDD/Assembled
     # assembly_date.py
     assem_cmd = "python3 assembly_datev3.py --PDAT {} --output {}".format(date, outdir)
+    print("\n\n\n")
     print(assem_cmd)
+    print("**********************************  ASSEMBLED  **********************************\n")
     try:
-        utils_.run_cmd(assem_cmd)
+        utils_.run_cmd3(assem_cmd)
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -95,21 +97,35 @@ def main():
         print(errMsg)
         sys.exit(e)
 
-    assembled_path = os.path.join(outdir, "Assembled")
+    assembled_path = os.path.join(outdir, "Assembled/")
     assembled_file = utils_.getGenomeListPath(assembled_path, outdir)
 
+    ####################
     # QualityCheck
+
+    print("\n\n\n")
     print("Now QualityCheck excutting------------\n")
     # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
     with open(assembled_file, "r") as f:
         line = f.readlines()
     print(line)
 
-    qual_cmd = "python3 QualityCheckv3.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, gen_dir, buscoDB, buscoMode,
-                                                                                 outdir)
+    qual_cmd = "python3 QualityCheckv3.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, assembled_file, buscoDB, buscoMode, outdir)
     print("run cmd: {}\n".format(qual_cmd))
-
-    targetPath = utils_.run_cmd(qual_cmd)
+    print("**********************************  QUALITYCHECKED  **********************************\n")
+    try:
+        targetPath = utils_.run_cmd3(qual_cmd)
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        sys.exit(e)
     print("targetPAth = {}".format(targetPath))
 
     return 0

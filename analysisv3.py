@@ -12,6 +12,7 @@ import pandas as pd
 import utils_
 
 #python3 analysisv3.py -i ./contigs.fa -o /data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/analysis -mlstS senterica -amrS Salmonella
+#python3 analysisv3.py -i ./SRAtest/20200704/SRR12144668_contig.fa -o /data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/analysis -mlstS senterica -amrS Salmonella
 
 
 def run_cmd(cmd):
@@ -66,7 +67,7 @@ def main():
     input=args.input
     outdir=args.outdir
     mlst_organism=args.mlstOrganism
-    plasmidfinderDB=args.plasmidfinderDB
+    #plasmidfinderDB=args.plasmidfinderDB
     amr_organism=args.amrOrganism
     threads=args.threads
     mode=args.mode
@@ -145,7 +146,7 @@ def main():
         mlst,err=utils_.run_cmd3(mlst_cmd)
         with open(logpath, "a+") as f:
             if mlst.returncode != 0:
-                #print(mlst.stdout.readline())
+                print(mlst.stdout.readline())
                 f.write(err+"\n")
                 sys.exit()
             else:
@@ -169,7 +170,7 @@ def main():
         plas=run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
             if plas.returncode != 0:
-                print(mlst.stdout.readline())
+                #print(mlst.stdout.readline())
 
                 sys.exit()
             else:
@@ -192,7 +193,7 @@ def main():
         amr=run_cmd(amr_cmd)
         with open(logpath,"a+") as f:
             if amr.returncode != 0:
-                print (mlst.stdout.readline())
+                #print (mlst.stdout.readline())
                 sys.exit()
             else:
                 f.write("amr is ok\n")
@@ -219,7 +220,7 @@ def main():
         sistr=run_cmd(sistr_cmd)
         with open(logpath, "a+") as f:
             if sistr.returncode != 0:
-                print(mlst.stdout.readline())
+                #print(mlst.stdout.readline())
                 sys.exit()
             else:
                 f.write("sistr is ok\n")
@@ -279,8 +280,11 @@ def main():
 
     #read sistr 'serovar'
     #sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
-    sistr_file = os.path.join(relative_path2, "sistr/sistr_out.csv")
+    sistr_file = os.path.join(relative_path2, "sistr")
+    utils_.mkdir_join(sistr_file)
+    sistr_file = os.path.join(sistr_file, "sistr_out.csv")
     # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
+
     sistrdf = pd.read_csv(sistr_file)
     # print(df)
     sistrdf = pd.DataFrame(sistrdf)
@@ -291,7 +295,7 @@ def main():
     #      'mlst':sequenceType,
     #}
     in_abspath=input.replace(".",current_path)
-    dict = {'Accession': in_abspath,
+    dict = {'Accession': input,
             'mlst':sequenceType,
             'plasmidfinder':pladf.Plasmid,
             'amr_gane':amrdf.Gene_symbol,
