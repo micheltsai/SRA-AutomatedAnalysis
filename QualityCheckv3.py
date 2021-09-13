@@ -34,37 +34,56 @@ def main():
 
     outdir = args.outdir
     utils_.mkdir_join(outdir)
+    refPath = utils_.getRefListPath(args.ref, outdir)
+    Assem_path = os.path.join(outdir, "Assembled/")
     outdir = os.path.join(outdir,"QualityCheck")
     utils_.mkdir_join(outdir)
     #outdir = utils_.mkdir_join(outdir, str(current_time))
     print("outdir: ",outdir)
-    refPath = utils_.getRefListPath(args.ref, outdir)
 
-    genome_Path = utils_.getGenomeListPath(args.genome, outdir)
 
-    outdir_ani=os.path.join(outdir, 'fastani')
+
+    current_path = os.path.abspath(os.getcwd())
+    print("current_path: ", current_path, "\n")
+    #genome_Path = utils_.getGenomeListPath(args.genome, outdir)
+
+    genome_Path=args.genome
+
+    gID=genome_Path.replace(Assem_path,"")
+
+    gID=gID.split(".")[0]
+    print("gID: {}\n".format(gID))
+
+    outdir_ani = os.path.join(outdir, 'fastani')
     utils_.mkdir_join(outdir_ani)
-    #outdir_ani=os.path.join(outdir, 'fastani')
-    out_txt=os.path.join(outdir_ani, 'out.txt') #stroed fastANI output in out.txt
-    info_txt = os.path.join(outdir_ani, 'ANIinfo.txt')  # stroed fastANI output in out.txt
+    #print("outdir_ani: {}\n".format(outdir_ani))
+    # outdir_ani=os.path.join(outdir, 'fastani')
+    outfile='{}_ani.txt'.format(gID)
+
+    outfile = os.path.join(outdir_ani, outfile)  # stroed fastANI output in out.txt
+    info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
     mode=args.mode
     utils_.progress_bar("load args")
 
     #fastANI-------
+
     print("-------------------------------fastANI start.-------------------------------")
-    print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, genome_Path, outdir,out_txt))
+    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}".format(refPath, genome_Path, outdir, outfile))
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
-    fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
+    #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
+    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
+                                                                                                    genome_Path,
+                                                                                                    os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID)))
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
 
     # ANI>=95------
-    print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANI refseqPath:\n")
+    print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
     #open fastANI output
-    f = open(out_txt, 'r')
+    f = open(outfile, 'r')
     AverageANI=0.0
     num=0   #quantity of ANI>=95
     not_num=0 #quantity of ANI<95
@@ -77,9 +96,17 @@ def main():
             ANI_total+=tmp
         else:
             not_num+=1
+    # num =0
+    if num ==0:
+        print("num=0\n")
+        return 0
     AverageANI=ANI_total/num #if ANI>=95 ,calulate average value of ANI
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
+
+    with open(outfile,"a") as f:
+        f.write("\ncalculate ANI:\n")
+        f.write("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     #get out.txt line 1 (max ANI)
     print("targetPath: {}\n".format(targetPath))
 
@@ -97,18 +124,25 @@ def main():
     #db="enterobacterales_odb10"
     #mode="geno"
 
-    #outdir_bus = os.path.join(outdir, 'busco')
-    busco_db = utils_.mkdir_join(args.outdir, 'busco_db')
+    outdir_bus = os.path.join(outdir, 'busco_db')
+    busco_db = utils_.mkdir_join(outdir_bus)
     #busco_db= os.path.join(outdir, 'busco_db')
     # subprocess.run('bash -c "conda activate busco"', shell=True)
     #run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
     #-f overwrite
-    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o busco --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, outdir,
-                                                                                              db, mode, busco_db)
+
+
+    #genome is "one excuting"
+    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, gID, outdir, db, mode, busco_db)
     #cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f".format(targetPath, outdir_bus, db, mode, busco_db)
     print (cmd_bus,"\n")
     utils_.run_cmd(cmd_bus)
     #subprocess.run('bash -c "conda deactivate"',shell=True)
+
+    targettxt=os.path.join(args.outdir, "target.txt")
+    print("target.txt path: {}".format(targettxt))
+    with open (targettxt, "a+") as f:
+        f.write("{}:{}\n".format(genome_Path,targetPath))
 
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath

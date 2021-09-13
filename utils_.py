@@ -388,7 +388,7 @@ def getRefListPath(refSeqPath,outdir):
     refListPath = os.path.join(outdir, 'ref.txt')
     if os.path.isfile(refListPath):
         run_cmd2("rm {}".format(refListPath))
-    run_cmd2("find {}>{}".format(refSeqPath,refListPath))
+    run_cmd2("find {} -type f >{}".format(refSeqPath,refListPath))
     print("refListPath: "+refListPath+"\n")
     #run_cmd2("cat {}".format(refListPath))
     return refListPath
@@ -400,7 +400,7 @@ def getGenomeListPath(genome_Path,outdir):
     genListPath = os.path.join(outdir, 'gen.txt')
     if os.path.isfile(genListPath):
         run_cmd2("rm {}".format(genListPath))
-    run_cmd2("find {}>{}".format(genome_Path,genListPath))
+    run_cmd2("find {} -type f >{}".format(genome_Path,genListPath))
     print("genListPath: "+genListPath+"\n")
     return genListPath
 
