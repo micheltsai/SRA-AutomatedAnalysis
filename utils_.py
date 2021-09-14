@@ -397,7 +397,7 @@ def getRefListPath(refSeqPath,outdir):
 def getGenomeListPath(genome_Path,outdir):
     print("getGenomeListPath:\n")
     print("genSeqPath: " + genome_Path + "\n")
-    genListPath = os.path.join(outdir, 'gen.txt')
+    genListPath = os.path.join(outdir, 'Assembled.txt')
     if os.path.isfile(genListPath):
         run_cmd2("rm {}".format(genListPath))
     run_cmd2("find {} -type f >{}".format(genome_Path,genListPath))

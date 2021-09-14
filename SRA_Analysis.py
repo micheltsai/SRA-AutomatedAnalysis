@@ -102,13 +102,24 @@ def main():
 
     with open(assembled_file, "r") as f:
         genomes = f.readlines()
-    print("Now QualityCheck excutting------------\n")
+    target_path = os.path.join(outdir, "target.txt")
+    check_file=os.path.join(outdir, "QCcheck.log")
+    gnum=0
+
+    if os.path.isfile(check_file):
+        with open(check_file,"r") as f:
+            finishList=f.readlines()
+        print(finishList)
+        gnum=len(finishList)
+        print("gnum={}".format(gnum))
+    if gnum != len(genomes):
+        print("Now QualityCheck excutting------------\n")
     ####################
     # QualityCheck
-    gnum=1
-    for g in genomes:
+    #gnum=1
+    for g in genomes[gnum:]:
         g = g.strip("\n")
-        print("************************   {} / {}   ********************".format(gnum, len(genomes)))
+        print("**********************************   {} / {}   **********************************\n".format(gnum+1, len(genomes)))
         print(g)
         # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
         qual_cmd = "python3 QualityCheckv3.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, g, buscoDB, buscoMode, outdir)
@@ -129,6 +140,10 @@ def main():
             sys.exit(e)
         gnum += 1
         print("targetPAth = {}".format(targetPath))
+    print("**********************************  QUALITYCHECKED END  **********************************\n")
+    with open(target_path , "r") as f:
+        line=f.readlines()
+        print(line)
 
     return 0
 

@@ -1,6 +1,8 @@
 from __future__ import print_function
 import argparse
+import glob
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -11,6 +13,9 @@ from datetime import datetime
 
 #show program running
 from builtins import FileExistsError
+
+import numpy as np
+
 import utils_
 
 
@@ -36,10 +41,15 @@ def main():
     utils_.mkdir_join(outdir)
     refPath = utils_.getRefListPath(args.ref, outdir)
     Assem_path = os.path.join(outdir, "Assembled/")
+    BUSCOresult = os.path.join(outdir,"BUSCOresult.txt")
+    check = os.path.join(outdir, "QCcheck.log")
     outdir = os.path.join(outdir,"QualityCheck")
     utils_.mkdir_join(outdir)
+
     #outdir = utils_.mkdir_join(outdir, str(current_time))
-    print("outdir: ",outdir)
+    print("outdir: \n",outdir)
+    print("check: \n",check)
+    print("BUSCOresult= {}".format(BUSCOresult))
 
 
 
@@ -58,6 +68,7 @@ def main():
     utils_.mkdir_join(outdir_ani)
     #print("outdir_ani: {}\n".format(outdir_ani))
     # outdir_ani=os.path.join(outdir, 'fastani')
+
     outfile='{}_ani.txt'.format(gID)
 
     outfile = os.path.join(outdir_ani, outfile)  # stroed fastANI output in out.txt
@@ -97,9 +108,6 @@ def main():
         else:
             not_num+=1
     # num =0
-    if num ==0:
-        print("num=0\n")
-        return 0
     AverageANI=ANI_total/num #if ANI>=95 ,calulate average value of ANI
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
@@ -116,6 +124,13 @@ def main():
         f2.write("targetPath: {}\n".format(targetPath))
 
     f.close()
+
+    if num == 0:
+        print("All ANI value doesn't exceed 95, next genome run\n")
+        with open(check, "a+") as f:
+            f.write("{} is ANI<95.\n".format(gID))
+        return 0
+
 
     #BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
@@ -139,11 +154,45 @@ def main():
     utils_.run_cmd(cmd_bus)
     #subprocess.run('bash -c "conda deactivate"',shell=True)
 
+    #get BUSCO complete>=95 & duplicate>=3 ,or exit
+    buscopath=os.path.join(outdir,"{}".format(gID))
+    buscopath=os.path.join(buscopath,"run_{}".format(db))
+    buscopath=glob.glob(buscopath+"/*.txt")
+    print(buscopath)
+    buscopath=os.path.abspath(buscopath[0])
+    print(buscopath)
+    with open(buscopath,"r")as f:
+        b=f.readlines()
+    print(b,"\n")
+    b=b[8].strip("\t")
+    print(b)
+    print([float(s) for s in re.findall(r'-?\d+\.?\d*',b)])
+
+    bC, bS, bD, bF, bM, bn=[float(s) for s in re.findall(r'-?\d+\.?\d*',b)]
+    #bC, bS, bD, bF, bM =np.fromstring(b,dtype=float,sep=":")
+    #bN=np.fromstring(b,dtype=int,sep="n:")
+
+    print("c:{}%, d:{}%\n".format(bC,bD))
+
+    with open(BUSCOresult,"a+")as f:
+        print("stored BUSCO result\n")
+        f.write("{}: {}\n".format(gID, [float(s) for s in re.findall(r'-?\d+\.?\d*',b)]))
+
+    if bC<95.0 and bD > 3.0:
+        with open(check, "a+") as f:
+            f.write("{} is C<95 or D>3.\n".format(gID))
+        return 0
+
+    #continue
     targettxt=os.path.join(args.outdir, "target.txt")
     print("target.txt path: {}".format(targettxt))
+    #continue need target path
     with open (targettxt, "a+") as f:
         f.write("{}:{}\n".format(genome_Path,targetPath))
-
+    #check
+    with open(check,"a+") as f:
+        f.write("{} is ok.\n".format(gID))
+        print("commit on check \n")
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 if __name__ == '__main__':
