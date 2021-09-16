@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -84,17 +85,22 @@ def main():
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
 
-    logpath = os.path.join(outdir, inId)
-    utils_.mkdir_join(logpath)
-    logpath=os.path.join(logpath,"analysis_log.txt")
+
 
     origin_outdir=args.outdir
     allinfopath=os.path.join(origin_outdir,"info.txt")
+    check=os.path.join(origin_outdir,"Anacheck.log")
 
     #add outpath "analysis"
     outdir_=os.path.join(outdir,"analysis")
     utils_.mkdir_join(outdir_)
     print("analysis outdir: {}\n".format(outdir_))
+
+    #set {genomoe}_log_output
+    logpath = os.path.join(outdir_, inId)
+    utils_.mkdir_join(logpath)
+    logpath = os.path.join(logpath, "analysis_log.txt")
+
 
     #get relative output dir path
     outdir_list=outdir_.split("/")
@@ -107,9 +113,8 @@ def main():
     utils_.mkdir_join(relative_path2)
     print ("relative_path: {}".format(relative_path2))
 
-    #load log.txt read running state
+    #load log.txt read running statedat
     step=0
-
     filename = Path(logpath)
     filename.touch(exist_ok=True)
 
@@ -131,8 +136,7 @@ def main():
 
     #run MLST
     if step<1:
-        step += 1
-        print("STEP{}\n".format(step))
+        print("STEP{}\n".format(step+1))
         print ("********** Now MLST analysis running. **********\n")
         MLST_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
         #mlst_outdir=os.path.join(outdir,"mlst")
@@ -151,6 +155,7 @@ def main():
                 sys.exit()
             else:
                 f.write("mlst is ok\n")
+        step += 1
     else:
         print ("**********       mlst was running.      **********\n next step\n")
 
@@ -158,8 +163,7 @@ def main():
 
     #run plasmidfinder
     if step<2:
-        step += 1
-        print("STEP{}\n".format(step))
+        print("STEP{}\n".format(step+1))
         print("********** Now plasmidfinder analysis running. **********\n")
         PLASMID_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
         #plas_outdir=os.path.join(outdir,"plasmidfinder")
@@ -175,14 +179,15 @@ def main():
                 sys.exit()
             else:
                 f.write("plasmidfinder is ok\n")
+        step += 1
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
 
 
     #run amrfinder
     if step < 3:
-        step += 1
-        print("STEP{}\n".format(step))
+
+        print("STEP{}\n".format(step+1))
         print("********** Now amrfinder analysis running. **********\n")
         #amr_outdir=os.path.join(outdir,"amrfinder")
         amr_outdir = os.path.join(relative_path2, "amrfinder")
@@ -205,8 +210,7 @@ def main():
 
     #run sistr
     if step < 4:
-        step += 1
-        print("STEP{}\n".format(step))
+        print("STEP{}\n".format(step+1))
         print("********** Now sistr analysis running. **********")
         #sistr_outdir=os.path.join(outdir, "sistr")
         sistr_outdir = os.path.join(relative_path2, "sistr")
@@ -217,6 +221,7 @@ def main():
         print ("name: ",input_name,"\n")
         sistr_cmd="sistr -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
         print(sistr_cmd,"\n")
+
         sistr=run_cmd(sistr_cmd)
         with open(logpath, "a+") as f:
             if sistr.returncode != 0:
@@ -224,10 +229,12 @@ def main():
                 sys.exit()
             else:
                 f.write("sistr is ok\n")
+        step += 1
     else:
         print("********** sistr was running. **********\n next step\n")
 
-    ################
+    ########################
+    #svae data in analysis_final.csv
 
     #read mlst 'Sequence Type'
     #mlst_file=os.path.join(outdir, "mlst/results.txt")
@@ -256,6 +263,7 @@ def main():
 
 
     #read amrfinder 'Gene symbol', 'subtype'
+    ##add amr "Point"
     #amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
     amr_file = os.path.join(relative_path2, "amrfinder/amrout.tsv")
     # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
@@ -306,9 +314,14 @@ def main():
 
     finaldf=pd.DataFrame(dict)
     print(finaldf)
-
     finalfile=os.path.join(origin_outdir,"analysis_final.csv")
-    finaldf.to_csv(finalfile,mode='a')
+    finaldf.to_csv(finalfile,mode='a+')
+
+    #after run all state, save ID in "Anackeck.log" and remove ./analysis
+    with open(check,"a+") as f:
+        f.write("Run {} is ok.\n".format(inId))
+    shutil.rmtree(outdir_)
+    print("remove ./analysis\n")
 
     ###info
     #with open(allinfopath,"a+") as f:

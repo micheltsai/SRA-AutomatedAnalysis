@@ -83,6 +83,7 @@ def main():
     print("\n\n\n")
     print(assem_cmd)
     print("**********************************  ASSEMBLED  **********************************\n")
+
     try:
         utils_.run_cmd3(assem_cmd)
     except Exception as e:
@@ -96,10 +97,14 @@ def main():
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         sys.exit(e)
+    print("**********************************  ASSEMBLED  END  **********************************\n")
+    print("Assemble Done.\n")
+    print("********************************************************************\n")
 
+    ####################
+    # QualityCheck
     assembled_path = os.path.join(outdir, "Assembled/")
     assembled_file = utils_.getGenomeListPath(assembled_path, outdir)
-
     with open(assembled_file, "r") as f:
         genomes = f.readlines()
     target_path = os.path.join(outdir, "target.txt")
@@ -114,9 +119,9 @@ def main():
         print("gnum={}".format(gnum))
     if gnum != len(genomes):
         print("Now QualityCheck excutting------------\n")
-    ####################
-    # QualityCheck
+
     #gnum=1
+    print("**********************************  QUALITYCHECKED  **********************************\n")
     for g in genomes[gnum:]:
         g = g.strip("\n")
         print("**********************************   {} / {}   **********************************\n".format(gnum+1, len(genomes)))
@@ -124,7 +129,7 @@ def main():
         # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
         qual_cmd = "python3 QualityCheckv3.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, g, buscoDB, buscoMode, outdir)
         print("run cmd: {}\n".format(qual_cmd))
-        print("**********************************  QUALITYCHECKED  **********************************\n")
+
         try:
             targetPath = utils_.run_cmd3(qual_cmd)
         except Exception as e:
@@ -141,10 +146,34 @@ def main():
         gnum += 1
         print("targetPAth = {}".format(targetPath))
     print("**********************************  QUALITYCHECKED END  **********************************\n")
-    with open(target_path , "r") as f:
-        line=f.readlines()
-        print(line)
+    print("QualityCheck Done.\n")
+    print("********************************************************************\n")
 
+
+    with open(target_path , "r") as f:
+        tlines=f.readlines()
+        print(tlines)
+
+    ########### analysis
+    print("**********************************  Analysis  **********************************\n")
+    Anacheck = os.path.join(outdir, "Anacheck.log")
+    anum=0
+    if os.path.isfile(Anacheck):
+        with open(Anacheck, "r") as f:
+            acheck=f.readlines()
+            print(acheck)
+            anum=len(acheck)-1
+
+    for target in tlines[anum:]:
+        print("**********************************   {} / {}   **********************************\n".format(anum + 1,
+                                                                                                           len(tlines)))
+        target=target.split(":")[0]
+        target_=target.replace(current_path,".")
+        ana_cmd="python3 analysisv3.py -i {} -o {} -mlstS {} -amrS {}".format(target_,outdir,mlstS,amrS)
+        print(ana_cmd)
+        utils_.run_cmd3(ana_cmd)
+    print("**********************************  ANA  End**********************************\n")
+    print("Analysis Done.\n")
     return 0
 
 
