@@ -172,6 +172,7 @@ def main():
         ana_cmd="python3 analysisv3.py -i {} -o {} -mlstS {} -amrS {}".format(target_,outdir,mlstS,amrS)
         print(ana_cmd)
         utils_.run_cmd3(ana_cmd)
+        anum+=1
     print("**********************************  ANA  End**********************************\n")
     print("Analysis Done.\n")
     return 0

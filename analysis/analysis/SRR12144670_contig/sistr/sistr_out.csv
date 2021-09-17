@@ -1,0 +1,2 @@
+cgmlst_ST,cgmlst_distance,cgmlst_found_loci,cgmlst_genome_match,cgmlst_matching_alleles,cgmlst_subspecies,fasta_filepath,genome,h1,h2,mash_distance,mash_genome,mash_match,mash_serovar,mash_subspecies,o_antigen,serogroup,serovar,serovar_antigen,serovar_cgmlst
+4109176389,0.024242424242424288,330,SRR4098785,322,enterica,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/SRAtest/20200704/Assembled/SRR12144670_contig.fa,SRR12144670_contig.fa,i,-,2.38274e-05,40319,999,Typhimurium,enterica,"1,4,[5],12",B,"I 1,4,[5],12:i:-","I 1,4,[5],12:i:-",Typhimurium

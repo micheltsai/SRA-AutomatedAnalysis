@@ -1,0 +1,19 @@
+#Number of threads to use. default: 8
+cpu_thread=8
+
+#Estimated genome size(MB) eg. 3.2M. default: ''
+gsize=
+
+#count of download sra file eahc time
+Count_of_Download_File=3
+
+#Folder to save .
+output_dir=/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/SRAtest
+
+Busco_ReferenceSequenceFileDir_Path=/data/usrhome/LabSSLin/user30/Desktop/RefSeq
+Busco_database=enterobacterales_odb10
+Busco_mode=geno
+
+MLST_organism=senterica
+AMR_organism=Salmonella
+

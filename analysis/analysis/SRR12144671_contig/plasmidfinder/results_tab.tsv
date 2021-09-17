@@ -1,0 +1,4 @@
+Database	Plasmid	Identity	Query / Template length	Contig	Position in contig	Note	Accession number
+enterobacteriaceae	Col(BS512)	100.0	233 / 233	contig00057 len=2183 cov=773.8 corr=0 spades=NODE_57_length_2183_cov_773.831132_pilon	1246..1478		NC010656
+enterobacteriaceae	ColRNAI	90.08	131 / 130	contig00044 len=4656 cov=196.0 corr=0 spades=NODE_44_length_4656_cov_196.010233_pilon	3069..3199		DQ298019
+enterobacteriaceae	IncQ1	100.0	529 / 796	contig00045 len=4511 cov=14.3 corr=0 spades=NODE_45_length_4511_cov_14.268210_pilon	3925..4453		M28829

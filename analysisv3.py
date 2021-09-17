@@ -258,8 +258,14 @@ def main():
     print(pladf)
     print(pladf.columns)
     print (pladf.Plasmid)
+    plist=list(pladf.Plasmid)
+    plas_format=""
 
-
+    for x in range(0,len(plist)-1):
+        plas_format+=plist[x]
+        if x < len(plist)-1:
+            plas_format+=","
+    print(plas_format)
 
 
     #read amrfinder 'Gene symbol', 'subtype'
@@ -286,6 +292,30 @@ def main():
     print(amrdf.Gene_symbol)
     print(amrdf.Element_subtype)
 
+    ## arm format: [, , ,][][]
+    amr_format=""
+    alist=list(amrdf.Gene_symbol)
+    for y in range(0,len(alist)-1):
+        amr_format+=alist[y]
+        amr_format+=","
+
+
+    print(amr_format)
+    amr_format += ","
+    aalist=list(amrdf.Element_subtype)
+    for x in range(0,len(aalist)-1):
+        amr_format+=aalist[x]
+        amr_format += ","
+
+    #amr_format+=amrdf.Element_subtype
+    aaalist=list(amrdf.Method)
+    for x in range(0,len(aaalist)-1):
+        amr_format+=aaalist[x]
+        amr_format += ","
+    #amr_format += amrdf.Method
+
+
+
     #read sistr 'serovar'
     #sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
     sistr_file = os.path.join(relative_path2, "sistr")
@@ -303,19 +333,35 @@ def main():
     #      'mlst':sequenceType,
     #}
     in_abspath=input.replace(".",current_path)
-    dict = {'Accession': input,
-            'mlst':sequenceType,
-            'plasmidfinder':pladf.Plasmid,
-            'amr_gane':amrdf.Gene_symbol,
-            'amr_subtype':amrdf.Element_subtype,
-            'sistr':sistrdf.serovar
 
+    #dict = {'Accession': input,
+    #        'mlst':sequenceType,
+    #        'plasmidfinder':pladf.Plasmid,
+    #        'amr_gane':amrdf.Gene_symbol,
+    #        'amr_subtype':amrdf.Element_subtype,
+    #        'sistr':sistrdf.serovar
+    #        }
+
+    dict = {'Accession': inId.split("_")[0],
+            'MLST': sequenceType,
+            'AMR': amr_format,
+            #'Point':amrdf.Element_subtype,
+            'Serotype': sistrdf.serovar,
+            'Inc Type': plas_format
             }
 
     finaldf=pd.DataFrame(dict)
     print(finaldf)
     finalfile=os.path.join(origin_outdir,"analysis_final.csv")
+    #if os.path.isfile(finalfile):
+        #beforedf=pd.read_csv(finalfile)
+        #beforedf=pd.DataFrame(beforedf)
+        #finaldf=pd.concat([beforedf,finaldf])
+        #print("merge df\n")
     finaldf.to_csv(finalfile,mode='a+')
+    #finaldf.to_csv(finalfile)
+
+
 
     #after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check,"a+") as f:

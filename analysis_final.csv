@@ -1,7 +1,26 @@
-,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
-0,./SRAtest/20200704/Assembled/SRR12144668_contig.fa,1368,,fosA7,AMR,Djelfa|Skansen|Korbol|Nagoya
-,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
-0,./SRAtest/20200704/Assembled/SRR12145898_contig.fa,404,Col(pHAD28),,,"I 1,4,[5],12:b:-"
-1,./SRAtest/20200704/Assembled/SRR12145898_contig.fa,404,IncFII(p96A),,,
-,Accession,mlst,plasmidfinder,amr_gane,amr_subtype,sistr
-0,./test_data/genomes/GCA_000009525.1.fa,331,,gyrA_S83F,POINT,Gallinarum
+,Accession,MLST,AMR,Serotype,plasmidfinder
+0,SRR12145906,2606,,Agbeni,
+,Accession,MLST,AMR,Serotype,plasmidfinder
+0,SRR12145899,26,,Thompson,
+,Accession,MLST,AMR,Serotype,plasmidfinder
+0,SRR12145906,2606,,Agbeni,
+,Accession,MLST,AMR,Serotype,plasmidfinder
+0,SRR12145899,26,,Thompson,
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12145900,11,,Enteritidis,IncFIB(S)
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12144672,578,,Havana,
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12145896,11,,Enteritidis,IncFIB(S)
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12145900,11,,Enteritidis,IncFIB(S)
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12144670,34,"tet(B),aph(6)-Id,aph(3'')-Ib,sul2,,AMR,AMR,AMR,AMR,EXACTX,EXACTX,EXACTX,EXACTX,","I 1,4,[5],12:i:-",
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12144671,34,"tet(B),aph(6)-Id,aph(3'')-Ib,sul2,,AMR,AMR,AMR,AMR,EXACTX,EXACTX,EXACTX,EXACTX,","I 1,4,[5],12:i:-","Col(BS512),ColRNAI"
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12144672,578,,Havana,
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12145896,11,,Enteritidis,IncFIB(S)
+,Accession,MLST,AMR,Serotype,Inc Type
+0,SRR12145902,19,,Typhimurium,IncFIB(S)

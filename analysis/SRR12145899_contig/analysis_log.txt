@@ -1,0 +1,4 @@
+mlst is ok
+plasmidfinder is ok
+amr is ok
+sistr is ok
