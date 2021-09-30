@@ -12,6 +12,7 @@ import utils_
 def main():
     start = time.time()
 
+
     # read command arguments------
     # get ref_path, qen_path, and outdir
     utils_.progress_bar("read command")
@@ -169,7 +170,7 @@ def main():
                                                                                                            len(tlines)))
         target=target.split(":")[0]
         target_=target.replace(current_path,".")
-        ana_cmd="python3 analysisv3.py -i {} -o {} -mlstS {} -amrS {}".format(target_,outdir,mlstS,amrS)
+        ana_cmd="python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_,outdir,mlstS,amrS)
         print(ana_cmd)
         utils_.run_cmd3(ana_cmd)
         anum+=1
