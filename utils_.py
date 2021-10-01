@@ -164,7 +164,7 @@ def trimming(forward_reads, reverse_reads, outdir, threads):
           f"SLIDINGWINDOW:4:20 MINLEN:36 TOPHRED33"
     paired_1 = os.path.join(outdir, 'R1.fq')
     paired_2 = os.path.join(outdir, 'R2.fq')
-    cmd = f"java -jar /data/usrhome/LabSSLin/user30/Desktop/SRA/trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
+    cmd = f"java -jar ./trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
           f" {paired_2} /dev/null {opt}"
     run_cmd2(cmd)
     progress_bar("trimming")
