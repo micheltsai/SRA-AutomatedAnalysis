@@ -129,6 +129,7 @@ def main():
             print ("x = {}".format(x))
             #outdir__ = os.path.join(output, "out")
             outdir__ = os.path.join(output, "Assembled")
+
             final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
             if os.path.isfile(final_dir):
                 print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
