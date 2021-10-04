@@ -188,7 +188,8 @@ class SequenceReadArchive:
         if os.access(filepath, os.F_OK) is False:
            raise FileNotFoundError("File not found.")
         with open(filepath,'rb') as handle:
-           if handle.read(8).decode() == 'NCBI.sra' is False:
+           #if handle.read(8).decode() == 'NCBI.sra' is False:
+           if handle.read(8).decode() != 'NCBI.sra':
               raise Exception(f"File format is not 'NCBI.sra'.")
         self._filepath = filepath
 
