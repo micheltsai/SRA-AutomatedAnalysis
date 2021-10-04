@@ -310,6 +310,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     mkdir_join(assemble_dir)
     contig_tmp = os.path.join(assemble_dir, "contigs.fa")
     outdir__ = os.path.join(outdir, "Assembled")
+    mkdir_join(assemble_dir)
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
     #如果做過則下一個
     if os.path.isfile(final_dir):
