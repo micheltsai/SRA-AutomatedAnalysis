@@ -98,9 +98,11 @@ def main():
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         sys.exit(e)
+
     print("**********************************  ASSEMBLED  END  **********************************\n")
     print("Assemble Done.\n")
     print("********************************************************************\n")
+    sys.exit()
 
     ####################
     # QualityCheck
