@@ -188,7 +188,7 @@ def main():
         #plas_outdir=os.path.join(outdir,"plasmidfinder")
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
         print (plas_cmd,"\n")
         plas=run_cmd(plas_cmd)
         with open(logpath, "a+") as f:

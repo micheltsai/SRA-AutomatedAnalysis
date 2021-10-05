@@ -143,9 +143,9 @@ def main():
         mlst_outdir = os.path.join(relative_path2, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson=os.path.join(mlst_outdir,"data.json")
-        f=open(mlst_datajson,"a+")
+        f=open(mlst_datajson,"w+")
         f.close()
-        mlst_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
+        mlst_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
         print (mlst_cmd,"\n")
         mlst,err=utils_.run_cmd3(mlst_cmd)
         with open(logpath, "a+") as f:
@@ -169,7 +169,7 @@ def main():
         #plas_outdir=os.path.join(outdir,"plasmidfinder")
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
         print (plas_cmd,"\n")
         plas=run_cmd(plas_cmd)
         with open(logpath, "a+") as f:

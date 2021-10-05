@@ -33,6 +33,8 @@ def mkdir_join(dir):
         os.makedirs(dir)
     except FileExistsError:
         print("folder is exist")
+    except Exception as e:
+        print(e)
     return dir
 
 def prefetch_sra(sralist,outdir):
