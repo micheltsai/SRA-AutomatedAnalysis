@@ -212,7 +212,9 @@ def main():
         amr_outdir = os.path.join(relative_path2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
-        amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
+        #amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
+        amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(
+            input, amr_outdir, amr_organism)
         print(amr_cmd, "\n")
         amr=run_cmd(amr_cmd)
         with open(logpath,"a+") as f:
