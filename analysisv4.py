@@ -158,7 +158,7 @@ def main():
         mlst_datajson=os.path.join(mlst_outdir,"data.json")
         f=open(mlst_datajson,"a+")
         f.close()
-        mlst_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
+        mlst_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
         print (mlst_cmd,"\n")
         mlst,err=utils_.run_cmd3(mlst_cmd)
         with open(logpath, "a+") as f:
@@ -182,7 +182,7 @@ def main():
         #plas_outdir=os.path.join(outdir,"plasmidfinder")
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_cmd="docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        plas_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
         print (plas_cmd,"\n")
         plas=run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
@@ -324,26 +324,49 @@ def main():
 
     ## arm format: [, , ,][][]
     amr_format=""
+    amr_sym=""
     alist=list(amrdf.Gene_symbol)
-    for y in range(0,len(alist)-1):
+    for y in range(0,len(alist)):
         amr_format+=alist[y]
-        amr_format+=","
-
+        amr_sym+=alist[y]
+        if y != len(alist)-1:
+            amr_format+=","
+            amr_sym+=","
 
     print(amr_format)
     amr_format += ","
+    amr_sub=""
     aalist=list(amrdf.Element_subtype)
-    for x in range(0,len(aalist)-1):
+    for x in range(0,len(aalist)):
         amr_format+=aalist[x]
-        amr_format += ","
+        amr_sub +=alist[x]
+        if x != len(aalist)-1:
+            amr_format += ","
+            amr_sub+=","
+
 
     #amr_format+=amrdf.Element_subtype
     aaalist=list(amrdf.Method)
-    for x in range(0,len(aaalist)-1):
+    amr_method=""
+    for x in range(0,len(aaalist)):
         amr_format+=aaalist[x]
-        amr_format += ","
-    #amr_format += amrdf.Method
+        amr_method+=aaalist[x]
+        if x !=len(aaalist)-1:
+            amr_format += ","
+            amr_method+=","
 
+    #amr_format += amrdf.Method
+    try:
+        conn = pymysql.connect(**db_settings)
+
+        with conn.cursor() as cursor:
+            insertAmr = "INSERT INTO Amrfinder(SRAID,GenSymbol,ElementSubtype,Method) VALUES(%s,%s,%s);"
+            cursor.execute(
+                insertMLST, (inId,amr_sym,amr_sub,amr_method)
+            )
+
+    except Exception as e:
+        print(e)
 
 
     #read sistr 'serovar'
