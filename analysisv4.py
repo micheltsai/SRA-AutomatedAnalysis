@@ -105,6 +105,7 @@ def main():
     check=os.path.join(origin_outdir,"Anacheck.log")
 
     #add outpath "analysis"
+    utils_.mkdir_join(outdir)
     outdir_=os.path.join(outdir,"analysis")
     utils_.mkdir_join(outdir_)
     print("analysis outdir: {}\n".format(outdir_))
