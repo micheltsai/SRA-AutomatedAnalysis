@@ -49,7 +49,10 @@ def main():
     print ("reseq: {}\n, qen: {}\n, outdir: {}\n,out_txt: {}".format(refPath, genome_Path, outdir,out_txt))
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
-    fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
+    #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
+    fastani_ = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,
+                                                                                                    genome_Path,
+                                                                                                    out_txt)
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
