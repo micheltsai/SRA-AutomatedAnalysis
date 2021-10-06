@@ -169,7 +169,7 @@ def main():
                     fieldnames = ["func", "time"]
                     writer = csv.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()
-                    writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_prefetch)})
+                    writer.writerow({"func": "one file prefetch", "time": str(time.time() - one_run_prefetch)})
                 one_run_ass=time.time()
                 utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
 

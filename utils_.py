@@ -1,5 +1,6 @@
 from __future__ import print_function
 # -*- coding: utf-8 -*-
+import csv
 import shlex
 import time
 import os
@@ -280,6 +281,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     #mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
     print ("srafile_path: {}\n".format(path_))
+    seq_readArchive=time.time()
     try:
         print ("SequenceReadArchive\n")
         sra = SequenceReadArchive(path_)
@@ -320,6 +322,12 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
         return 0
 
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "SequenceReadArchive", "time": str(time.time() - seq_readArchive)})
+    dump_time=time.time()
     # 解壓縮成fastq
     print('Dump fastq.')
     # run_cmd
@@ -327,7 +335,13 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir)
 
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "dump_fastq_from_sra", "time": str(time.time() - dump_time)})
 
+    reverse_time=time.time()
     try:
         forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
     except ValueError as e:
@@ -338,19 +352,37 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
             run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
             forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
             pass
-
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "get forward and reverse reads", "time": str(time.time() - reverse_time)})
 
     ## up ok
     # 資料前處理：刪除爛的序列
     # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
 
     #print('Trim sequences.')
+    trim_time=time.time()
     r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "trimming", "time": str(time.time() - trim_time)})
+
+    bases_percentage_time=time.time()
     if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
         shutil.rmtree(outdir)
         sys.exit('Reads quality is too low.')
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
 
     # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
     #                                 --- depth<80 ---------> SPAdes
@@ -358,11 +390,20 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     #print("Run assembly pipline 'shovill'")
     progress_bar("Run assembly pipline 'shovill'")
     # depth >= 80
+
+    shovill_time=time.time()
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
     run_cmd(cmd)
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "shovill", "time": str(time.time() - shovill_time)})
+
 
     #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
 
