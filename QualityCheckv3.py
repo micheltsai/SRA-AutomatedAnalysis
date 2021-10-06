@@ -72,6 +72,7 @@ def main():
     outfile_='{}_ani.txt'.format(gID)
 
     outfile = os.path.join(outdir_ani, outfile_)  # stroed fastANI output in out.txt
+
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
     mode=args.mode
@@ -80,7 +81,7 @@ def main():
     #fastANI-------
 
     print("-------------------------------fastANI start.-------------------------------")
-    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}".format(refPath, genome_Path, outdir, outfile))
+    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile, os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
