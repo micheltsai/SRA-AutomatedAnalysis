@@ -95,7 +95,7 @@ def main():
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
     #open fastANI output
-    f = open(outfile, 'r')
+    f = open(outfile, 'r+')
     AverageANI=0.0
     num=0   #quantity of ANI>=95
     not_num=0 #quantity of ANI<95
@@ -149,6 +149,7 @@ def main():
 
 
     #genome is "one excuting"
+    #busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     #cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, gID, outdir, db, mode, busco_db)
     cmd_bus = 'busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         targetPath, gID, outdir, db, mode, busco_db)
