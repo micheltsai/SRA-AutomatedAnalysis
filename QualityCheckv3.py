@@ -43,8 +43,7 @@ def main():
     Assem_path = os.path.join(outdir, "Assembled/")
     BUSCOresult = os.path.join(outdir,"BUSCOresult.txt")
     check = os.path.join(outdir, "QCcheck.log")
-    #outdir = os.path.join(outdir,"QualityCheck")
-    outdir = outdir+"/QualityCheck"
+    outdir = os.path.join(outdir,"QualityCheck")
     utils_.mkdir_join(outdir)
 
     #outdir = utils_.mkdir_join(outdir, str(current_time))
@@ -60,20 +59,20 @@ def main():
 
     genome_Path=args.genome
 
-    gID=genome_Path.replace(Assem_path,"")
-
+    #gID=genome_Path.replace(Assem_path,"")
+    gID=os.path.basename(genome_Path)
     gID=gID.split(".")[0]
     print("gID: {}\n".format(gID))
 
     #outdir_ani = os.path.join(outdir, 'fastani')
-    outdir_ani =outdir+'/fastani'
+    outdir_ani = os.path.join(outdir, 'fastani')
     utils_.mkdir_join(outdir_ani)
     print("outdir_ani: {}\n".format(outdir_ani))
     # outdir_ani=os.path.join(outdir, 'fastani')
 
-    outfile__="{}_ani.txt".format(gID)
-    print("out_file:{}\n".format(outfile__))
-    outfile = outdir_ani+"/"+outfile__ # stroed fastANI output in out.txt
+    outfile_='{}_ani.txt'.format(gID)
+
+    outfile = os.path.join(outdir_ani, outfile_)  # stroed fastANI output in out.txt
 
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
@@ -83,7 +82,7 @@ def main():
     #fastANI-------
 
     print("-------------------------------fastANI start.-------------------------------")
-    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n".format(refPath, genome_Path, outdir, outfile))
+    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile, os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
