@@ -91,11 +91,13 @@ def main():
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
+    with open(outfile,"w+"):
+        print(outfile," is exist.\n")
 
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
     #open fastANI output
-    f = open(outfile, 'r+')
+    f = open(outfile, 'r')
     AverageANI=0.0
     num=0   #quantity of ANI>=95
     not_num=0 #quantity of ANI<95
@@ -113,7 +115,7 @@ def main():
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
 
-    with open(outfile,"a") as f:
+    with open(outfile,"a+") as f:
         f.write("\ncalculate ANI:\n")
         f.write("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     #get out.txt line 1 (max ANI)
