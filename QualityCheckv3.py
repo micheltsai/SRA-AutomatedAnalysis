@@ -64,7 +64,8 @@ def main():
     gID=gID.split(".")[0]
     print("gID: {}\n".format(gID))
 
-    outdir_ani = os.path.join(outdir, 'fastani')
+    #outdir_ani = os.path.join(outdir, 'fastani')
+    outdir_ani =outdir+'/fastani'
     utils_.mkdir_join(outdir_ani)
     print("outdir_ani: {}\n".format(outdir_ani))
     # outdir_ani=os.path.join(outdir, 'fastani')
