@@ -59,8 +59,8 @@ def main():
 
     genome_Path=args.genome
 
-    #gID=genome_Path.replace(Assem_path,"")
-    gID=os.path.basename(genome_Path)
+    gID=genome_Path.replace(Assem_path,"")
+    #gID=os.path.basename(genome_Path)
     gID=gID.split(".")[0]
     print("gID: {}\n".format(gID))
 
