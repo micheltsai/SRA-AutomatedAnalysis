@@ -93,7 +93,7 @@ def main():
     #progress_bar("get SRAfile name List stored in run_list")
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
