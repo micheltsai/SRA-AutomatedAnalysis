@@ -178,7 +178,7 @@ def main():
         anum+=1
     print("**********************************  ANA  End**********************************\n")
     print("Analysis Done.\n")
-    
+    print('Done,total cost', time.time() - start, 'secs')
     return 0
 
 if __name__ == '__main__':

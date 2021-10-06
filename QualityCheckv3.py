@@ -87,7 +87,7 @@ def main():
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
     #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
-    fastani_ = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
+    fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
                                                                                                     genome_Path,
                                                                                                     os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID)))
     print(fastani_+"\n")

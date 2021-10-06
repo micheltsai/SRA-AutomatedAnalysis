@@ -1,5 +1,6 @@
 from __future__ import print_function
 # -*- coding: utf-8 -*-
+import csv
 import datetime
 import shlex
 import time
@@ -71,14 +72,33 @@ def main():
 
 
     # print(date)
+    c_e_=time.time()
     pattern, count = utils_.count_egquery(pattern, date, date)
     print ("pattern: {}\ncount: {}\n".format(pattern,count))
+    with open("~/ana_time.csv","a+")as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "count_egquery", "time": str(time.time()-c_e_)})
+    i_e_=time.time()
     idlist = utils_.IdList_esearch(pattern, 'sra', count)
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "IdList_esearch", "time": str(time.time() - i_e_)})
     print(idlist)
+    g_r_=time.time()
     runinfo = utils_.Get_RunInfo(idlist)
     #progress_bar("get SRAfile name List stored in run_list")
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "get_RunINfo", "time": str(time.time() - g_r_)})
+
 
     utils_.mkdir_join(output)
     fastq_dir = os.path.join(output, 'fastq')
@@ -86,11 +106,11 @@ def main():
     sra_dir = os.path.join(output, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
 
+    read_log_=time.time()
     f = open(check_log, 'r+')
     d = f.readlines()
     print("check log :{}\n".format(d))
     f.close()
-
 
 
     for s in d:
@@ -114,16 +134,26 @@ def main():
 
 
 
+
     #k,每三個一輪迴
     k = list(range(0, len(need_run), n))
     print (k)
     num = len(finish_run)
+
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "read_check and get need_runList", "time": str(time.time() - read_log_)})
+
     for i in k:
+        three_run=time.time()
         run_id = need_run[i:i+n]
         print("###### i = {}\n".format(i))
         print("run_id: {}\n".format(run_id))
         time.sleep(1)
         for x in run_id:
+            one_run_ = time.time()
             print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
             num+=1
             print ("x = {}".format(x))
@@ -141,9 +171,23 @@ def main():
                 # print ("shutil.rmtree({})\n".format(current_path))
                 utils_.run_cmd2("rm -rf {}".format(current_path))
                 print ("remove {}\n".format(current_path))
+
+            with open("~/ana_time.csv", "a+") as f:
+                fieldnames = ["func", "time"]
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_)})
+            if num==5:
+                print("break for loop\n")
+                break
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
         utils_.mkdir_join(sra_dir)
+        with open("~/ana_time.csv", "a+") as f:
+            fieldnames = ["func", "time"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow({"func": "three so removed '/sra'", "time": str(time.time() - three_run)})
 
     if num == count:
         shutil.rmtree(sra_dir)
@@ -152,6 +196,11 @@ def main():
         with open(check_log,"a+") as f:
             f.write("ALL({}/{}) is ok.\n".format(num,count))
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "all time", "time": str(time.time() - start)})
 
     print('Done,total cost', time.time() - start, 'secs')
 
