@@ -66,12 +66,12 @@ def main():
 
     outdir_ani = os.path.join(outdir, 'fastani')
     utils_.mkdir_join(outdir_ani)
-    #print("outdir_ani: {}\n".format(outdir_ani))
+    print("outdir_ani: {}\n".format(outdir_ani))
     # outdir_ani=os.path.join(outdir, 'fastani')
 
-    outfile='{}_ani.txt'.format(gID)
+    outfile_='{}_ani.txt'.format(gID)
 
-    outfile = os.path.join(outdir_ani, outfile)  # stroed fastANI output in out.txt
+    outfile = os.path.join(outdir_ani, outfile_)  # stroed fastANI output in out.txt
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
     mode=args.mode
