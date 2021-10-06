@@ -75,14 +75,14 @@ def main():
     c_e_=time.time()
     pattern, count = utils_.count_egquery(pattern, date, date)
     print ("pattern: {}\ncount: {}\n".format(pattern,count))
-    with open("~/ana_time.csv","a+")as f:
+    with open("./ana_time.csv","a+")as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({"func": "count_egquery", "time": str(time.time()-c_e_)})
     i_e_=time.time()
     idlist = utils_.IdList_esearch(pattern, 'sra', count)
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -140,7 +140,7 @@ def main():
     print (k)
     num = len(finish_run)
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -172,7 +172,7 @@ def main():
                 utils_.run_cmd2("rm -rf {}".format(current_path))
                 print ("remove {}\n".format(current_path))
 
-            with open("~/ana_time.csv", "a+") as f:
+            with open("./ana_time.csv", "a+") as f:
                 fieldnames = ["func", "time"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -183,7 +183,7 @@ def main():
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
         utils_.mkdir_join(sra_dir)
-        with open("~/ana_time.csv", "a+") as f:
+        with open("./ana_time.csv", "a+") as f:
             fieldnames = ["func", "time"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -196,7 +196,7 @@ def main():
         with open(check_log,"a+") as f:
             f.write("ALL({}/{}) is ok.\n".format(num,count))
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()

@@ -134,7 +134,7 @@ def main():
                 step=4
             print("ana: {}, step: {}\n".format(ana,step))
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -166,7 +166,7 @@ def main():
     else:
         print ("**********       mlst was running.      **********\n next step\n")
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -194,7 +194,7 @@ def main():
         step += 1
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -224,7 +224,7 @@ def main():
     else:
         print("**********   amrfinderr was running.   **********\n next step\n")
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -255,7 +255,7 @@ def main():
     else:
         print("********** sistr was running. **********\n next step\n")
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -275,7 +275,7 @@ def main():
         sequenceType=sequenceType[len(sequenceType)-1].strip("\n")
 
         print (sequenceType)
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -300,7 +300,7 @@ def main():
         if x < len(plist)-1:
             plas_format+=","
     print(plas_format)
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -353,7 +353,7 @@ def main():
         amr_format += ","
     #amr_format += amrdf.Method
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -376,7 +376,7 @@ def main():
     #dict={'Accession': pd.Series(input for a in range(0,3)),
     #      'mlst':sequenceType,
     #}
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -421,7 +421,7 @@ def main():
     shutil.rmtree(outdir_)
     print("remove ./analysis\n")
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()

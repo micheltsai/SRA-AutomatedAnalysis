@@ -79,7 +79,7 @@ def main():
     db=args.database
     mode=args.mode
     utils_.progress_bar("load args")
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -145,7 +145,7 @@ def main():
             f.write("{} is ANI<95.\n".format(gID))
         return 0
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -218,7 +218,7 @@ def main():
         print("commit on check \n")
     print('Done,total cost', time.time() - start, 'secs\n')
 
-    with open("~/ana_time.csv", "a+") as f:
+    with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
