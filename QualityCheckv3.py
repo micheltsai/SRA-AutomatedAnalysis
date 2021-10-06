@@ -71,9 +71,9 @@ def main():
     print("outdir_ani: {}\n".format(outdir_ani))
     # outdir_ani=os.path.join(outdir, 'fastani')
 
-    outfile_='{}_ani.txt'.format(gID)
-    print("out_file:{}\n".format(outfile_))
-    outfile = outdir_ani+"/"+outfile_ # stroed fastANI output in out.txt
+    outfile__="{}_ani.txt".format(gID)
+    print("out_file:{}\n".format(outfile__))
+    outfile = outdir_ani+"/"+outfile__ # stroed fastANI output in out.txt
 
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
