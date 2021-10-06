@@ -43,7 +43,8 @@ def main():
     Assem_path = os.path.join(outdir, "Assembled/")
     BUSCOresult = os.path.join(outdir,"BUSCOresult.txt")
     check = os.path.join(outdir, "QCcheck.log")
-    outdir = os.path.join(outdir,"QualityCheck")
+    #outdir = os.path.join(outdir,"QualityCheck")
+    outdir = outdir+"/QualityCheck"
     utils_.mkdir_join(outdir)
 
     #outdir = utils_.mkdir_join(outdir, str(current_time))
@@ -72,7 +73,7 @@ def main():
 
     outfile_='{}_ani.txt'.format(gID)
 
-    outfile = os.path.join(outdir_ani, outfile_)  # stroed fastANI output in out.txt
+    outfile = outdir_ani+"/"+outfile_ # stroed fastANI output in out.txt
 
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db=args.database
