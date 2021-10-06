@@ -83,7 +83,7 @@ def main():
     #fastANI-------
 
     print("-------------------------------fastANI start.-------------------------------")
-    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile))
+    print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n".format(refPath, genome_Path, outdir, outfile))
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
