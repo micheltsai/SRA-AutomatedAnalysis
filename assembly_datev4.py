@@ -188,7 +188,7 @@ def main():
                 fieldnames = ["func", "time"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
-                writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_)})
+                writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_ass)})
             if num==5:
                 print("break for loop\n")
                 break
