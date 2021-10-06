@@ -173,11 +173,7 @@ def main():
                 one_run_ass=time.time()
                 utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
 
-                with open("./ana_time.csv", "a+") as f:
-                    fieldnames = ["func", "time"]
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    writer.writeheader()
-                    writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_ass)})
+                
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
                 # print ("shutil.rmtree({})\n".format(current_path))
