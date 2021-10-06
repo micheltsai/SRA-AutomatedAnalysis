@@ -1,5 +1,6 @@
 from __future__ import print_function
 import argparse
+import csv
 import glob
 import os
 import re
@@ -78,8 +79,16 @@ def main():
     db=args.database
     mode=args.mode
     utils_.progress_bar("load args")
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read args", "time": str(time.time() - start)})
+
 
     #fastANI-------
+    fastANI_time=time.time()
+
 
     print("-------------------------------fastANI start.-------------------------------")
     print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile, os.path.join(outdir_ani, outfile_)))
@@ -136,6 +145,11 @@ def main():
             f.write("{} is ANI<95.\n".format(gID))
         return 0
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"fastANI", "time": str(time.time() - fastANI_time)})
 
     #BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
@@ -143,7 +157,7 @@ def main():
 
     #db="enterobacterales_odb10"
     #mode="geno"
-
+    busco_time=time.time()
     outdir_bus = os.path.join(outdir, 'busco_db')
     busco_db = utils_.mkdir_join(outdir_bus)
     #busco_db= os.path.join(outdir, 'busco_db')
@@ -191,6 +205,7 @@ def main():
             f.write("{} is C<95 or D>3.\n".format(gID))
         return 0
 
+
     #continue
     targettxt=os.path.join(args.outdir, "target.txt")
     print("target.txt path: {}".format(targettxt))
@@ -202,6 +217,13 @@ def main():
         f.write("{} is ok.\n".format(gID))
         print("commit on check \n")
     print('Done,total cost', time.time() - start, 'secs\n')
+
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"busco", "time": str(time.time() - busco_time)})
+
     return targetPath
 if __name__ == '__main__':
     main()

@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import argparse
+import csv
 import json
 import os
 import shlex
@@ -133,8 +134,14 @@ def main():
                 step=4
             print("ana: {}, step: {}\n".format(ana,step))
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read args", "time": str(time.time() - start)})
 
     #run MLST
+    step1_time = time.time()
     if step<1:
         print("STEP{}\n".format(step+1))
         print ("********** Now MLST analysis running. **********\n")
@@ -159,8 +166,13 @@ def main():
     else:
         print ("**********       mlst was running.      **********\n next step\n")
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"mlst", "time": str(time.time() - step1_time)})
 
-
+    step2_time=time.time()
     #run plasmidfinder
     if step<2:
         print("STEP{}\n".format(step+1))
@@ -182,8 +194,13 @@ def main():
         step += 1
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"plasmidfinder", "time": str(time.time() - step2_time)})
 
-
+    step3_time=time.time()
     #run amrfinder
     if step < 3:
 
@@ -207,8 +224,12 @@ def main():
     else:
         print("**********   amrfinderr was running.   **********\n next step\n")
 
-
-
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"amr", "time": str(time.time() - step3_time)})
+    step4_time=time.time()
     #run sistr
     if step < 4:
         print("STEP{}\n".format(step+1))
@@ -234,9 +255,15 @@ def main():
     else:
         print("********** sistr was running. **********\n next step\n")
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"sistr", "time": str(time.time() - step4_time)})
     ########################
     #svae data in analysis_final.csv
 
+    read_mlst=time.time()
     #read mlst 'Sequence Type'
     #mlst_file=os.path.join(outdir, "mlst/results.txt")
     mlst_file = os.path.join(relative_path2, "mlst/results.txt")
@@ -248,7 +275,13 @@ def main():
         sequenceType=sequenceType[len(sequenceType)-1].strip("\n")
 
         print (sequenceType)
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read_mlst", "time": str(time.time() - read_mlst)})
 
+    read_plas=time.time()
     #read plasmidfinder 'gene'
     plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
     #plas_file=os.path.join(outdir,"plasmidfinder/results_tab.tsv")
@@ -267,8 +300,13 @@ def main():
         if x < len(plist)-1:
             plas_format+=","
     print(plas_format)
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read_plasmidfinder", "time": str(time.time() - read_plas)})
 
-
+    read_amr_=time.time()
     #read amrfinder 'Gene symbol', 'subtype'
     ##add amr "Point"
     #amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
@@ -315,8 +353,13 @@ def main():
         amr_format += ","
     #amr_format += amrdf.Method
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read_amr", "time": str(time.time() - read_amr_)})
 
-
+    read_sistr=time.time()
     #read sistr 'serovar'
     #sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
     sistr_file = os.path.join(relative_path2, "sistr")
@@ -333,6 +376,14 @@ def main():
     #dict={'Accession': pd.Series(input for a in range(0,3)),
     #      'mlst':sequenceType,
     #}
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"read_sistr", "time": str(time.time() - read_sistr)})
+
+    csv_time=time.time()
+
     in_abspath=input.replace(".",current_path)
 
     #dict = {'Accession': input,
@@ -370,10 +421,17 @@ def main():
     shutil.rmtree(outdir_)
     print("remove ./analysis\n")
 
+    with open("~/ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"save final.csv", "time": str(time.time() - csv_time)})
+        writer.writerow({"func":"All analysisv3", "time": str(time.time() - start)})
+    print('Done,total cost', time.time() - start, 'secs')
     ###info
     #with open(allinfopath,"a+") as f:
         #f.write("analysis outdir = {}\n".format(outdir_))
         #f.write("analysis file path = {}\n".format(finalfile))
-
+    return 0
 if __name__ == '__main__':
     main()
