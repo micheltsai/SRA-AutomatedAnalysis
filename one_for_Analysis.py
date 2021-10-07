@@ -146,7 +146,7 @@ def main():
     assem_cmd = "python3 assembly_datev3.py --PDAT {} --output {}".format(date, outdir)
     print("\n\n\n")
     print(assem_cmd)
-    k = list(range(0, len(need_run), int(n)))
+    k = list(range(0, len(need_run), 3))
     print(k)
     num = len(finish_run)
 
