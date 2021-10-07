@@ -147,7 +147,6 @@ def main():
         writer.writerow({"func": "read_check and get need_runList", "time": str(time.time() - read_log_)})
 
     for i in k:
-        three_run=time.time()
         run_id = need_run[i:i+n]
         print("###### i = {}\n".format(i))
         print("run_id: {}\n".format(run_id))
@@ -173,9 +172,10 @@ def main():
                 one_run_ass=time.time()
                 utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
 
-                
+
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
+                three_run = time.time()
                 # print ("shutil.rmtree({})\n".format(current_path))
                 utils_.run_cmd2("rm -rf {}".format(current_path))
                 print ("remove {}\n".format(current_path))
@@ -185,6 +185,7 @@ def main():
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_ass)})
+
             if num==5:
                 print("break for loop\n")
                 break
