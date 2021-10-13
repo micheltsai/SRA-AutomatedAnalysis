@@ -106,8 +106,8 @@ def main():
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
     print()
-    with open(outfile,"a+"):
-        print(outfile," is exist.\n")
+    s
+    print(outfile," is exist.\n")
 
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
