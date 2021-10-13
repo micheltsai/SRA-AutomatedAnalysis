@@ -93,6 +93,7 @@ def main():
     replace_path=outdir.replace(current_path,".")
     #fastani_outdir=os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID))
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
+
     print("-------------------------------fastANI start.-------------------------------")
     print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile, os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")

@@ -88,7 +88,11 @@ def main():
 
     #fastANI-------
     fastANI_time=time.time()
-
+    current_path = os.path.abspath(os.getcwd())
+    print("current_path: ", current_path, "\n")
+    replace_path = outdir.replace(current_path, ".")
+    # fastani_outdir=os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID))
+    fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
 
     print("-------------------------------fastANI start.-------------------------------")
     print ("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile, os.path.join(outdir_ani, outfile_)))
@@ -98,7 +102,7 @@ def main():
     #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
     fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
                                                                                                     genome_Path,
-                                                                                                    os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID)))
+                                                                                                    fastani_outdir)
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
