@@ -15,6 +15,7 @@ def main():
 
         with conn.cursor() as cursor:
             insertSRA="INSERT INTO SRA(Genome) VALUES({})".format()
+
     except Exception as e:
         print(e)
 

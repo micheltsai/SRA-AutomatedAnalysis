@@ -101,7 +101,7 @@ def main():
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
     fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
     #fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
-                                                                                                    genome_Path,fastani_outdir)
+                                                                                                    genome_Path,outfile)
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
@@ -207,7 +207,6 @@ def main():
         with open(check, "a+") as f:
             f.write("{} is C<95 or D>3.\n".format(gID))
         return 0
-
 
     #continue
     targettxt=os.path.join(args.outdir, "target.txt")

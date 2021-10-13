@@ -233,10 +233,6 @@ def main():
                     print(acheck)
                     anum = len(acheck) - 1
 
-            for target in tlines[anum:]:
-                print("**********************************   {} / {}   **********************************\n".format(
-                    anum + 1,
-                    len(tlines)))
                 target = target.split(":")[0]
                 target_ = target.replace(current_path, ".")
                 ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
