@@ -197,7 +197,7 @@ def main():
                                                                                                                count))
             print(x)
             # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
-            qual_cmd = "python3 QualityCheckv3.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, x, buscoDB, buscoMode,
+            qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir, x, buscoDB, buscoMode,
                                                                                          outdir)
             print("run cmd: {}\n".format(qual_cmd))
 
@@ -218,6 +218,32 @@ def main():
             print("targetPAth = {}".format(targetPath))
             print("**********************************  QUALITYCHECKED END  **********************************\n")
 
+            with open(target_path, "r") as f:
+                tlines = f.readlines()
+                print(tlines)
+
+            ########### analysis
+            print("**********************************  Analysis  **********************************\n")
+            Anacheck = os.path.join(outdir, "Anacheck.log")
+            anum = 0
+            if os.path.isfile(Anacheck):
+                with open(Anacheck, "r") as f:
+                    acheck = f.readlines()
+                    print(acheck)
+                    anum = len(acheck) - 1
+
+            for target in tlines[anum:]:
+                print("**********************************   {} / {}   **********************************\n".format(
+                    anum + 1,
+                    len(tlines)))
+                target = target.split(":")[0]
+                target_ = target.replace(current_path, ".")
+                ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
+                print(ana_cmd)
+                utils_.run_cmd3(ana_cmd)
+                anum += 1
+            print("**********************************  ANA  End**********************************\n")
+            print("Analysis Done.\n")
 
 
 
