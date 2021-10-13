@@ -157,7 +157,7 @@ def main():
         print("run_id: {}\n".format(run_id))
         time.sleep(1)
         for x in run_id:
-            print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
+            print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num+1,len(idlist)))
             num+=1
             print ("x = {}".format(x))
             #outdir__ = os.path.join(output, "out")
@@ -233,7 +233,7 @@ def main():
                     print(acheck)
                     anum = len(acheck) - 1
 
-                target = target.split(":")[0]
+                target = tlines[len(tlines)-1].split(":")[0]
                 target_ = target.replace(current_path, ".")
                 ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
                 print(ana_cmd)

@@ -104,10 +104,14 @@ def main():
                                                                                                     genome_Path,
                                                                                                     fastani_outdir)
     print(fastani_+"\n")
-    utils_.run_cmd(fastani_)
-    print("fastANI done.\n")
+    if os.path.isfile(outfile):
+        print(outfile, " is exist.\n")
+        print("fastANI was done.\n")
+    else:
+        utils_.run_cmd(fastani_)
+        print("fastANI done.\n")
 
-    print(outfile," is exist.\n")
+
 
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")

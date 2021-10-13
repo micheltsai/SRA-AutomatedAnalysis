@@ -102,15 +102,19 @@ def main():
     fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
     #fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
                                                                                                     genome_Path,outfile)
-    print(fastani_+"\n")
-    utils_.run_cmd(fastani_)
-    print("fastANI done.\n")
-    print()
-    
-    print(outfile," is exist.\n")
+    print(fastani_ + "\n")
+    if os.path.isfile(outfile):
+        print(outfile, " is exist.\n")
+        print("fastANI was done.\n")
+    else:
+        utils_.run_cmd(fastani_)
+        print("fastANI done.\n")
+
 
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
+
+
     #open fastANI output
     f = open(outfile, 'r')
     AverageANI=0.0
@@ -130,11 +134,11 @@ def main():
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
 
-    with open(outfile,"a+") as f:
-        f.write("\ncalculate ANI:\n")
-        f.write("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
+    #with open(outfile,"a+") as f:
+    #    f.write("\ncalculate ANI:\n")
+    #    f.write("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     #get out.txt line 1 (max ANI)
-    print("targetPath: {}\n".format(targetPath))
+    #print("targetPath: {}\n".format(targetPath))
 
     #save data info
     with open(info_txt,"w+") as f2:
