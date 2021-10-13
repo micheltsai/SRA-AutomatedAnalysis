@@ -350,7 +350,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
             return 0
         else:
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
-            run_cmd("rm {}".format(fastq_dir))
+            run_cmd("rm -r {}".format(fastq_dir))
             #agian
             run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
