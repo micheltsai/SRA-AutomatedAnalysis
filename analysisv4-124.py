@@ -303,9 +303,9 @@ def main():
     plist=list(pladf.Plasmid)
     plas_format=""
 
-    for x in range(0,len(plist)-1):
+    for x in range(0,len(plist)):
         plas_format+=plist[x]
-        if x < len(plist)-1:
+        if x != len(plist)-1:
             plas_format+=","
     print(plas_format)
 
@@ -423,7 +423,7 @@ def main():
         #beforedf=pd.DataFrame(beforedf)
         #finaldf=pd.concat([beforedf,finaldf])
         #print("merge df\n")
-    finaldf.to_csv(finalfile,mode='a+',header=False)
+    finaldf.to_csv(finalfile,mode='a+',header=False, index=False)
     print(finalfile+" is save.\n")
     #finaldf.to_csv(finalfile)
 
