@@ -105,7 +105,8 @@ def main():
     print(fastani_+"\n")
     utils_.run_cmd(fastani_)
     print("fastANI done.\n")
-    with open(outfile,"w+"):
+    print()
+    with open(outfile,"a+"):
         print(outfile," is exist.\n")
 
     # ANI>=95------
