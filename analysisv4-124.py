@@ -421,7 +421,7 @@ def main():
         #beforedf=pd.DataFrame(beforedf)
         #finaldf=pd.concat([beforedf,finaldf])
         #print("merge df\n")
-    finaldf.to_csv(finalfile,mode='a+')
+    finaldf.to_csv(finalfile,mode='a+',header=False)
     #finaldf.to_csv(finalfile)
 
 
