@@ -424,6 +424,7 @@ def main():
         #finaldf=pd.concat([beforedf,finaldf])
         #print("merge df\n")
     finaldf.to_csv(finalfile,mode='a+',header=False)
+    print(finalfile+" is save.\n")
     #finaldf.to_csv(finalfile)
 
 
