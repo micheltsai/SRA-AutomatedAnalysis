@@ -269,7 +269,7 @@ def Get_RunInfo(idlist):
         df = pd.read_csv(StringIO(d))
         df_all = df[df['Run'] != 'Run']
     return df_all
-def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
+def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
