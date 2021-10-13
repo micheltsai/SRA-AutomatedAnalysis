@@ -115,6 +115,7 @@ def main():
     utils_.mkdir_join(logpath)
     logpath = os.path.join(logpath, "analysis_log.txt")
 
+    input=input.replace(current_path,".")
 
     #get relative output dir path
     outdir_list=outdir_.split("/")
@@ -155,6 +156,7 @@ def main():
         MLST_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
         #mlst_outdir=os.path.join(outdir,"mlst")
         mlst_outdir = os.path.join(relative_path2, "mlst")
+
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson=os.path.join(mlst_outdir,"data.json")
         f=open(mlst_datajson,"a+")
