@@ -269,7 +269,157 @@ def Get_RunInfo(idlist):
         df = pd.read_csv(StringIO(d))
         df_all = df[df['Run'] != 'Run']
     return df_all
+def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
+    print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
+    path_ = os.path.join(sra_dir,sra_id)
+    path_=path_+"/"+sra_id+".sra"
+    #outdir__=os.path.join(outdir, "Assembled")
+    #mkdir_join(outdir__)
+    #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
+    print ("srafile_path: {}\n".format(path_))
+    seq_readArchive=time.time()
+    try:
+        print ("SequenceReadArchive\n")
+        sra = SequenceReadArchive(path_)
+        #print("layout:", sra.layout)
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        sys.exit(e)
+    if sra.layout != '2':
+        sys.exit(f'File layout is not pair-end')
+    print ("layout=2\n")
+    # if sra_layout==2 continue
+    # os.path.join(path, *paths)連接路徑
 
+    #outdir = assem_dir + "/" + "".join(sra_id)
+    print ("outdir = {}".format(outdir))
+    #fastq_dir = os.path.join(outdir, 'fastq')
+    fastq_dir = os.path.join(fastq_dir, sra_id)
+    os.makedirs(fastq_dir, exist_ok=True)
+    print ("fastq_dir = {}".format(fastq_dir))
+
+    #assemble_dir = os.path.join(outdir, "assembly_result")
+    assemble_dir = os.path.join(assemble_dir, sra_id)
+    mkdir_join(assemble_dir)
+    contig_tmp = os.path.join(assemble_dir, "contigs.fa")
+    outdir__ = os.path.join(outdir, "Assembled")
+    mkdir_join(outdir__)
+    final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
+    #如果做過則下一個
+    if os.path.isfile(final_dir):
+        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+        return 0
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "SequenceReadArchive", "time": str(time.time() - seq_readArchive)})
+    dump_time=time.time()
+    # 解壓縮成fastq
+    print('Dump fastq.')
+    # run_cmd
+    dump_fastq_from_sra(path_, fastq_dir)
+    # os.listdir(fastq_dir) list files in dir
+    print (fastq_dir)
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "dump_fastq_from_sra", "time": str(time.time() - dump_time)})
+
+    reverse_time=time.time()
+    try:
+        forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+    except ValueError as e:
+        if os.path.isfile(final_dir):
+            print ("was ran assembly ,r1 and r2 is exist\n------------------------------\n\n")
+            return 0
+        else:
+            #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
+            run_cmd("rm -r {}".format(fastq_dir))
+            #agian
+            run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+            pass
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "get forward and reverse reads", "time": str(time.time() - reverse_time)})
+
+    ## up ok
+    # 資料前處理：刪除爛的序列
+    # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
+
+    #print('Trim sequences.')
+    trim_time=time.time()
+    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
+    print ("r1= {}, r2={}".format(r1,r2))
+    # Q30>=90
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "trimming", "time": str(time.time() - trim_time)})
+
+    bases_percentage_time=time.time()
+    if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
+        shutil.rmtree(outdir)
+        sys.exit('Reads quality is too low.')
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
+
+    # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
+    #                                 --- depth<80 ---------> SPAdes
+    # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
+    #print("Run assembly pipline 'shovill'")
+    progress_bar("Run assembly pipline 'shovill'")
+    # depth >= 80
+
+    shovill_time=time.time()
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
+    if gsize:
+        cmd += f" --gsize {gsize}"
+    print(cmd)
+    run_cmd(cmd)
+
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "shovill", "time": str(time.time() - shovill_time)})
+
+
+    #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
+
+    cmd2="cp {} {}".format(contig_tmp,final_dir)
+    print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
+    run_cmd(cmd2)
+    #cmd3 = "rm -rf {}".format(assemble_dir)
+    #run_cmd(cmd3)
+    #f=open(check_log,"a")
+    #f.write("Run {} is ok\n".format(sra_id))
+    #f.close()
+
+
+    shutil.rmtree(fastq_dir)
+    progress_bar("remove fastq dir")
+    shutil.rmtree(assemble_dir)
+    progress_bar("remove assemble dir")
 
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)

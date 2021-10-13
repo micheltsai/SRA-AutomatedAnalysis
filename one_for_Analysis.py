@@ -103,7 +103,7 @@ def main():
     utils_.mkdir_join(sra_dir)
 
     ####check_log
-    check_log = os.path.join(outdir, "check.log")
+    check_log = os.path.join(outdir, "final_check.log")
 
     # commit
     # run_cmd2("touch {}".format("check.log"))
@@ -171,7 +171,7 @@ def main():
                 #Download
                 utils_.prefetch_sra(x,sra_dir)
                 #Assembled
-                utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,outdir,thread,gsize,start,check_log)
+                utils_.run_for_114v2(x,sra_dir,fastq_dir,assemble_dir,outdir,thread,gsize,start,check_log)
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
                 # print ("shutil.rmtree({})\n".format(current_path))
@@ -245,6 +245,10 @@ def main():
                 anum += 1
             print("**********************************  ANA  End**********************************\n")
             print("Analysis Done.\n")
+            f = open(check_log, 'a')
+            f.write("Run {} is ok\n".format(x))
+            f.close()
+            print("Run {} is ok\n".format(x))
 
 
 
