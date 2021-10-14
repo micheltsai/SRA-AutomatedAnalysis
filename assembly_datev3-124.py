@@ -146,8 +146,8 @@ def main():
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
                 # print ("shutil.rmtree({})\n".format(current_path))
-                utils_.run_cmd2("rm -rf {}".format(current_path))
-                print ("remove {}\n".format(current_path))
+                #utils_.run_cmd2("rm -rf {}".format(current_path))
+                #print ("remove {}\n".format(current_path))
 
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)

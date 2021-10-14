@@ -46,7 +46,11 @@ def main():
 
     check_log = os.path.join(output,"checkDownload.log")
 
-
+    current_path = os.path.abspath(os.getcwd())
+    print("current_path: ", current_path, "\n")
+    ## read SRAsetting.txt
+    utils_.progress_bar("read SRAsetting.txt")
+    setting_path = os.path.join(current_path, "SRAsettings.txt")
 
     # commit
     #run_cmd2("touch {}".format("check.log"))
@@ -97,4 +101,25 @@ def main():
     print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run), len(need_run)))
     print("Toal", len(need_run), "sra runs need to downlaod.")
 
+    num = len(finish_run)
+    for x in need_run:
+        print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num, len(idlist)))
+        num += 1
+        print("x = {}".format(x))
+        # outdir__ = os.path.join(output, "out")
+        outdir__ = os.path.join(output, "Assembled")
+
+        final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+        if os.path.isfile(final_dir):
+            print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+        else:
+            utils_.prefetch_sra(x, sra_dir)
+            print("Download {}\n.".format(x))
+            with open(check_log,"a+") as f:
+                f.write("Run {} is ok.\n".format(num,x))
+
+
+
+
+    print("Download all {}".format(date))
 
