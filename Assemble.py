@@ -68,6 +68,9 @@ def main():
     print("check log :{}\n".format(d))
     f.close()
 
+    myfile = Path(run_txt)
+    myfile.touch(exist_ok=True)
+
     with open(run_txt, "r")as f:
         run_list=f.readlines()
         print(run_list)
@@ -120,6 +123,8 @@ def main():
                 print("shutil.rmtree(sra_dir)\n")
                 shutil.rmtree(sra_file)
                 print("shutil.rmtree({}.sra)\n".format(x))
+                #with open(run_txt, "a+") as f:
+                #    f.write("Run {} is ok.\n".format(x))
 
         if num == count:
             shutil.rmtree(sra_dir)
