@@ -299,7 +299,7 @@ def main():
     plist=list(pladf.Plasmid)
     plas_format=""
 
-    for x in range(0,len(plist)-1):
+    for x in range(0,len(plist)):
         plas_format+=plist[x]
         if x < len(plist)-1:
             plas_format+=","
@@ -342,9 +342,12 @@ def main():
             amr_sym+=","
 
     print(amr_format)
-    amr_format += ","
+
+
     amr_sub=""
     aalist=list(amrdf.Element_subtype)
+    if len(aalist)!=0:
+        amr_format += ","
     for x in range(0,len(aalist)):
         amr_format+=aalist[x]
         amr_sub +=alist[x]

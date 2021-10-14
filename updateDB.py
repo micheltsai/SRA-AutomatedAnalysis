@@ -10,7 +10,7 @@ def main():
         "db":"SRA_Analysis",
         "charset":"utf8"
     }
-    file="/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/finaltest.csv"
+    file="/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/final1014.csv"
     df = pd.read_csv(file)
     # print(df)
     df = pd.DataFrame(df)
