@@ -55,7 +55,7 @@ def main():
     utils_.mkdir_join(output)
     print("output: {}\n".format(output))
 
-    check_log = os.path.join(output, "check.log")
+    check_log = os.path.join(output, "Assemblecheck.log")
     run_txt=os.path.join(output,"checkDownload.log")
     fastq_dir = os.path.join(output, 'fastq')
     assemble_dir = os.path.join(output, "assembly_result")
@@ -63,6 +63,8 @@ def main():
     utils_.mkdir_join(sra_dir)
 
     read_log_ = time.time()
+    myfile1 = Path(check_log)
+    myfile1.touch(exist_ok=True)
     f = open(check_log, 'r')
     d = f.readlines()
     print("check log :{}\n".format(d))
