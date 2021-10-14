@@ -35,16 +35,12 @@ def main():
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
-    output = args.output
+    #output = args.output
     threads = args.threads
     gsize = args.gsize
     n = args.n
     utils_.progress_bar("read arguments")
-    utils_.mkdir_join(output)
 
-    print("output: {}\n".format(output))
-
-    check_log = os.path.join(output,"checkDownload.log")
 
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
@@ -66,6 +62,10 @@ def main():
 
     outdir = setList[10].strip("\n").split("=")[1]
 
+    utils_.mkdir_join(outdir)
+    print("output: {}\n".format(outdir))
+
+    check_log = os.path.join(outdir, "checkDownload.log")
     # commit
     #run_cmd2("touch {}".format("check.log"))
     myfile = Path(check_log)
@@ -94,9 +94,10 @@ def main():
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-
-    utils_.mkdir_join(output)
-    sra_dir = os.path.join(output, "sra")  # .sra file
+    pdat = date.replace("/", "")
+    outdir = os.path.join(outdir, pdat)
+    utils_.mkdir_join(outdir)
+    sra_dir = os.path.join(outdir, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
 
     read_log_=time.time()
@@ -121,7 +122,7 @@ def main():
         num += 1
         print("x = {}".format(x))
         # outdir__ = os.path.join(output, "out")
-        outdir__ = os.path.join(output, "Assembled")
+        outdir__ = os.path.join(outdir, "Assembled")
 
         final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
         if os.path.isfile(final_dir):
@@ -132,7 +133,7 @@ def main():
             with open(check_log,"a+") as f:
                 f.write("Run {} is ok.\n".format(num,x))
 
-    
+
 
 
 
