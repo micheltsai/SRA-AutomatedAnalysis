@@ -55,7 +55,7 @@ def main():
     utils_.mkdir_join(output)
     print("output: {}\n".format(output))
 
-    check_log = os.path.join(output, "Assembledcheck.log")
+    check_log = os.path.join(output, "check.log")
     run_txt=os.path.join(output,"checkDownload.log")
     fastq_dir = os.path.join(output, 'fastq')
     assemble_dir = os.path.join(output, "assembly_result")
