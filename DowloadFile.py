@@ -31,7 +31,6 @@ def main():
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
     parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
     args = parser.parse_args()
-
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
@@ -125,6 +124,7 @@ def main():
         print("x = {}".format(x))
         # outdir__ = os.path.join(output, "out")
         outdir__ = os.path.join(outdir, "Assembled")
+
         final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
         if os.path.isfile(final_dir):
             print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
