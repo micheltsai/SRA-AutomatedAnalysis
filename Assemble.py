@@ -50,54 +50,26 @@ def main():
     n = args.n
     utils_.progress_bar("read arguments")
     utils_.mkdir_join(output)
-
+    pdat = date.replace("/", "")
+    output = os.path.join(output, pdat)
+    utils_.mkdir_join(output)
     print("output: {}\n".format(output))
 
-    check_log = os.path.join(output,"check.log")
-
-
-
-    # commit
-    #run_cmd2("touch {}".format("check.log"))
-    myfile = Path(check_log)
-    myfile.touch(exist_ok=True)
-    f = open(check_log, 'a+')
-    t = str(datetime.datetime.now()).split(".")[0]
-    f.write(t)
-    f.write("\n")
-    f.close()
-
-    #mkdir_join(log_dir)
-    #check_log = os.path.join(log_dir, "check.log")
-
-
-    # print(date)
-    pattern, count = utils_.count_egquery(pattern, date, date)
-    print ("pattern: {}\ncount: {}\n".format(pattern,count))
-
-    i_e_=time.time()
-    idlist = utils_.IdList_esearch(pattern, 'sra', count)
-
-    print(idlist)
-
-    runinfo = utils_.Get_RunInfo(idlist)
-    #progress_bar("get SRAfile name List stored in run_list")
-    run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
-    print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
-
-
-    utils_.mkdir_join(output)
+    check_log = os.path.join(output, "Assembledcheck.log")
+    run_txt=os.path.join(output,"checkDownload.log")
     fastq_dir = os.path.join(output, 'fastq')
     assemble_dir = os.path.join(output, "assembly_result")
     sra_dir = os.path.join(output, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
 
-    read_log_=time.time()
+    read_log_ = time.time()
     f = open(check_log, 'r')
     d = f.readlines()
     print("check log :{}\n".format(d))
     f.close()
 
+    with open(run_txt, "r")as f:
+        run_list=f.readlines()
 
     for s in d:
         print ("{}\n".format(s))
@@ -110,60 +82,58 @@ def main():
 
     if len(need_run) == 0:
         #utils_.progress_bar("ALL is assembled.")
-        shutil.rmtree(sra_dir)
-        shutil.rmtree(fastq_dir)
-        shutil.rmtree(assemble_dir)
+        #shutil.rmtree(sra_dir)
+        #shutil.rmtree(fastq_dir)
+        #shutil.rmtree(assemble_dir)
         print("ALL is assembled.\n")
 
         print("********************  ASSEMBLED END  ************************\n\n")
         return 0
 
+        # k,每三個一輪迴
+        k = list(range(0, len(need_run), n))
+        print(k)
+        num = len(finish_run)
+        for i in k:
+            run_id = need_run[i:i + n]
+            print("###### i = {}\n".format(i))
+            print("run_id: {}\n".format(run_id))
+            time.sleep(1)
+            for x in run_id:
+                print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
+                num += 1
+                print("x = {}".format(x))
+                # outdir__ = os.path.join(output, "out")
+                outdir__ = os.path.join(output, "Assembled")
+                final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+                if os.path.isfile(final_dir):
+                    print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+                else:
+                    utils_.run_for_114(x, sra_dir, fastq_dir, assemble_dir, output, threads, gsize, start, check_log)
+                    current_path = os.path.join(os.path.abspath(os.getcwd()), x)
+                    print("current_path: ", current_path, "\n")
+                    # print ("shutil.rmtree({})\n".format(current_path))
+                    # utils_.run_cmd2("rm -rf {}".format(current_path))
+                    # print ("remove {}\n".format(current_path))
 
+            print("shutil.rmtree(sra_dir)\n")
+            shutil.rmtree(sra_dir)
+            print("shutil.rmtree(sra_dir)\n")
+            utils_.mkdir_join(sra_dir)
+            print("mkdir sra_dir\n")
 
+        if num == count:
+            shutil.rmtree(sra_dir)
+            shutil.rmtree(fastq_dir)
+            shutil.rmtree(assemble_dir)
+            print("ALL({}/{}) is ok.\n".format(num, count))
+            print("shutil.rmtree(sra_dir)\n")
+            print("shutil.rmtree(fastq_dir)\n")
+            print("shutil.rmtree(assemble_dir)\n")
+            #with open(check_log, "a+") as f:
+                #f.write("ALL({}/{}) is ok.\n".format(num, count))
 
-    #k,每三個一輪迴
-    k = list(range(0, len(need_run), n))
-    print (k)
-    num = len(finish_run)
-    for i in k:
-        run_id = need_run[i:i+n]
-        print("###### i = {}\n".format(i))
-        print("run_id: {}\n".format(run_id))
-        time.sleep(1)
-        for x in run_id:
-            print ("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
-            num+=1
-            print ("x = {}".format(x))
-            #outdir__ = os.path.join(output, "out")
-            outdir__ = os.path.join(output, "Assembled")
+        print('Done,total cost', time.time() - start, 'secs\n')
 
-            final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
-            if os.path.isfile(final_dir):
-                print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
-            else:
-                utils_.prefetch_sra(x,sra_dir)
-                utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
-                current_path = os.path.join(os.path.abspath(os.getcwd()), x)
-                print("current_path: ", current_path, "\n")
-                # print ("shutil.rmtree({})\n".format(current_path))
-                #utils_.run_cmd2("rm -rf {}".format(current_path))
-                #print ("remove {}\n".format(current_path))
-
-        print("shutil.rmtree(sra_dir)\n")
-        shutil.rmtree(sra_dir)
-        utils_.mkdir_join(sra_dir)
-
-    if num == count:
-        shutil.rmtree(sra_dir)
-        shutil.rmtree(fastq_dir)
-        shutil.rmtree(assemble_dir)
-        with open(check_log,"a+") as f:
-            f.write("ALL({}/{}) is ok.\n".format(num,count))
-
-
-    print('Done,total cost', time.time() - start, 'secs')
-
-    print("********************  ASSEMBLED END  ************************\n\n")
-    return 0
-if __name__ == '__main__':
-    main()
+        print("********************  ASSEMBLED END  ************************\n\n")
+        return 0
