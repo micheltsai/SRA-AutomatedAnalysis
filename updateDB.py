@@ -15,7 +15,7 @@ def main():
     # print(df)
     df = pd.DataFrame(df)
     print(df)
-    df.fillna(value="NaN")
+    df.fillna(value="NAN")
     print(df)
     #for i in range(len(df)):
     #    print(str(df.loc[i, "Accession"]) + " " + str(df.loc[i, "mlst"]))
