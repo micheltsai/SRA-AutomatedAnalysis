@@ -26,10 +26,9 @@ def main():
     #insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(len(df)):
-        print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"plasmidfinder"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc["sistr"]))
-        insert = "INSERT INTO Final(Accession,MLST,AMR,Inc_Type) VALUES({},{},{},{});".format(
-            #str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]), str(df.loc["sistr"]),
-            str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]),
+        print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"plasmidfinder"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc[i,"sistr"]))
+        insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES({},{},{},{},{});".format(
+            str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]), str(df.loc["sistr"]),
             str(df.loc[i, "plasmidfinder"]))
         try:
             cursor.execute(insert)
