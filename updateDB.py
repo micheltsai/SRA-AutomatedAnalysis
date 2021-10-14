@@ -13,7 +13,7 @@ def main():
     file="/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/final1014.csv"
     df = pd.read_csv(file)
     # print(df)
-    df = pd.DataFrame(df,colums=['Accession','mlst','plasmidfinder','amr_gane','amr_subtype','sistr'])
+    df = pd.DataFrame(df,columns=['Accession','mlst','plasmidfinder','amr_gane','amr_subtype','sistr'])
     print(df)
     df=df.fillna(value="NAN")
     print(df)
