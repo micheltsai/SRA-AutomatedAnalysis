@@ -26,7 +26,7 @@ def main():
                         default="salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]",
                         help="Searching condition.")
     # PDAT格式：YYYY/MM/DD
-    #parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
+    parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
     #parser.add_argument("--sra_dir", required=True, help="Temp folder to save runs.")
     #parser.add_argument("--log", required=True, help="The file to recored runs which finished assembly each time.")
     parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
