@@ -31,7 +31,7 @@ def main():
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
     parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
     args = parser.parse_args()
-    print("current_path: ", current_path, "\n")
+    
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
