@@ -25,7 +25,7 @@ def main():
     conn=pymysql.connect(host="127.0.0.1",user="root",password="tumvgk01",database="SRA_Analysis",port=3306)
     cursor=conn.cursor()
     insert = "INSERT INTO `Final`(`Accession`,`MLST`,`AMR`,`Serotype`,`Inc_Type`) VALUES ({},{},{},{},{})".format(
-        "22",222,"222","jjj","aaa")
+        "22",222,"222",'jjj',"aaa")
     try:
         cursor.execute(insert)
         conn.commit()
