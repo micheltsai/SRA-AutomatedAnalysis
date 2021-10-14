@@ -1,0 +1,100 @@
+from __future__ import print_function
+# -*- coding: utf-8 -*-
+import csv
+import datetime
+import shlex
+import time
+import os
+import re
+import sys
+import shutil
+import argparse
+import subprocess
+import traceback
+from pathlib import Path
+import pandas as pd
+import utils_
+
+### v3 is modify outdir : args.outdir/PDAT/Assembled
+
+def main():
+    # 計算時間
+    start = time.time()
+    utils_.progress_bar("read command")
+    parser = argparse.ArgumentParser("Download_avaliable_runs_from_NCBI_sra_database_wit_PDAT.")
+    parser.add_argument("--pattern",
+                        default="salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]",
+                        help="Searching condition.")
+    # PDAT格式：YYYY/MM/DD
+    parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
+    parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
+    parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
+    parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
+    args = parser.parse_args()
+
+    pattern = args.pattern
+    # print(pattern)
+    date = args.PDAT
+    output = args.output
+    threads = args.threads
+    gsize = args.gsize
+    n = args.n
+    utils_.progress_bar("read arguments")
+    utils_.mkdir_join(output)
+
+    print("output: {}\n".format(output))
+
+    check_log = os.path.join(output,"checkDownload.log")
+
+
+
+    # commit
+    #run_cmd2("touch {}".format("check.log"))
+    myfile = Path(check_log)
+    myfile.touch(exist_ok=True)
+    f = open(check_log, 'a+')
+    t = str(datetime.datetime.now()).split(".")[0]
+    f.write(t)
+    f.write("\n")
+    f.close()
+
+    #mkdir_join(log_dir)
+    #check_log = os.path.join(log_dir, "check.log")
+
+
+    # print(date)
+    pattern, count = utils_.count_egquery(pattern, date, date)
+    print ("pattern: {}\ncount: {}\n".format(pattern,count))
+
+    i_e_=time.time()
+    idlist = utils_.IdList_esearch(pattern, 'sra', count)
+
+    print(idlist)
+
+    runinfo = utils_.Get_RunInfo(idlist)
+    #progress_bar("get SRAfile name List stored in run_list")
+    run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
+    print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+
+
+    utils_.mkdir_join(output)
+    sra_dir = os.path.join(output, "sra")  # .sra file
+    utils_.mkdir_join(sra_dir)
+
+    read_log_=time.time()
+    f = open(check_log, 'r+')
+    d = f.readlines()
+    print("check log :{}\n".format(d))
+    f.close()
+
+
+    for s in d:
+        print ("{}\n".format(s))
+    finish = list(filter(lambda x: len(x.split(" ")) >= 4, d))
+    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+    need_run = list(filter(lambda x: x not in finish_run, run_list))
+    print("finish: {}\nfinish_run: {}\nneed_run".format(finish,finish_run,need_run))
+    print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run), len(need_run)))
+    print("Toal", len(need_run), "sra runs need to downlaod.")
+
+
