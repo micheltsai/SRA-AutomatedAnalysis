@@ -36,7 +36,7 @@ def main():
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(0,len(df)-1):
         print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"plasmidfinder"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc[i,"sistr"]))
-        insert = "INSERT INTO `Final`(`Accession`, `MLST`, `AMR`, `Point`, `Serotype`, `Inc_Type`) VALUES ({},{},{},{},{},{}) ".format(
+        insert = "INSERT INTO `Final`(`Accession`, `MLST`, `AMR`, `Point`, `Serotype`, `Inc_Type`) VALUES ('{}',{},'{}','{}','{}','{}') ".format(
             str(df.loc[i,"Accession"]),int(df.loc[i,"mlst"]),str(df.loc[i,"plasmidfinder"]),"111",str(df.loc[i,"amr_gane"]),str(df.loc[i,"sistr"]))
         print(insert)
         try:
