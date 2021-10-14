@@ -19,7 +19,7 @@ def main():
     #for i in range(len(df)):
     #    print(str(df.loc[i, "Accession"]) + " " + str(df.loc[i, "mlst"]))
 
-    try:
+
         #conn = pymysql.connect(**db_settings)
         conn=pymysql.connect("127.0.0.1","root","tumvgk01","SRA_Analysis")
         cursor=conn.cursor()
@@ -30,17 +30,19 @@ def main():
             insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES({},{},{},{},{});".format(
                 str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]), str(df.loc["sistr"]),
                 str(df.loc[i, "plasmidfinder"]))
-            cursor.execute(insert)
-            conn.commit()
-            #cursor.execute(insert, (str(df.loc[i,"Accession"]),str(df.loc[i,"mlst"]),str(df.loc[i,"amr_gane"]),str(df.loc["sistr"]),str(df.loc[i,"plasmidfinder"])))
-        data=cursor.fetchone()
-        print("Database version: %s"%data)
+            try:
+                cursor.execute(insert)
+                conn.commit()
+                #cursor.execute(insert, (str(df.loc[i,"Accession"]),str(df.loc[i,"mlst"]),str(df.loc[i,"amr_gane"]),str(df.loc["sistr"]),str(df.loc[i,"plasmidfinder"])))
+            except Exception as e:
+                print("ffff")
+                conn.rollback()
+                print(e)
+            conn.close()
 
-    except Exception as e:
-        print("ffff")
-        conn.rollback()
-        print(e)
-    conn.close()
+
+
+
 
 
     return 0
