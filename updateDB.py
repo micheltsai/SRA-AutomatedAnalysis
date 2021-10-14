@@ -14,7 +14,7 @@ def main():
     df = pd.read_csv(file)
     # print(df)
     df = pd.DataFrame(df)
-    df.columns = ["Accession", "mlst", "plasmidfinder", "amr_gane", "sistr"]
+    df.columns = ["","Accession", "mlst", "plasmidfinder", "amr_gane", "sistr"]
     print(df)
     df=df.fillna(value="NAN")
     print(df)
