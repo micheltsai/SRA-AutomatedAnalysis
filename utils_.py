@@ -302,14 +302,14 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #outdir = assem_dir + "/" + "".join(sra_id)
     print ("outdir = {}".format(outdir))
     #fastq_dir = os.path.join(outdir, 'fastq')
-    fastq_dir = os.path.join(fastq_dir, sra_id)
-    os.makedirs(fastq_dir, exist_ok=True)
-    print ("fastq_dir = {}".format(fastq_dir))
+    fastq_dir_ = os.path.join(fastq_dir, sra_id)
+    os.makedirs(fastq_dir_, exist_ok=True)
+    print ("fastq_dir = {}".format(fastq_dir_))
 
     #assemble_dir = os.path.join(outdir, "assembly_result")
-    assemble_dir = os.path.join(assemble_dir, sra_id)
-    mkdir_join(assemble_dir)
-    contig_tmp = os.path.join(assemble_dir, "contigs.fa")
+    assemble_dir_ = os.path.join(assemble_dir, sra_id)
+    mkdir_join(assemble_dir_)
+    contig_tmp = os.path.join(assemble_dir_, "contigs.fa")
     outdir__ = os.path.join(outdir, "Assembled")
     mkdir_join(outdir__)
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
@@ -327,9 +327,9 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     # 解壓縮成fastq
     print('Dump fastq.')
     # run_cmd
-    dump_fastq_from_sra(path_, fastq_dir)
+    dump_fastq_from_sra(path_, fastq_dir_)
     # os.listdir(fastq_dir) list files in dir
-    print (fastq_dir)
+    print (fastq_dir_)
 
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
@@ -339,14 +339,14 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     reverse_time=time.time()
     try:
-        forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+        forward_reads, reverse_reads = [os.path.join(fastq_dir_, fa) for fa in os.listdir(fastq_dir_)]
     except ValueError as e:
         if os.path.isfile(final_dir):
             print ("was ran assembly ,r1 and r2 is exist\n------------------------------\n\n")
             return 0
         else:
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
-            run_cmd("rm -r {}".format(fastq_dir))
+            run_cmd("rm -r {}".format(fastq_dir_))
             #agian
             run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
@@ -363,7 +363,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     #print('Trim sequences.')
     trim_time=time.time()
-    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
+    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
     with open("./ana_time.csv", "a+") as f:
@@ -374,7 +374,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     bases_percentage_time=time.time()
     if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
-        shutil.rmtree(outdir)
+        #shutil.rmtree(outdir)
         sys.exit('Reads quality is too low.')
 
     with open("./ana_time.csv", "a+") as f:
@@ -391,7 +391,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     # depth >= 80
 
     shovill_time=time.time()
-    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
@@ -416,9 +416,9 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #f.close()
 
 
-    shutil.rmtree(fastq_dir)
+    shutil.rmtree(fastq_dir_)
     progress_bar("remove fastq dir")
-    shutil.rmtree(assemble_dir)
+    shutil.rmtree(assemble_dir_)
     progress_bar("remove assemble dir")
 
 
@@ -456,14 +456,14 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     #outdir = assem_dir + "/" + "".join(sra_id)
     print ("outdir = {}".format(outdir))
     #fastq_dir = os.path.join(outdir, 'fastq')
-    fastq_dir = os.path.join(fastq_dir, sra_id)
-    os.makedirs(fastq_dir, exist_ok=True)
-    print ("fastq_dir = {}".format(fastq_dir))
+    fastq_dir_ = os.path.join(fastq_dir, sra_id)
+    os.makedirs(fastq_dir_, exist_ok=True)
+    print ("fastq_dir = {}".format(fastq_dir_))
 
     #assemble_dir = os.path.join(outdir, "assembly_result")
-    assemble_dir = os.path.join(assemble_dir, sra_id)
-    mkdir_join(assemble_dir)
-    contig_tmp = os.path.join(assemble_dir, "contigs.fa")
+    assemble_dir_ = os.path.join(assemble_dir, sra_id)
+    mkdir_join(assemble_dir_)
+    contig_tmp = os.path.join(assemble_dir_, "contigs.fa")
     outdir__ = os.path.join(outdir, "Assembled")
     mkdir_join(outdir__)
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
@@ -481,9 +481,9 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     # 解壓縮成fastq
     print('Dump fastq.')
     # run_cmd
-    dump_fastq_from_sra(path_, fastq_dir)
+    dump_fastq_from_sra(path_, fastq_dir_)
     # os.listdir(fastq_dir) list files in dir
-    print (fastq_dir)
+    print (fastq_dir_)
 
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
@@ -493,14 +493,14 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
 
     reverse_time=time.time()
     try:
-        forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+        forward_reads, reverse_reads = [os.path.join(fastq_dir_, fa) for fa in os.listdir(fastq_dir_)]
     except ValueError as e:
         if os.path.isfile(final_dir):
             print ("was ran assembly ,r1 and r2 is exist\n------------------------------\n\n")
             return 0
         else:
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
-            run_cmd("rm -r {}".format(fastq_dir))
+            run_cmd("rm -r {}".format(fastq_dir_))
             #agian
             run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
@@ -517,7 +517,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
 
     #print('Trim sequences.')
     trim_time=time.time()
-    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir, threads)
+    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
     with open("./ana_time.csv", "a+") as f:
@@ -545,7 +545,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     # depth >= 80
 
     shovill_time=time.time()
-    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
@@ -573,9 +573,9 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     f.close()
     print ("Run {} is ok\n".format(sra_id))
 
-    shutil.rmtree(fastq_dir)
+    shutil.rmtree(fastq_dir_)
     progress_bar("remove fastq dir")
-    shutil.rmtree(assemble_dir)
+    shutil.rmtree(assemble_dir_)
     progress_bar("remove assemble dir")
 
 #Qualitycheck.py
