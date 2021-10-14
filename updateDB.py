@@ -24,6 +24,8 @@ def main():
         #conn = pymysql.connect(**db_settings)
     conn=pymysql.connect(host="127.0.0.1",user="root",password="tumvgk01",database="SRA_Analysis",port=3306)
     cursor=conn.cursor()
+    insert = "INSERT INTO `Final`(`Accession`,`MLST`,`AMR`,`Point`,`Serotype`,`Inc_Type`) VALUES ({},{},{},0,{},{})".format(
+        "aaa","aaa","aaa","aaa","aaa")
     #insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(1,len(df)-1):
