@@ -118,7 +118,8 @@ def main():
 
     num = len(finish_run)
     for x in need_run:
-        print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num, len(idlist)))
+        one_=time.time()
+        print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num+1, len(idlist)))
         num += 1
         print("x = {}".format(x))
         # outdir__ = os.path.join(output, "out")
@@ -132,12 +133,9 @@ def main():
             print("Download {}\n.".format(x))
             with open(check_log,"a+") as f:
                 f.write("{}\n".format(x))
-
-
-
-
+        print('Done,total cost', time.time() - one_, 'secs')
 
     print("Download all {}".format(date))
-
+    print('Done,total cost', time.time() - start, 'secs')
 if __name__ == '__main__':
     main()

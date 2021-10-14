@@ -108,7 +108,7 @@ def main():
             print("run_id: {}\n".format(run_id))
             time.sleep(1)
             for x in run_id:
-                print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num,len(idlist)))
+                print("---------------------\n---------------------[ {} / {} ]---------------------\n".format(num+1,len(idlist)))
                 num += 1
                 print("x = {}".format(x))
                 # outdir__ = os.path.join(output, "out")
