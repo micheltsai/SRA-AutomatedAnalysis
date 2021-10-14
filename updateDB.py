@@ -20,8 +20,8 @@ def main():
     #    print(str(df.loc[i, "Accession"]) + " " + str(df.loc[i, "mlst"]))
 
     try:
-        conn = pymysql.connect(**db_settings)
-
+        #conn = pymysql.connect(**db_settings)
+        conn=pymysql.connect("127.0.0.1","root","tumvgk01","SRA_Analysis")
         cursor=conn.cursor()
         #insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
         #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
