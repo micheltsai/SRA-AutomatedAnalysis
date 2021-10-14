@@ -38,7 +38,7 @@ def main():
             print("ffff")
             conn.rollback()
             print(e)
-        conn.close()
+    conn.close()
 
 
 
