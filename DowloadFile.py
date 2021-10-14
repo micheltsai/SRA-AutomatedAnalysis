@@ -131,7 +131,7 @@ def main():
             utils_.prefetch_sra(x, sra_dir)
             print("Download {}\n.".format(x))
             with open(check_log,"a+") as f:
-                f.write("Run {} is ok.\n".format(num,x))
+                f.write("Run {} is ok.\n".format(x))
 
 
 
