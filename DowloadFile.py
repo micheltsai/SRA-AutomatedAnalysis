@@ -31,7 +31,7 @@ def main():
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
     parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
     args = parser.parse_args()
-
+    print("current_path: ", current_path, "\n")
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
@@ -63,6 +63,10 @@ def main():
     outdir = setList[10].strip("\n").split("=")[1]
 
     utils_.mkdir_join(outdir)
+    pdat = date.replace("/", "")
+    outdir = os.path.join(outdir, pdat)
+    utils_.mkdir_join(outdir)
+
     print("output: {}\n".format(outdir))
 
     check_log = os.path.join(outdir, "checkDownload.log")
@@ -94,9 +98,7 @@ def main():
     run_list = list(runinfo['Run']) #get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-    pdat = date.replace("/", "")
-    outdir = os.path.join(outdir, pdat)
-    utils_.mkdir_join(outdir)
+
     sra_dir = os.path.join(outdir, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
 
