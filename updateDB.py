@@ -15,7 +15,8 @@ def main():
     # print(df)
     df = pd.DataFrame(df)
     print(df)
-
+    df.fillna(value="NaN")
+    print(df)
     #for i in range(len(df)):
     #    print(str(df.loc[i, "Accession"]) + " " + str(df.loc[i, "mlst"]))
 
@@ -27,8 +28,8 @@ def main():
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(len(df)):
         #print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"plasmidfinder"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc[i,"sistr"]))
-        insert = "INSERT INTO `Final`(`Accession`,`MLST`,`AMR`,`Point`,`Serotype`,`Inc_Type`) VALUES({},{},{},0,{},{})".format(
-            str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]), str(df.loc[i,"sistr"]),
+        insert = "INSERT INTO `Final`(`Accession`,`MLST`,`AMR`,`Point`,`Serotype`,`Inc_Type`) VALUES ({},{},{},0,{},{})".format(
+            str(df.loc[i, "Accession"]), str(df.loc[i, "mlst"]), str(df.loc[i, "amr_gane"]).replace(",","|"), str(df.loc[i,"sistr"]),
             str(df.loc[i, "plasmidfinder"]))
         try:
             cursor.execute(insert)
