@@ -35,11 +35,12 @@ def main():
             #cursor.execute(insert, (str(df.loc[i,"Accession"]),str(df.loc[i,"mlst"]),str(df.loc[i,"amr_gane"]),str(df.loc["sistr"]),str(df.loc[i,"plasmidfinder"])))
         data=cursor.fetchone()
         print("Database version: %s"%data)
-        conn.close()
+
     except Exception as e:
         print("ffff")
         conn.rollback()
         print(e)
+    conn.close()
 
 
     return 0
