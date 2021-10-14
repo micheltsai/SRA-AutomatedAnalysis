@@ -34,15 +34,14 @@ def main():
     pattern = args.pattern
     # print(pattern)
     date = args.PDAT
-    #output = args.output
     threads = args.threads
-    gsize = args.gsize
+
     n = args.n
     utils_.progress_bar("read arguments")
 
-
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
+
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
     setting_path = os.path.join(current_path, "SRAsettings.txt")
