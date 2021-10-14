@@ -13,7 +13,7 @@ def main():
     file="/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/finaltest.csv"
     df = pd.read_csv(file)
     # print(df)
-    df = pd.DataFrame("df")
+    df = pd.DataFrame(df)
     print(df)
 
 
