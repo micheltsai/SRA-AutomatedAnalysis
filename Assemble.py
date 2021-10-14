@@ -70,6 +70,7 @@ def main():
 
     with open(run_txt, "r")as f:
         run_list=f.readlines()
+        print(run_list)
 
     for s in d:
         print ("{}\n".format(s))
@@ -115,12 +116,10 @@ def main():
                     # print ("shutil.rmtree({})\n".format(current_path))
                     # utils_.run_cmd2("rm -rf {}".format(current_path))
                     # print ("remove {}\n".format(current_path))
-
-            print("shutil.rmtree(sra_dir)\n")
-            shutil.rmtree(sra_dir)
-            print("shutil.rmtree(sra_dir)\n")
-            utils_.mkdir_join(sra_dir)
-            print("mkdir sra_dir\n")
+                sra_file=os.path.join(sra_dir, x)
+                print("shutil.rmtree(sra_dir)\n")
+                shutil.rmtree(sra_file)
+                print("shutil.rmtree({}.sra)\n".format(x))
 
         if num == count:
             shutil.rmtree(sra_dir)
