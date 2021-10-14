@@ -5,7 +5,7 @@ def main():
     db_settings={
         "host":"127.0.0.1",
         "port":3306,
-        "user":"user",
+        "user":"root",
         "password":"tumvgk01",
         "db":"SRA_Analysis",
         "charset":"utf8"
