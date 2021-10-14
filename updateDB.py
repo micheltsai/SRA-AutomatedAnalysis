@@ -16,7 +16,8 @@ def main():
     df = pd.DataFrame(df)
     print(df)
 
-
+    for i in range(len(df)):
+        print(df.loc[i, "Accession"] + " " + df.loc[i, "MLST"])
 
     try:
         conn = pymysql.connect(**db_settings)
