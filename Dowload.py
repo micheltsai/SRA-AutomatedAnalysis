@@ -27,7 +27,7 @@ def main():
                         help="Searching condition.")
     # PDAT格式：YYYY/MM/DD
     parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
-    parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
+    #parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
     parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
     args = parser.parse_args()
@@ -51,6 +51,20 @@ def main():
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
     setting_path = os.path.join(current_path, "SRAsettings.txt")
+    with open(setting_path, "r") as f:
+        setList = f.readlines()
+
+    print(setList)
+    i = 0
+    for line in setList:
+        line = line.strip("\n")
+        line_ = line.split("=")
+        if line != "" and len(line_) == 2:
+            print(line_)
+            print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
+        i += 1
+
+    outdir = setList[10].strip("\n").split("=")[1]
 
     # commit
     #run_cmd2("touch {}".format("check.log"))
@@ -118,6 +132,7 @@ def main():
             with open(check_log,"a+") as f:
                 f.write("Run {} is ok.\n".format(num,x))
 
+    
 
 
 
