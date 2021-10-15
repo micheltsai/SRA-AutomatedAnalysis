@@ -87,8 +87,8 @@ def main():
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, d))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, run_list))
-    print("finish: {}\nfinish_run: {}\nneed_run".format(finish,finish_run,need_run))
-    print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run), len(need_run)))
+    print("finish: {}\nfinish_run: {}\nneed_run: {}\n".format(finish,finish_run,need_run))
+    print("finish length: {}\nfinish_run length: {}\nneed_run length: {}\n".format(len(finish), len(finish_run), len(need_run)))
     print("Toal", len(need_run), "sra runs need to downlaod.")
 
     if len(need_run) == 0:

@@ -213,8 +213,7 @@ def main():
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         #amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
-        amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(
-            input, amr_outdir, amr_organism)
+        amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
         print(amr_cmd, "\n")
         amr=run_cmd(amr_cmd)
         with open(logpath,"a+") as f:
@@ -357,14 +356,14 @@ def main():
 
 
     #amr_format+=amrdf.Element_subtype
-    aaalist=list(amrdf.Method)
-    amr_method=""
-    for x in range(0,len(aaalist)):
-        amr_format+=aaalist[x]
-        amr_method+=aaalist[x]
-        if x !=len(aaalist)-1:
-            amr_format += ","
-            amr_method+=","
+    #aaalist=list(amrdf.Method)
+    #amr_method=""
+    #for x in range(0,len(aaalist)):
+    #    amr_format+=aaalist[x]
+    #    amr_method+=aaalist[x]
+     #   if x !=len(aaalist)-1:
+     #       amr_format += ","
+    #        amr_method+=","
 
     #amr_format += amrdf.Method
     try:
