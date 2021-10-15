@@ -45,15 +45,7 @@ def run_cmd(cmd):
 def main():
     start = time.time()
 
-    ###set Database setting
-    db_settings = {
-        "host": "127.0.0.1",
-        "port": 3306,
-        "user": "user",
-        "password": "tumvgk01",
-        "db": "SRA_Analysis",
-        "charset": "utf8"
-    }
+
 
 
     # read command arguments------
@@ -160,7 +152,7 @@ def main():
         f=open(mlst_datajson,"a+")
         f.close()
         #mlst_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
-        mlst_cmd = "sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
+        mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
                                                                                                               current_path,
                                                                                                               input,
                                                                                                               mlst_outdir,
@@ -188,7 +180,9 @@ def main():
         #plas_outdir=os.path.join(outdir,"plasmidfinder")
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        #plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
+        plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(
+            PLASMID_DB, current_path, input, plas_outdir)
         print (plas_cmd,"\n")
         plas=run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
@@ -213,7 +207,8 @@ def main():
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         #amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
-        amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
+        #amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
+        amr_cmd = "amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
         print(amr_cmd, "\n")
         amr=run_cmd(amr_cmd)
         with open(logpath,"a+") as f:
@@ -366,17 +361,7 @@ def main():
     #        amr_method+=","
 
     #amr_format += amrdf.Method
-    try:
-        conn = pymysql.connect(**db_settings)
 
-        with conn.cursor() as cursor:
-            insertAmr = "INSERT INTO Amrfinder(SRAID,GenSymbol,ElementSubtype,Method) VALUES(%s,%s,%s);"
-            cursor.execute(
-                insertMLST, (inId,amr_sym,amr_sub,amr_method)
-            )
-
-    except Exception as e:
-        print(e)
 
 
     #read sistr 'serovar'
