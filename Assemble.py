@@ -61,6 +61,9 @@ def main():
     assemble_dir = os.path.join(output, "assembly_result")
     sra_dir = os.path.join(output, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
+    print("Downloaded:{}\nAssembled:{}\n".format(run_txt,check_log))
+
+
 
     read_log_ = time.time()
     myfile1 = Path(check_log)
