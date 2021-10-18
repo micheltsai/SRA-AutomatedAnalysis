@@ -177,7 +177,6 @@ def main():
 
                 current_path = os.path.join(os.path.abspath(os.getcwd()), x)
                 print("current_path: ", current_path, "\n")
-                three_run = time.time()
                 # print ("shutil.rmtree({})\n".format(current_path))
                 utils_.run_cmd2("rm -rf {}".format(current_path))
                 print ("remove {}\n".format(current_path))
@@ -186,7 +185,7 @@ def main():
                 fieldnames = ["func", "time"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
-                writer.writerow({"func": "one file assembled", "time": str(time.time() - one_run_ass)})
+                writer.writerow({"func": "{} assembled".format(x), "time": str(time.time() - one_run_ass)})
 
             if num==5:
                 print("break for loop\n")
@@ -194,11 +193,7 @@ def main():
         print("shutil.rmtree(sra_dir)\n")
         shutil.rmtree(sra_dir)
         utils_.mkdir_join(sra_dir)
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "three so removed '/sra'", "time": str(time.time() - three_run)})
+
 
     if num == count:
         shutil.rmtree(sra_dir)
@@ -211,7 +206,7 @@ def main():
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "all time", "time": str(time.time() - start)})
+        writer.writerow({"func": "all assembled time", "time": str(time.time() - start)})
 
     print('Done,total cost', time.time() - start, 'secs')
 

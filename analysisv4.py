@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import argparse
+import csv
 import json
 import os
 import shlex
@@ -142,6 +143,7 @@ def main():
 
     #run MLST
     if step<1:
+        step1=time.time()
         print("STEP{}\n".format(step+1))
         print ("********** Now MLST analysis running. **********\n")
         MLST_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
@@ -170,10 +172,16 @@ def main():
     else:
         print ("**********       mlst was running.      **********\n next step\n")
 
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"{} mlst".format(inId), "time": str(time.time() - step1)})
 
 
     #run plasmidfinder
     if step<2:
+        step2=time.time()
         print("STEP{}\n".format(step+1))
         print("********** Now plasmidfinder analysis running. **********\n")
         PLASMID_DB="/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
@@ -195,11 +203,15 @@ def main():
         step += 1
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
-
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"{} plasmidfinder".format(inId), "time": str(time.time() - step2)})
 
     #run amrfinder
     if step < 3:
-
+        step3=time.time()
         print("STEP{}\n".format(step+1))
         print("********** Now amrfinder analysis running. **********\n")
         #amr_outdir=os.path.join(outdir,"amrfinder")
@@ -220,11 +232,17 @@ def main():
         step += 1
     else:
         print("**********   amrfinderr was running.   **********\n next step\n")
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{} amr".format(inId), "time": str(time.time() - step3)})
 
 
 
     #run sistr
     if step < 4:
+        step4=time.time()
         print("STEP{}\n".format(step+1))
         print("********** Now sistr analysis running. **********")
         #sistr_outdir=os.path.join(outdir, "sistr")
@@ -247,7 +265,11 @@ def main():
         step += 1
     else:
         print("********** sistr was running. **********\n next step\n")
-
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{} sistr".format(inId), "time": str(time.time() - step4)})
 
     ########################
     ########################
@@ -263,21 +285,7 @@ def main():
         sequenceType=data[6].split(" ")
         sequenceType=sequenceType[len(sequenceType)-1].strip("\n")
 
-        ####update database table of "SRA" and table of "MLST"
-        try:
-            conn = pymysql.connect(**db_settings)
 
-            with conn.cursor() as cursor:
-                insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
-                insertMLST = "INSERT INTO MLST(Profile,Organism,SequenceType) VALUES(%s,%s,%s);"
-                cursor.execute(
-                    insertSRA, (inId))
-                cursor.execute(
-                    insertMLST,(data[2].split(": ")[1],data[4].split(": ")[1],sequenceType)
-                )
-
-        except Exception as e:
-            print(e)
         print (sequenceType)
 
     #read plasmidfinder 'gene'

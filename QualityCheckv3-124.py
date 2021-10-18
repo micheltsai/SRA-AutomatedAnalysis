@@ -87,7 +87,7 @@ def main():
         writer.writerow({"func":"read args", "time": str(time.time() - start)})
 
 
-    #fastANI-------
+    ##fastANI-------
     fastANI_time=time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
@@ -114,7 +114,11 @@ def main():
 
     # ANI>=95------
     print ("-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
-
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"{} fastANI".format(gID), "time": str(time.time() - start)})
 
     #open fastANI output
     f = open(outfile, 'r')
@@ -135,11 +139,7 @@ def main():
     print ("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
     targetPath=ANI_[0].split("\t")[1]
 
-    #with open(outfile,"a+") as f:
-    #    f.write("\ncalculate ANI:\n")
-    #    f.write("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num+not_num, num, ANI_[0].split("\t")[2]))
-    #get out.txt line 1 (max ANI)
-    #print("targetPath: {}\n".format(targetPath))
+
 
     #save data info
     with open(info_txt,"w+") as f2:
@@ -158,7 +158,7 @@ def main():
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func":"fastANI", "time": str(time.time() - fastANI_time)})
+        writer.writerow({"func":"{} fastANI".format(gID), "time": str(time.time() - fastANI_time)})
 
     #BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
@@ -224,14 +224,13 @@ def main():
     with open(check,"a+") as f:
         f.write("{} is ok.\n".format(gID))
         print("commit on check \n")
-    print('Done,total cost', time.time() - start, 'secs\n')
 
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func":"busco", "time": str(time.time() - busco_time)})
-
+        writer.writerow({"func":"{} busco".format(gID), "time": str(time.time() - busco_time)})
+    print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 if __name__ == '__main__':
     main()

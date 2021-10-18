@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import argparse
+import csv
 import os
 import sys
 import time
@@ -178,7 +179,12 @@ def main():
         anum+=1
     print("**********************************  ANA  End**********************************\n")
     print("Analysis Done.\n")
-    
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func":"SRA_Analysis", "time": str(time.time() - start)})
+    print('Done,total cost', time.time() - start, 'secs')
     return 0
 
 if __name__ == '__main__':
