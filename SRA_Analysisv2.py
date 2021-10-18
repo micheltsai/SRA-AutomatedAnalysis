@@ -126,6 +126,7 @@ def main():
 
     #gnum=1
     print("**********************************  QUALITYCHECKED  **********************************\n")
+    Qual_start=time.time()
     for g in genomes[gnum:]:
         g = g.strip("\n")
         print("**********************************   {} / {}   **********************************\n".format(gnum+1, len(genomes)))
@@ -150,6 +151,11 @@ def main():
         gnum += 1
         print("targetPAth = {}".format(targetPath))
     print("**********************************  QUALITYCHECKED END  **********************************\n")
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "QC time", "time": str(time.time() - qual_start)})
     print("QualityCheck Done.\n")
     print("********************************************************************\n")
 
@@ -167,17 +173,27 @@ def main():
             acheck=f.readlines()
             print(acheck)
             anum=len(acheck)-1
-
+    all_analysis_time=time.time()
     for target in tlines[anum:]:
-        print("**********************************   {} / {}   **********************************\n".format(anum + 1,
-                                                                                                           len(tlines)))
+        print("**********************************   {} / {}   **********************************\n".format(anum + 1,len(tlines)))
+        analysis_time=time.time()
         target=target.split(":")[0]
         target_=target.replace(current_path,".")
         ana_cmd="python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_,outdir,mlstS,amrS)
         print(ana_cmd)
         utils_.run_cmd3(ana_cmd)
         anum+=1
+        with open("./ana_time.csv", "a+") as f:
+            fieldnames = ["func", "time"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow({"func": "{} analysis time".format(target_), "time": str(time.time() - analysis_time)})
     print("**********************************  ANA  End**********************************\n")
+    with open("./ana_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "all analysis time", "time": str(time.time() - all_analysis_time)})
     print("Analysis Done.\n")
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
