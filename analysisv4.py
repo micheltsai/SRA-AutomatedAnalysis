@@ -324,44 +324,31 @@ def main():
     print(amrdf.Gene_symbol)
     print(amrdf.Element_subtype)
 
-    ## arm format: [, , ,][][]
     amr_format=""
-    amr_sym=""
-    alist=list(amrdf.Gene_symbol)
-    for y in range(0,len(alist)):
-        amr_format+=alist[y]
-        amr_sym+=alist[y]
-        if y != len(alist)-1:
-            amr_format+=","
-            amr_sym+=","
+    point_format=""
+    sym_list=list(amrdf.Gene_symbol)
+    sub_list=list(amrdf.Element_subtype)
+    for i in range(0,len(sym_list)):
+        if sub_list[i] == "AMR":
+            if len(point_format)>0:
+                amr_format+=","
+            amr_format+=sym_list[i]
+        elif sub_list[i] == "POINT":
+            if len(point_format)>0:
+                point_format+=","
+            point_format+=sym_list[i]
 
     print(amr_format)
+    print(point_format)
 
-
-    amr_sub=""
-    aalist=list(amrdf.Element_subtype)
-    if len(aalist)!=0:
-        amr_format += ","
-    for x in range(0,len(aalist)):
-        amr_format+=aalist[x]
-        amr_sub +=alist[x]
-        if x != len(aalist)-1:
-            amr_format += ","
-            amr_sub+=","
-
-
-    #amr_format+=amrdf.Element_subtype
-    #aaalist=list(amrdf.Method)
-    #amr_method=""
-    #for x in range(0,len(aaalist)):
-    #    amr_format+=aaalist[x]
-    #    amr_method+=aaalist[x]
-     #   if x !=len(aaalist)-1:
-     #       amr_format += ","
-    #        amr_method+=","
-
-    #amr_format += amrdf.Method
-
+    #if len(aalist)!=0:
+    #    amr_format += ","
+    #for x in range(0,len(aalist)):
+    #    amr_format+=aalist[x]
+    #    amr_sub +=alist[x]
+    #    if x != len(aalist)-1:
+    #        amr_format += ","
+    #        amr_sub+=","
 
 
     #read sistr 'serovar'
@@ -393,7 +380,7 @@ def main():
     dict = {'Accession': inId.split("_")[0],
             'MLST': sequenceType,
             'AMR': amr_format,
-            #'Point':amrdf.Element_subtype,
+            'Point':point_format,
             'Serotype': sistrdf.serovar,
             'Inc Type': plas_format
             }
