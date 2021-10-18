@@ -40,8 +40,8 @@ def main():
 
     outdir = args.outdir
     utils_.mkdir_join(outdir)
-    #refPath = utils_.getRefListPath(args.ref, outdir)
-    refPath=args.ref
+    refPath = utils_.getRefListPath(args.ref, outdir)
+    #refPath=args.ref
     Assem_path = os.path.join(outdir, "Assembled/")
     BUSCOresult = os.path.join(outdir,"BUSCOresult.txt")
     check = os.path.join(outdir, "QCcheck.log")
