@@ -3,7 +3,7 @@ import sys
 import time
 import traceback
 
-import utils_
+
 def main():
     start = time.time()
     cmd="python3 SRA_Analysis.py --PDAT "
@@ -12,13 +12,13 @@ def main():
         for x in range(0, 12):
             for d in range(1, Month[x] + 1):
                 ds = time.time()
-                c = datetime.datetime(2020, x + 1, d)
+                c = datetime.date(2020, x + 1, d)
                 tmp = c.strftime("%Y/%m/%d")
                 cmd2 = cmd + tmp
                 print(cmd2)
-                utils_.run_cmd3(cmd2)
-                with open("./Automate_check.log", "a+") as f:
-                    f.write("{}:{}:{}\n".format(tmp, time.time() - ds, time.time() - start))
+                #utils_.run_cmd3(cmd2)
+                #with open("./Automate_check.log", "a+") as f:
+                #    f.write("{}:{}:{}\n".format(tmp, time.time() - ds, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
