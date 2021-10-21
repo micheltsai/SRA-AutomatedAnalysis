@@ -63,13 +63,15 @@ if __name__ == '__main__':
                 c = datetime.datetime(2020, x + 1, d)
                 tmp = c.strftime("%Y/%m/%d")
                 download_prog=multiprocessing.Process(target=Download, args=(tmp,))
-
-                analysis_prog=multiprocessing.Process(target=Analysis, args=(tmp,))
+                download_prog2 = multiprocessing.Process(target=Download, args=(tmp,))
+                #analysis_prog=multiprocessing.Process(target=Analysis, args=(tmp,))
 
                 download_prog.start()
+                download_prog2.start()
                 progress_bar("Download")
-                analysis_prog.start()
-                progress_bar("Analysis")
+
+                #analysis_prog.start()
+                #progress_bar("Download")
 
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}:{}:{}\n".format(tmp, time.time() - ds, time.time() - start))
