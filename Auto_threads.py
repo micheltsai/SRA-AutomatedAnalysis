@@ -99,7 +99,7 @@ if __name__ == '__main__':
             ds = time.time()
             date=""
             #date = datetime.date(2020, x + 1, d).strftime("%Y/%m/%d")
-            date="{}/{}/{}".format(2020,x+1,d)
+            date="{}/{}/{}".format(str(2020),str(x+1),str(d))
             ######
             pdat = date.replace("/", "")
             new_outdir = os.path.join(outdir, pdat)
