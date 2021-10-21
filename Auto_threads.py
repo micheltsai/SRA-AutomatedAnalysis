@@ -44,7 +44,25 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
+def Download():
+    one_ = time.time()
+    #print(
+    #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
+    #                                                                                           len(idlist)))
+    #num += 1
+    print("x = {}".format(x))
+    # outdir__ = os.path.join(output, "out")
+    outdir__ = os.path.join(new_outdir, "Assembled")
 
+    final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+    if os.path.isfile(final_dir):
+        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+    else:
+        utils_.prefetch_sra(x, sra_dir)
+        print("Download {}\n.".format(x))
+        with open(check_log, "a+") as f:
+            f.write("{}\n".format(x))
+    print('Done,total cost', time.time() - one_, 'secs')
 
 
 def Analysis(date):
@@ -137,26 +155,13 @@ if __name__ == '__main__':
                 print("Toal", len(need_run), "sra runs need to downlaod.")
 
                 num = len(finish_run)
+                progress_list=[]
                 for x in need_run:
-                    one_ = time.time()
-                    print(
-                        "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
-                                                                                                                len(idlist)))
-                    num += 1
-                    print("x = {}".format(x))
-                    # outdir__ = os.path.join(output, "out")
-                    outdir__ = os.path.join(new_outdir, "Assembled")
+                    progress_list.append(multiprocessing.Process(target=Download, args=(x,)))
+                    progress_list[i].start()
 
-                    final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
-                    if os.path.isfile(final_dir):
-                        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
-                    else:
-                        utils_.prefetch_sra(x, sra_dir)
-                        print("Download {}\n.".format(x))
-                        with open(check_log, "a+") as f:
-                            f.write("{}\n".format(x))
-                    print('Done,total cost', time.time() - one_, 'secs')
-
+                for x in need_run:
+                    progress_list[i].join()
                 print("Download all {}".format(date))
                 print('Done,total cost', time.time() - start, 'secs')
                 ##########
