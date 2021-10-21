@@ -97,6 +97,7 @@ if __name__ == '__main__':
     for mon in range(7, 8):
         for d in range(1, Month[mon] + 1):
             ds = time.time()
+
             date = datetime.date(2020, mon + 1, d).strftime("%Y/%m/%d")
             #temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
             ######
@@ -168,6 +169,7 @@ if __name__ == '__main__':
                 f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
             print("Download all {}".format(date))
             print('Done,total cost', time.time() - start, 'secs')
+            time.sleep(10)
     print('Done,total cost', time.time() - start, 'secs')
     ##########
 
