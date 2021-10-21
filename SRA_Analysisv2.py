@@ -129,7 +129,7 @@ def main():
     Qual_start=time.time()
     for g in genomes[gnum:]:
         g = g.strip("\n")
-        qual_start=time.time()
+
         print("**********************************   {} / {}   **********************************\n".format(gnum+1, len(genomes)))
         print(g)
         # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
@@ -156,7 +156,7 @@ def main():
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "QC time", "time": str(time.time() - qual_start)})
+        writer.writerow({"func": "QC time", "time": str(time.time() - Qual_start)})
     print("QualityCheck Done.\n")
     print("********************************************************************\n")
 
