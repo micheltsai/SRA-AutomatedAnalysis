@@ -136,7 +136,7 @@ if __name__ == '__main__':
             run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
             print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-            sra_dir = os.path.join(outdir, "sra")  # .sra file
+            sra_dir = os.path.join(new_outdir, "sra")  # .sra file
             utils_.mkdir_join(sra_dir)
 
             read_log_ = time.time()
