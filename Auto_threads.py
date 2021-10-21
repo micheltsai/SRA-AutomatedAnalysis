@@ -44,7 +44,7 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
-def Download():
+def Download(x):
     one_ = time.time()
     #print(
     #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
