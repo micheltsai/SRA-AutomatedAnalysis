@@ -76,7 +76,7 @@ if __name__ == '__main__':
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
-    pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
+
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
     setting_path = os.path.join(current_path, "SRAsettings.txt")
@@ -96,6 +96,7 @@ if __name__ == '__main__':
     utils_.mkdir_join(outdir)
     for mon in range(7, 8):
         for d in range(1, Month[mon] + 1):
+            pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
             ds = time.time()
 
             date = datetime.date(2020, mon + 1, d).strftime("%Y/%m/%d")
@@ -169,7 +170,7 @@ if __name__ == '__main__':
                 f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
             print("Download all {}".format(date))
             print('Done,total cost', time.time() - start, 'secs')
-            time.sleep(10)
+            time.sleep(20)
     print('Done,total cost', time.time() - start, 'secs')
     ##########
 
