@@ -162,12 +162,15 @@ if __name__ == '__main__':
 
             for i in range(prog_num):
                 progress_list[i].join()
-            print("Download all {}".format(date))
-            print('Done,total cost', time.time() - start, 'secs')
-            ##########
 
             with open("./Automate_check.log", "a+") as f:
                 f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+            print("Download all {}".format(date))
+            print('Done,total cost', time.time() - start, 'secs')
+    print('Done,total cost', time.time() - start, 'secs')
+    ##########
+
+
 
 
 
