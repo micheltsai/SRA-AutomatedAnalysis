@@ -156,11 +156,13 @@ if __name__ == '__main__':
 
                 num = len(finish_run)
                 progress_list=[]
+                prog_num=0
                 for x in need_run:
                     progress_list.append(multiprocessing.Process(target=Download, args=(x,)))
-                    progress_list[i].start()
+                    progress_list[prog_num].start()
+                    prog_num+=1
 
-                for x in need_run:
+                for i in range(prog_num):
                     progress_list[i].join()
                 print("Download all {}".format(date))
                 print('Done,total cost', time.time() - start, 'secs')
