@@ -58,7 +58,7 @@ if __name__ == '__main__':
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
-
+    pattern == "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
     setting_path = os.path.join(current_path, "SRAsettings.txt")
@@ -103,6 +103,7 @@ if __name__ == '__main__':
                 # check_log = os.path.join(log_dir, "check.log")
 
                 # print(date)
+
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
 
