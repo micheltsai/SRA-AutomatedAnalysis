@@ -97,11 +97,10 @@ if __name__ == '__main__':
     for x in range(7, 8):
         for d in range(1, Month[x] + 1):
             ds = time.time()
-            date=""
             #date = datetime.date(2020, x + 1, d).strftime("%Y/%m/%d")
-            date="{}/{}/{}".format(str(2020),str(x+1),str(d))
+            temp="{}/{}/{}".format(str(2020),str(x+1),str(d))
             ######
-            pdat = date.replace("/", "")
+            pdat = temp.replace("/", "")
             new_outdir = os.path.join(outdir, pdat)
             utils_.mkdir_join(new_outdir)
             print("output: {}\n".format(new_outdir))
@@ -122,7 +121,7 @@ if __name__ == '__main__':
 
             # print(date)
 
-            pattern, count = utils_.count_egquery(pattern, date, date)
+            pattern, count = utils_.count_egquery(pattern, temp, temp)
             print("pattern: {}\ncount: {}\n".format(pattern, count))
 
             i_e_ = time.time()
@@ -166,8 +165,8 @@ if __name__ == '__main__':
                 progress_list[i].join()
 
             with open("./Automate_check.log", "a+") as f:
-                f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-            print("Download all {}".format(date))
+                f.write("{}:{}:{}\n".format(temp, time.time() - ds, time.time() - start))
+            print("Download all {}".format(temp))
             print('Done,total cost', time.time() - start, 'secs')
     print('Done,total cost', time.time() - start, 'secs')
     ##########
