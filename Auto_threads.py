@@ -94,13 +94,13 @@ if __name__ == '__main__':
         i += 1
     outdir = setList[10].strip("\n").split("=")[1]
     utils_.mkdir_join(outdir)
-    for x in range(7, 8):
-        for d in range(1, Month[x] + 1):
+    for mon in range(7, 8):
+        for d in range(1, Month[mon] + 1):
             ds = time.time()
-            #date = datetime.date(2020, x + 1, d).strftime("%Y/%m/%d")
-            temp="{}/{}/{}".format(str(2020),str(x+1),str(d))
+            date = datetime.date(2020, mon + 1, d).strftime("%Y/%m/%d")
+            #temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
             ######
-            pdat = temp.replace("/", "")
+            pdat = date.replace("/", "")
             new_outdir = os.path.join(outdir, pdat)
             utils_.mkdir_join(new_outdir)
             print("output: {}\n".format(new_outdir))
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
             # print(date)
 
-            pattern, count = utils_.count_egquery(pattern, temp, temp)
+            pattern, count = utils_.count_egquery(pattern, date, date)
             print("pattern: {}\ncount: {}\n".format(pattern, count))
 
             i_e_ = time.time()
@@ -156,8 +156,8 @@ if __name__ == '__main__':
             num = len(finish_run)
             progress_list = []
             prog_num = 0
-            for x in need_run:
-                progress_list.append(multiprocessing.Process(target=Download, args=(x,)))
+            for k in need_run:
+                progress_list.append(multiprocessing.Process(target=Download, args=(k,)))
                 progress_list[prog_num].start()
                 prog_num += 1
 
@@ -165,8 +165,8 @@ if __name__ == '__main__':
                 progress_list[i].join()
 
             with open("./Automate_check.log", "a+") as f:
-                f.write("{}:{}:{}\n".format(temp, time.time() - ds, time.time() - start))
-            print("Download all {}".format(temp))
+                f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+            print("Download all {}".format(date))
             print('Done,total cost', time.time() - start, 'secs')
     print('Done,total cost', time.time() - start, 'secs')
     ##########
