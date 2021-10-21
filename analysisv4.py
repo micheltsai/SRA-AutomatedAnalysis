@@ -417,8 +417,8 @@ def main():
     #after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check,"a+") as f:
         f.write("Run {} is ok.\n".format(inId))
-    shutil.rmtree(outdir_)
-    print("remove ./analysis\n")
+    #shutil.rmtree(outdir_)F
+    #print("remove ./analysis\n")
 
     ###info
     #with open(allinfopath,"a+") as f:
