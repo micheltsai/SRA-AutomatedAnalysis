@@ -29,7 +29,7 @@ def main():
     parser.add_argument("--PDAT", required=True, help="Publication Date[PDAT] of Runs.")
     #parser.add_argument("--output", required=True, help="Folder to save Contigs.fa after assembly of eah runs.")
     parser.add_argument("--threads", default=8, type=int, help="Number of threads to use. default: 8")
-    parser.add_argument("--n", default=3, help="count of download sra file eahc time", type=int)
+    parser.add_argument("--n", default=3, help="count of download sra file each time", type=int)
     args = parser.parse_args()
     pattern = args.pattern
     # print(pattern)
