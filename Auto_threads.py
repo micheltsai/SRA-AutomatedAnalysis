@@ -98,7 +98,7 @@ if __name__ == '__main__':
         for x in range(0, 12):
             for d in range(1, Month[x] + 1):
                 ds = time.time()
-                date = datetime.datetime(2020, x + 1, d).strftime("%Y/%m/%d")
+                date = datetime.strftime(str(datetime.datetime(2020, x + 1, d)),"%Y/%m/%d")
                 ######
                 pdat = date.replace("/", "")
                 new_outdir = os.path.join(outdir, pdat)
