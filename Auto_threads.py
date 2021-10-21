@@ -94,7 +94,7 @@ if __name__ == '__main__':
         i += 1
     outdir = setList[10].strip("\n").split("=")[1]
     utils_.mkdir_join(outdir)
-    for x in range(0, 12):
+    for x in range(7, 8):
         for d in range(1, Month[x] + 1):
             ds = time.time()
             date = datetime.datetime(2020, x + 1, d).strftime("%Y/%m/%d")
