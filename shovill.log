@@ -1,0 +1,11 @@
+[kmc] /bin/sh: kmc: command not found
+[lighter] /bin/sh: lighter: command not found
+/bin/sh: flash: command not found
+[spades] /bin/sh: spades.py: command not found
+[bwa-index] /bin/sh: bwa: command not found
+[faidx] /bin/sh: samtools: command not found
+[bwa+samtools-sort] /bin/sh: bwa: command not found
+[bwa+samtools-sort] /bin/sh: samclip: command not found
+[bwa+samtools-sort] /bin/sh: samtools: command not found
+[samtools-index] /bin/sh: samtools: command not found
+[pilon] /bin/sh: pilon: command not found
