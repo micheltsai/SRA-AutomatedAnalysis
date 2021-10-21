@@ -3,20 +3,54 @@ from __future__ import print_function
 import datetime
 import multiprocessing
 import os
+import shlex
+import subprocess
 import sys
 import time
 import traceback
 
 import utils_
 
+
+def run_cmd(cmd):
+    cmd=shlex.split(cmd)
+    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #print (cmd)
+    print("--------------------------------------\nSubprogram output:\n")
+    while p.poll() is None:
+        #progress_bar("sub excuting")
+        line = p.stdout.readline()
+        line = line.strip()
+        if line:
+            line_=line.decode().split("\n")
+            for s in line_:
+                print (str("{}\n".format(s)))
+            sys.stdout.flush()
+            sys.stderr.flush()
+    if p.returncode ==0:
+        print ("Subprogram sucess")
+    else:
+        print ("Subprogram failed")
+
+    print ("-------------------------\n")
+    return p
+
+def progress_bar(Category):
+    for i in range(1, 101):
+        print("\r{}: ".format(Category),end="")
+        print("[{}] {}%".format("*" * (i // 2), i), end="")
+        sys.stdout.flush()
+        time.sleep(0.02)
+    print ("\n")
+
 def Download(date):
     print("Dowload threadPID",os.getgid())
     print("Download 父進程編號",os.getppid())
-    utils_.run_cmd("python3 DownloadFile.py --PDAT {}".format(date))
+    run_cmd("python3 DownloadFile.py --PDAT {}".format(date))
 def Analysis(date):
     print("Analysis threadPID", os.getgid())
     print("Analysis 父進程編號", os.getppid())
-    utils_.run_cmd("python3 SRA_Analysisv2.py --PDAT {}".format(date))
+    run_cmd("python3 SRA_Analysisv2.py --PDAT {}".format(date))
 
     return 0
 if __name__ == '__main__':
@@ -29,10 +63,13 @@ if __name__ == '__main__':
                 c = datetime.datetime(2020, x + 1, d)
                 tmp = c.strftime("%Y/%m/%d")
                 download_prog=multiprocessing.Process(target=Download, args=(tmp,))
+
                 analysis_prog=multiprocessing.Process(target=Analysis, args=(tmp,))
 
                 download_prog.start()
+                progress_bar("Download")
                 analysis_prog.start()
+                progress_bar("Analysis")
 
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}:{}:{}\n".format(tmp, time.time() - ds, time.time() - start))
