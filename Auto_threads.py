@@ -99,8 +99,8 @@ def SRA_Analysis(x):
     Download(x)
     Assembled(x)
     #####
-    genome = os.path.join(ass_dir, "{}_contig.fa")
-    qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,outdir)
+    genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
+    qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,new_outdir)
     try:
         targetPath = run_cmd(qual_cmd)
     except Exception as e:
