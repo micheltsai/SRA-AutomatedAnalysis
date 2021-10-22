@@ -80,7 +80,7 @@ def run_cmd(cmd):
     #print (cmd)
     print("--------------------------------------\nSubprogram output:\n")
     while p.poll() is None:
-        progress_bar("sub excuting")
+        #progress_bar("sub excuting")
         line = p.stdout.readline()
         line = line.strip()
         if line:
@@ -216,7 +216,7 @@ class SequenceReadArchive:
 
 def count_egquery(term, date_from , date_to, db = 'sra'):
     pattern = term+f" AND {date_from}[PDAT]:{date_to}[PDAT]"
-    progress_bar("count_egquery")
+    #progress_bar("count_egquery")
     print('Searching pattern:',pattern)
     #查詢PubMed中所有和pattern變數內容相關的文章
     handle = Entrez.egquery(term = pattern)
@@ -232,14 +232,14 @@ def count_egquery(term, date_from , date_to, db = 'sra'):
 ###### new add ######
 def IdList_esearch(term, db, count):
     handle = Entrez.esearch(term = term, db = db, retmax = count)#不設定retmax的話只有20筆資料
-    progress_bar("read and stored IdList")
+    #progress_bar("read and stored IdList")
     d = Entrez.read(handle)
     return d['IdList']
 
 def Get_RunInfo(idlist):
     print('Getting run_info table by idlist...')
     c = len(idlist)
-    progress_bar("read and stored RunInfo")
+    #progress_bar("read and stored RunInfo")
     if c >= 10000:
         print("over 10000 results")
         df_all = pd.DataFrame()
@@ -574,9 +574,11 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     print ("Run {} is ok\n".format(sra_id))
 
     shutil.rmtree(fastq_dir_)
-    progress_bar("remove fastq dir")
+    #progress_bar("remove fastq dir")
+    print("shutil.rmtree(fastq_dir_)\n")
     shutil.rmtree(assemble_dir_)
-    progress_bar("remove assemble dir")
+    print("shutil.rmtree(assemble_dir_)\n")
+    #progress_bar("remove assemble dir")
 
 #Qualitycheck.py
 ##################################
