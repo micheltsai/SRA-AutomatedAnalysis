@@ -99,10 +99,16 @@ def SRA_Analysis(x):
     Download(x)
     Assembled(x)
     #####
+    with open("./threads_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{}".format(x), "time": str(time.time() - SRA_start)})
+
     genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
     qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,new_outdir)
     try:
-        targetPath = run_cmd(qual_cmd)
+    #    targetPath = run_cmd(qual_cmd)
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -114,13 +120,10 @@ def SRA_Analysis(x):
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         sys.exit(e)
-    print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
+    #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
+
     #######
-    with open("./threads_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "{}".format(x), "time": str(time.time() - SRA_start)})
+
 
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(x))
