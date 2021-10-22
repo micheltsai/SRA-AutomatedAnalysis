@@ -66,7 +66,8 @@ def Download(x):
         print("Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
         #    f.write("{}\n".format(x))
-    print('Done,total cost', time.time() - one_, 'secs')
+    dltime=time.time() - one_
+    print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
 
@@ -102,29 +103,32 @@ def SRA_Analysis(x):
     Download(x)
     Assembled(x)
     #####
+    genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
+    qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,new_outdir)
+    try:
+        targetPath = run_cmd(qual_cmd)
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        sys.exit(e)
+    print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
+    target_ = targetPath.encode("utf-8").replace(current_path, ".")
+    ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
+    print(ana_cmd)
+    run_cmd(ana_cmd)
+    
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({"func": "{}".format(x), "time": str(time.time() - SRA_start)})
-
-    genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
-    qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,new_outdir)
-    #try:
-    #    targetPath = run_cmd(qual_cmd)
-    #except Exception as e:
-    #    error_class = e.__class__.__name__  # 取得錯誤類型
-    #    detail = e.args[0]  # 取得詳細內容
-    #    cl, exc, tb = sys.exc_info()  # 取得Call Stack
-    #    lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-    #    fileName = lastCallStack[0]  # 取得發生的檔案名稱
-    #    lineNum = lastCallStack[1]  # 取得發生的行號
-    #    funcName = lastCallStack[2]  # 取得發生的函數名稱
-    #    errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
-    #    print(errMsg)
-    #    sys.exit(e)
-    #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
-
     #######
 
 
@@ -166,7 +170,7 @@ if __name__ == '__main__':
 
     #####################
     for mon in range(7, 8):
-        for d in range(1, Month[mon] + 1):
+        for d in range(1, 2):
             pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
             ds = time.time()
 
