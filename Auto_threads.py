@@ -100,7 +100,7 @@ def SRA_Analysis(x):
     genome = os.path.join(ass_dir, "{}_contig.fa")
     qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_dir,genome , buscoDB, buscoMode,outdir)
     try:
-        targetPath = utils_.run_cmd3(qual_cmd)
+        targetPath = run_cmd(qual_cmd)
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -114,7 +114,7 @@ def SRA_Analysis(x):
         sys.exit(e)
     print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
     #######
-    utils_.run_cmd3("")
+
 
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(x))
