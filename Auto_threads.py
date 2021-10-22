@@ -56,8 +56,11 @@ def Download(x):
     outdir__ = os.path.join(new_outdir, "Assembled")
 
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+    sra_file=os.path.join(sra_dir,"{}.sra".format(x))
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+    elif os.path.isfile(sra_file):
+        print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
         utils_.prefetch_sra(x, sra_dir)
         print("Download {}\n.".format(x))

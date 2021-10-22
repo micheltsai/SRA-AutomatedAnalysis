@@ -41,6 +41,7 @@ def mkdir_join(dir):
 def prefetch_sra(sralist,outdir):
     #ss = " ".join(sralist)
     #progress_bar("prefetch")
+    outdir
     try:
         cmd = "prefetch "+sralist+" --output-directory "+outdir
         print (cmd,"\n")
