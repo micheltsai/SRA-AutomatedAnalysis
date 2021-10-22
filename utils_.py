@@ -116,6 +116,7 @@ def run_cmd3(cmd):
 ###############################
 # 獲得分布和質量並生成數據?
 def bases_percentage(filepath, qscore=0):
+    print("####################\nbases_percentage\n")
     cmd=f"seqtk fqchk -q {qscore} {filepath} | grep ALL | awk '{{print $NF}}'"
     print ("cmd: ",cmd)
     p = run_cmd2(cmd)
@@ -130,8 +131,10 @@ MIN_BQ = 3
 
 # 把DNA序列兩端定序結果比較差的序列去掉
 def crop_position(filepath, window_size=3, gap=10):
+    print("#################### crop_postion ####################\n")
     p = run_cmd2("seqtk fqchk {}".format(filepath))
-    progress_bar("crop_postion")
+    #progress_bar("crop_postion")
+    print("crop_postion\n")
     fq_check = p.stdout.decode().strip().split('\n')[3:]
     fq_check = (line.split()[2:6] for line in fq_check)
     content_gaps = []
@@ -158,10 +161,12 @@ def crop_position(filepath, window_size=3, gap=10):
             break
         else:
             crop = len(content_gaps)
+    print("#################### crop_postion END ####################\n")
     return crop, headcrop
 
 
 def trimming(forward_reads, reverse_reads, outdir, threads):
+    print("#################### trimming ####################\n")
     crop, headcrop = crop_position(forward_reads)
     opt = f"CROP:{crop} HEADCROP:{headcrop} ILLUMINACLIP:{ADAPTERS}:2:30:10 LEADING:{MIN_BQ} TRAILING:{MIN_BQ} " \
           f"SLIDINGWINDOW:4:20 MINLEN:36 TOPHRED33"
@@ -170,14 +175,17 @@ def trimming(forward_reads, reverse_reads, outdir, threads):
     cmd = f"java -jar ./trimmomatic-0.39.jar PE -threads {threads} {forward_reads} {reverse_reads} {paired_1} /dev/null" \
           f" {paired_2} /dev/null {opt}"
     run_cmd2(cmd)
-    progress_bar("trimming")
+    #progress_bar("trimming")
+    print("#################### trimming END ####################\n")
     return paired_1, paired_2
 
 
 # sra轉換成fastq
 def dump_fastq_from_sra(srafile, outdir):
-    progress_bar("dump_fastq_from_sra")
+    #progress_bar("dump_fastq_from_sra")
+    print("#################### dump_fastq_from_sra ####################\n")
     run_cmd(f'fastq-dump --split-files --outdir {outdir} {srafile}')
+    print("#################### dump_fastq_from_sra END ####################\n")
 
 
 class SequenceReadArchive:
@@ -215,6 +223,7 @@ class SequenceReadArchive:
         return self._stat_tree.find('Statistics').attrib['nreads']
 
 def count_egquery(term, date_from , date_to, db = 'sra'):
+    print("#################### count_egquery ####################\n")
     pattern = term+f" AND {date_from}[PDAT]:{date_to}[PDAT]"
     #progress_bar("count_egquery")
     print('Searching pattern:',pattern)
@@ -224,6 +233,7 @@ def count_egquery(term, date_from , date_to, db = 'sra'):
     #查詢d中的標籤`eGQueryResult`,  將DbName改成Db(`sra`)
     query = list(filter(lambda x: x['DbName'] == db, d['eGQueryResult']))[0]
     print('Total',query['Count'],'results in NCBI',db,'database.')
+    print("#################### count_egquery END ####################\n")
     return pattern, query['Count']
     #term<---main.pattern
     #db='sra'
@@ -424,6 +434,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
+    start_114=time.time()
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_ = os.path.join(sra_dir,sra_id)
     path_=path_+"/"+sra_id+".sra"
@@ -572,6 +583,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     f.write("Run {} is ok\n".format(sra_id))
     f.close()
     print ("Run {} is ok\n".format(sra_id))
+    print('{} Done,total cost'.format(sra_id), time.time() - start_114, 'secs')
 
     shutil.rmtree(fastq_dir_)
     #progress_bar("remove fastq dir")

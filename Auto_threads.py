@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import csv
 import datetime
 import multiprocessing
 import os
@@ -94,6 +95,7 @@ def Assembled(x):
 
 
 def SRA_Analysis(x):
+    SRA_start=time.time()
     Download(x)
     Assembled(x)
     #####
@@ -114,7 +116,11 @@ def SRA_Analysis(x):
         sys.exit(e)
     print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
     #######
-
+    with open("./threads_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{}".format(x), "time": str(time.time() - SRA_start)})
 
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(x))
