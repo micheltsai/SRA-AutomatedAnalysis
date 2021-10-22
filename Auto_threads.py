@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     #####################
     for mon in range(7, 8):
-        for d in range(1, 2):
+        for d in range(1, 4):
             pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
             ds = time.time()
 
