@@ -237,14 +237,18 @@ if __name__ == '__main__':
             num = len(finish_run)
             progress_list = []
             prog_num = 0
+
+            pool=multiprocessing.Pool(processes=4)
             for k in need_run:
-
-                progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                progress_list[prog_num].start()
+                print("########### hello %d ############\n"%prog_num)
+                pool.apply_async(target=SRA_Analysis, args=(k,))
+                #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                #progress_list[prog_num].start()
                 prog_num += 1
-
-            for i in range(prog_num):
-                progress_list[i].join()
+            pool.close()
+            pool.join()
+            #for i in range(prog_num):
+            #    progress_list[i].join()
 
 
             with open("./Automate_check.log", "a+") as f:
