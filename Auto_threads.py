@@ -123,7 +123,7 @@ def SRA_Analysis(x):
     ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
     print(ana_cmd)
     run_cmd(ana_cmd)
-    
+
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -167,6 +167,7 @@ if __name__ == '__main__':
     buscoMode = setList[14].strip("\n").split("=")[1]
     mlstS = setList[16].strip("\n").split("=")[1]
     amrS = setList[17].strip("\n").split("=")[1]
+    thread=4
 
     #####################
     for mon in range(7, 8):
