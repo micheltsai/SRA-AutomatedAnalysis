@@ -241,7 +241,7 @@ if __name__ == '__main__':
             pool=multiprocessing.Pool(processes=4)
             for k in need_run:
                 print("########### hello %d ############\n"%prog_num)
-                pool.apply_async(target=SRA_Analysis, args=(k,))
+                pool.apply_async(SRA_Analysis, (k,))
                 #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                 #progress_list[prog_num].start()
                 prog_num += 1
