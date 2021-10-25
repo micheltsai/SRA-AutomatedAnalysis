@@ -128,7 +128,8 @@ def SRA_Analysis(x):
     ana_cmd = "python3 analysisv4.py -i {} -o {} -mlstS {} -amrS {}".format(target_, outdir, mlstS, amrS)
     print(ana_cmd)
     run_cmd(ana_cmd)
-
+    print("Run {} is ok\n".format(x))
+    with open(check_log)
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -189,7 +190,7 @@ if __name__ == '__main__':
             print("output: {}\n".format(new_outdir))
 
             #Downloadcheck_log = os.path.join(new_outdir, "Downloadcheck.log")
-            check_log =os.path.join(new_outdir,"check.log")
+            check_log =os.path.join(new_outdir,"Analysischeck.log")
             # commit
             # run_cmd2("touch {}".format("check.log"))
             #myfile = Path(Downloadcheck_log)

@@ -586,7 +586,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     f = open(check_log, 'a')
     f.write("Run {} is ok\n".format(sra_id))
     f.close()
-    print ("Run {} is ok\n".format(sra_id))
+    print ("Assembled Run {} is ok\n".format(sra_id))
     print('{} Done,total cost'.format(sra_id), time.time() - start_114, 'secs')
 
     shutil.rmtree(fastq_dir_)
