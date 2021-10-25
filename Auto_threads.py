@@ -301,13 +301,13 @@ def QualityCheck(genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(input,outdir):
+def Analysis(input,anoutdir):
     print("#####################  Analysis  #####################\n")
-    outdir = new_outdir
+    anoutdir = new_outdir
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
     amr_organism = amrS
-    utils_.mkdir_join(outdir)
+    utils_.mkdir_join(anoutdir)
 
     # get input id
     inlist = input.split("/")
@@ -326,18 +326,18 @@ def Analysis(input,outdir):
 
     # add outpath "analysis"
     utils_.mkdir_join(outdir)
-    outdir_ = os.path.join(outdir, "analysis")
-    utils_.mkdir_join(outdir_)
-    print("analysis outdir: {}\n".format(outdir_))
+    anoutdir_ = os.path.join(outdir, "analysis")
+    utils_.mkdir_join(anoutdir_)
+    print("analysis outdir: {}\n".format(anoutdir_))
 
     # set {genomoe}_log_output
-    logpath = os.path.join(outdir_, inId)
+    logpath = os.path.join(anoutdir_, inId)
     utils_.mkdir_join(logpath)
     logpath = os.path.join(logpath, "analysis_log.txt")
 
     # get relative output dir path
-    outdir_list = outdir_.split("/")
-    relative_path2 = outdir_.replace(current_path, ".")
+    outdir_list = anoutdir_.split("/")
+    relative_path2 = anoutdir_.replace(current_path, ".")
     print("relative2: {}\n".format(relative_path2))
     # relative_path="./"+outdir_list[len(outdir_list)-1]
     print("relative_path: {}".format(relative_path2))
@@ -639,8 +639,8 @@ def SRA_Analysis(x):
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
         targetPath=QualityCheck(genome)
-        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
-        target_ = targetPath.encode("utf-8").replace(current_path, ".")
+        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
+        target_ = targetPath.replace(current_path, ".")
         Analysis(target_,new_outdir)
         print("Run {} is ok\n".format(x))
     except Exception as e:
