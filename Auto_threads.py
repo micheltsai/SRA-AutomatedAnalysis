@@ -5,6 +5,7 @@ import datetime
 import multiprocessing
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -95,6 +96,10 @@ def Assembled(x):
         # print ("shutil.rmtree({})\n".format(current_path))
         #utils_.run_cmd2("rm -rf {}".format(current_path))
         #print("remove {}\n".format(current_path))
+        rmsra_cmd="rm -rf {}".format(sra_file)
+        print(rmsra_cmd)
+        run_cmd(rmsra_cmd)
+
 
 
 
@@ -245,12 +250,13 @@ if __name__ == '__main__':
             num = len(finish_run)
             progress_list = []
             prog_num = 0
-
+            finish_num=len(need_run)
             pool=multiprocessing.Pool(processes=4)
             for k in need_run:
                 print("########### hello %d ############\n"%prog_num)
+                print("########## {}/{} ###########".format(finish_num,count))
                 pool.apply_async(SRA_Analysis, (k,))
-                #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                 #progress_list[prog_num].start()
                 prog_num += 1
             pool.close()

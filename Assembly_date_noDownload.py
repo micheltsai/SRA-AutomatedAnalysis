@@ -166,11 +166,14 @@ def main():
                 #utils_.prefetch_sra(x,sra_dir)
                 one_run_ass=time.time()
                 sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
-                if os.path.isfile(sra_file):
-                    print("have {}.sra file.\n".format(x))
-                else:
-                    utils_.prefetch_sra(x, sra_dir)
-                    print("not found {}.sra, Download now\n".format(x))
+                #if os.path.isfile(sra_file):
+                #    print("have {}.sra file.\n".format(x))
+                #else:
+                #    utils_.prefetch_sra(x, sra_dir)
+                #    print("not found {}.sra, Download now\n".format(x))
+
+                #while os.path.isfile(sra_file) is False:
+                #    os.wait()
 
                 utils_.run_for_114(x,sra_dir,fastq_dir,assemble_dir,output,threads,gsize,start,check_log)
 

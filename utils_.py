@@ -515,6 +515,9 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
             run_cmd("rm -r {}".format(fastq_dir_))
             #agian
             run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            print("remove fastq\n resart run_for_114 to Assembled\ncommit to error.txt\n")
+            with open("./error.txt", "a+") as f:
+                f.write("{} :\n{}\n".format(sra_id,e))
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
             pass
     with open("./ana_time.csv", "a+") as f:
