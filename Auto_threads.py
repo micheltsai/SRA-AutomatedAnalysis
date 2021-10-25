@@ -758,7 +758,8 @@ if __name__ == '__main__':
             num = len(finish_run)
             progress_list = []
             prog_num = 0
-            finish_num=len(need_run)
+            finish_num=0
+            finish_num=len(finish_run)
             pool=multiprocessing.Pool(processes=1)
             for k in need_run:
                 print("########### hello %d ############\n"%prog_num)
