@@ -604,8 +604,8 @@ def getRefListPath(refSeqPath,outdir):
     print("refSeqPath: " + refSeqPath + "\n")
     refListPath = os.path.join(outdir, 'ref.txt')
     if os.path.isfile(refListPath):
-        #run_cmd2("rm {}".format(refListPath))
-        shutil.rmtree(refListPath)
+        run_cmd2("rm -f {}".format(refListPath))
+        #shutil.rmtree(refListPath)
     run_cmd2("find {} -type f >{}".format(refSeqPath,refListPath))
     print("refListPath: "+refListPath+"\n")
     #run_cmd2("cat {}".format(refListPath))
