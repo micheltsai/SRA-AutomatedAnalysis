@@ -108,6 +108,7 @@ def Assembled(x):
 
 
 def QualityCheck(genome_Path):
+    print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir, new_outdir)
     # refPath=args.ref
     Assem_path = os.path.join(new_outdir, "Assembled/")
@@ -301,6 +302,7 @@ def QualityCheck(genome_Path):
     return targetPath
 
 def Analysis(input,outdir):
+    print("#####################  Analysis  #####################\n")
     outdir = new_outdir
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
