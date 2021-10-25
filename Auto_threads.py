@@ -768,6 +768,7 @@ if __name__ == '__main__':
                 progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                 #progress_list[prog_num].start()
                 prog_num += 1
+                finish_num+=1
             pool.close()
             pool.join()
             #for i in range(prog_num):
