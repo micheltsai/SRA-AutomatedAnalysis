@@ -633,15 +633,27 @@ def Analysis(input,outdir):
 
 def SRA_Analysis(x):
     SRA_start=time.time()
-    Download(x)
-    Assembled(x)
-    #####
-    genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
-    targetPath=QualityCheck(genome)
-    print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
-    target_ = targetPath.encode("utf-8").replace(current_path, ".")
-    Analysis(target_,new_outdir)
-    print("Run {} is ok\n".format(x))
+    try:
+        Download(x)
+        Assembled(x)
+        #####
+        genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
+        targetPath=QualityCheck(genome)
+        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8")))
+        target_ = targetPath.encode("utf-8").replace(current_path, ".")
+        Analysis(target_,new_outdir)
+        print("Run {} is ok\n".format(x))
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        sys.exit(e)
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
