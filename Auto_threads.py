@@ -129,7 +129,8 @@ def SRA_Analysis(x):
     print(ana_cmd)
     run_cmd(ana_cmd)
     print("Run {} is ok\n".format(x))
-    with open(check_log)
+    with open(check_log)as f:
+        f.write("Run {} is ok\n".format(x))
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
