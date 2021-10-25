@@ -22,6 +22,7 @@ import utils_
 
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
+    print(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     #print (cmd)
     print("--------------------------------------\nSubprogram output:\n")
