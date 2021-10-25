@@ -653,6 +653,8 @@ def SRA_Analysis(x):
         funcName = lastCallStack[2]  # 取得發生的函數名稱
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
+        with open("./SRA_run_error.txt", "a+") as f:
+            f.write("{} :\n{}\n".format(x, errMsg))
         sys.exit(e)
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
