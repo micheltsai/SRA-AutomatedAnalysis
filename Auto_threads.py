@@ -299,7 +299,7 @@ def QualityCheck(genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(x,input,anoutdir):
+def Analysis(sra_id,input,anoutdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
@@ -604,7 +604,7 @@ def Analysis(x,input,anoutdir):
     #        'sistr':sistrdf.serovar
     #        }
 
-    dict = {'Accession': x,
+    dict = {'Accession': sra_id,
             'MLST': sequenceType,
             'AMR': amr_format,
             'Point': point_format,
@@ -628,18 +628,18 @@ def Analysis(x,input,anoutdir):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(x):
+def SRA_Analysis(sra_id):
     SRA_start=time.time()
     try:
-        Download(x)
-        Assembled(x)
+        Download(sra_id)
+        Assembled(sra_id)
         #####
-        genome = os.path.join(ass_dir, "{}_contig.fa".format(x))
+        genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         targetPath=QualityCheck(genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(x,target_,new_outdir)
-        print("Run {} is ok\n".format(x))
+        Analysis(sra_id,target_,new_outdir)
+        print("Run {} is ok\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -651,16 +651,16 @@ def SRA_Analysis(x):
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         with open("./SRA_run_error.txt", "a+") as f:
-            f.write("{} :\n{}\n".format(x, errMsg))
+            f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "{}".format(x), "time": str(time.time() - SRA_start)})
+        writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
     #######
     with open(check_log,"a+") as f:
-        f.write("Run {} is ok.\n".format(x))
+        f.write("Run {} is ok.\n".format(sra_id))
     return 0
 if __name__ == '__main__':
     start=time.time()
@@ -689,8 +689,8 @@ if __name__ == '__main__':
     #setting_df=pd.DataFrame(settings_dict)
     setting_df=pd.DataFrame.from_dict(settings_dict,orient='index').T
     print(setting_df.columns)
-
-
+    start_date=str(setting_df['start_date'][0])
+    expiry_date=str(setting_df['expiry_date'][0])
     thread=str(setting_df['cpu_thread'][0])
     gsize=str(setting_df['gsize'][0])
     outdir=str(setting_df['output_dir'][0])
@@ -699,6 +699,16 @@ if __name__ == '__main__':
     buscoMode=str(setting_df['Busco_mode'][0])
     mlstS=str(setting_df['MLST_organism'][0])
     amrS=str(setting_df['AMR_organism'][0])
+
+    sd_Y = start_date.split("/")[0]
+    sd_M = start_date.split("/")[1]
+    sd_D = start_date.split("/")[2]
+
+    ed_Y = expiry_date.split("/")[0]
+    ed_M = expiry_date.split("/")[1]
+    ed_D = expiry_date.split("/")[2]
+    print(sd_Y,sd_M,sd_D)
+    print(ed_Y,ed_M,ed_D)
     #thread = setList[1].strip("\n").split("=")[1]
     #gsize = setList[4].strip("\n").split("=")[1]
     #n = setList[7].strip("\n").split("=")[1]

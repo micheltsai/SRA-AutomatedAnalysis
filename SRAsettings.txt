@@ -1,3 +1,7 @@
+# (date) to (date)
+start_date=2020/08/01
+expiry_date=2020/08/03
+
 #Number of threads to use. default: 8
 cpu_thread=8
 
