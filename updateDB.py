@@ -2,19 +2,12 @@ import pandas as pd
 import pymysql
 def main():
     print("update data to Databases\n")
-    db_settings={
-        "host":"140.112.165.122",
-        "port":3306,
-        "user":"root",
-        "password":"tumvgk01",
-        "db":"SRA_Analysis",
-        "charset":"utf8"
-    }
+
     file="/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/final1015.csv"
     df = pd.read_csv(file)
     # print(df)
     df = pd.DataFrame(df)
-    df.columns = ["","Accession", "mlst", "plasmidfinder", "amr_gane", "sistr"]
+    df.columns = ["","Accession", "mlst", "AMR", "Point", "amr_gane", "sistr"]
     print(df)
     df=df.fillna(value="NAN")
     print(df)
@@ -36,9 +29,9 @@ def main():
     #insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(0,len(df)):
-        print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"plasmidfinder"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc[i,"sistr"]))
+        print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"mlst"])+" "+str(df.loc[i,"AMR"])+str(df.loc[i,"Point"])+" "+str(df.loc[i,"amr_gane"])+" "+str(df.loc[i,"sistr"]))
         insert = "INSERT INTO `Final`(`Accession`, `MLST`, `AMR`, `Point`, `Serotype`, `Inc_Type`) VALUES ('{}',{},'{}','{}','{}','{}') ".format(
-            str(df.loc[i,"Accession"]),int(df.loc[i,"mlst"]),str(df.loc[i,"plasmidfinder"]),"111",str(df.loc[i,"amr_gane"]),str(df.loc[i,"sistr"]))
+            str(df.loc[i,"Accession"]),int(df.loc[i,"mlst"]),str(df.loc[i,"AMR"]),str(df.loc[i,"Point"]),str(df.loc[i,"amr_gane"]),str(df.loc[i,"sistr"]))
         print(insert)
         try:
             cursor.execute(insert)
