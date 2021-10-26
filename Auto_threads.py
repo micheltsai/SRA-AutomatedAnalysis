@@ -299,7 +299,7 @@ def QualityCheck(genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(input,anoutdir):
+def Analysis(x,input,anoutdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
@@ -638,7 +638,7 @@ def SRA_Analysis(x):
         targetPath=QualityCheck(genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(target_,new_outdir)
+        Analysis(x,target_,new_outdir)
         print("Run {} is ok\n".format(x))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
