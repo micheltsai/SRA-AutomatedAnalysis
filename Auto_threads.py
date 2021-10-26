@@ -167,7 +167,7 @@ def QualityCheck(genome_Path):
     # fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     # fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
     # fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
-    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
+    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t 4 --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -242,7 +242,7 @@ def QualityCheck(genome_Path):
 
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
-    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c 4 -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         targetPath, gID, outdir, db, mode, busco_db)
     # cmd_bus = 'busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
     #   targetPath, gID, outdir, db, mode, busco_db)
@@ -299,7 +299,7 @@ def QualityCheck(genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,anoutdir):
+def Analysis(input,target_ref,anoutdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
@@ -473,7 +473,7 @@ def Analysis(sra_id,input,anoutdir):
         input_list = input.split("/")
         input_name = input_list[len(input_list) - 1]
         print("name: ", input_name, "\n")
-        sistr_cmd = "sistr -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
+        sistr_cmd = "sistr --threads 4 -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
         print(sistr_cmd, "\n")
 
         sistr = run_cmd(sistr_cmd)
