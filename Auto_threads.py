@@ -604,7 +604,7 @@ def Analysis(input,anoutdir):
     #        'sistr':sistrdf.serovar
     #        }
 
-    dict = {'Accession': inId.split("_")[0],
+    dict = {'Accession': x,
             'MLST': sequenceType,
             'AMR': amr_format,
             'Point': point_format,
