@@ -691,17 +691,24 @@ if __name__ == '__main__':
     print(setting_df.columns)
 
 
-
-    thread = setList[1].strip("\n").split("=")[1]
-    gsize = setList[4].strip("\n").split("=")[1]
-    n = setList[7].strip("\n").split("=")[1]
-    outdir = setList[10].strip("\n").split("=")[1]
+    thread=setting_df['cpu_thread']
+    gsize=setting_df['gsize']
+    outdir=setting_df['output_dir']
+    ref_dir=setting_df['Busco_ReferenceSequenceFileDir_Path']
+    buscoDB=setting_df['Busco_database']
+    buscoMode=setting_df['Busco_mode']
+    mlstS=setting_df['MLST_organism']
+    amrS=setting_df['AMR_organism']
+    #thread = setList[1].strip("\n").split("=")[1]
+    #gsize = setList[4].strip("\n").split("=")[1]
+    #n = setList[7].strip("\n").split("=")[1]
+    #outdir = setList[10].strip("\n").split("=")[1]
     utils_.mkdir_join(outdir)
-    ref_dir = setList[12].strip("\n").split("=")[1]
-    buscoDB = setList[13].strip("\n").split("=")[1]
-    buscoMode = setList[14].strip("\n").split("=")[1]
-    mlstS = setList[16].strip("\n").split("=")[1]
-    amrS = setList[17].strip("\n").split("=")[1]
+    #ref_dir = setList[12].strip("\n").split("=")[1]
+    #buscoDB = setList[13].strip("\n").split("=")[1]
+    #buscoMode = setList[14].strip("\n").split("=")[1]
+    #mlstS = setList[16].strip("\n").split("=")[1]
+    #amrS = setList[17].strip("\n").split("=")[1]
     thread=4
 
     #####################
