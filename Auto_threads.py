@@ -683,7 +683,7 @@ if __name__ == '__main__':
         if line != "" and len(line_) == 2:
             print(line_)
             print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
-            dict[line_[0]].append(line_[1])
+            dict[line_[0]]=line_[1]
         i += 1
     df=pd.DataFrame(dict)
     print(df)
