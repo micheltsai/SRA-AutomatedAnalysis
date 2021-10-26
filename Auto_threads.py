@@ -301,7 +301,6 @@ def QualityCheck(genome_Path):
 
 def Analysis(input,anoutdir):
     print("#####################  Analysis  #####################\n")
-    anoutdir = new_outdir
     mlst_organism = mlstS
     # plasmidfinderDB=args.plasmidfinderDB
     amr_organism = amrS
@@ -323,8 +322,8 @@ def Analysis(input,anoutdir):
     check = os.path.join(origin_outdir, "Anacheck.log")
 
     # add outpath "analysis"
-    utils_.mkdir_join(outdir)
-    anoutdir_ = os.path.join(outdir, "analysis")
+    utils_.mkdir_join(new_outdir)
+    anoutdir_ = os.path.join(new_outdir, "analysis")
     utils_.mkdir_join(anoutdir_)
     print("analysis outdir: {}\n".format(anoutdir_))
 
@@ -684,6 +683,9 @@ if __name__ == '__main__':
             print(line_)
             print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
         i += 1
+    df=pd.DataFrame(setList)
+    print(df)
+
 
     thread = setList[1].strip("\n").split("=")[1]
     gsize = setList[4].strip("\n").split("=")[1]
