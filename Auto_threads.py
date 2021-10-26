@@ -691,14 +691,14 @@ if __name__ == '__main__':
     print(setting_df.columns)
 
 
-    thread=setting_df['cpu_thread']
-    gsize=setting_df['gsize']
-    outdir=setting_df['output_dir']
-    ref_dir=setting_df['Busco_ReferenceSequenceFileDir_Path']
-    buscoDB=setting_df['Busco_database']
-    buscoMode=setting_df['Busco_mode']
-    mlstS=setting_df['MLST_organism']
-    amrS=setting_df['AMR_organism']
+    thread=str(setting_df['cpu_thread'])
+    gsize=str(setting_df['gsize'])
+    outdir=str(setting_df['output_dir'])
+    ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'])
+    buscoDB=str(setting_df['Busco_database'])
+    buscoMode=str(setting_df['Busco_mode'])
+    mlstS=str(setting_df['MLST_organism'])
+    amrS=str(setting_df['AMR_organism'])
     #thread = setList[1].strip("\n").split("=")[1]
     #gsize = setList[4].strip("\n").split("=")[1]
     #n = setList[7].strip("\n").split("=")[1]
