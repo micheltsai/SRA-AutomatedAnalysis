@@ -695,10 +695,10 @@ if __name__ == '__main__':
     gsize=str(setting_df['gsize'][0])
     outdir=str(setting_df['output_dir'][0])
     ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
-    buscoDB=str(setting_df['Busco_database'])
-    buscoMode=str(setting_df['Busco_mode'])
-    mlstS=str(setting_df['MLST_organism'])
-    amrS=str(setting_df['AMR_organism'])
+    buscoDB=str(setting_df['Busco_database'][0])
+    buscoMode=str(setting_df['Busco_mode'][0])
+    mlstS=str(setting_df['MLST_organism'][0])
+    amrS=str(setting_df['AMR_organism'][0])
     #thread = setList[1].strip("\n").split("=")[1]
     #gsize = setList[4].strip("\n").split("=")[1]
     #n = setList[7].strip("\n").split("=")[1]
