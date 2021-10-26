@@ -687,7 +687,7 @@ if __name__ == '__main__':
         i += 1
     print(settings_dict)
     #setting_df=pd.DataFrame(settings_dict)
-    setting_df-pd.DataFrame.from_dict(settings_dict,orient='index').T
+    setting_df=pd.DataFrame.from_dict(settings_dict,orient='index').T
     print(setting_df)
 
 
