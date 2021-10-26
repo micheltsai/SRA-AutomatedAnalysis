@@ -676,17 +676,17 @@ if __name__ == '__main__':
 
     print(setList)
     i = 0
-    dict={}
+    settings_dict={}
     for line in setList:
         line = line.strip("\n")
         line_ = line.split("=")
         if line != "" and len(line_) == 2:
             print(line_)
             print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
-            dict.update({line_[0]:line_[1]})
+            settings_dict.update({line_[0]:line_[1]})
         i += 1
-    print(dict)
-    df=pd.DataFrame(dict)
+    print(settings_dict)
+    df=pd.DataFrame(settings_dict)
     print(df)
 
 
