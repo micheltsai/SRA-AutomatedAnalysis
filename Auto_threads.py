@@ -638,7 +638,7 @@ def SRA_Analysis(sra_id):
         targetPath=QualityCheck(genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(sra_id,target_,new_outdir)
+        Analysis(genome,target_,new_outdir)
         print("Run {} is ok\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
