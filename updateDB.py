@@ -3,7 +3,7 @@ import pymysql
 def main():
     print("update data to Databases\n")
     db_settings={
-        "host":"127.0.0.1",
+        "host":"140.112.165.122",
         "port":3306,
         "user":"root",
         "password":"tumvgk01",
