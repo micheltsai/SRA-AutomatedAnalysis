@@ -12,9 +12,9 @@ gsize=
 Count_of_Download_File=3
 
 #Folder to save .
-output_dir=/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/SRAtest
+output_dir=/data/usrhome/LabSSLin/user30/Desktop/SRA-AutomatedAnalysis/SRAtest
 
-Busco_ReferenceSequenceFileDir_Path=/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq
+Busco_ReferenceSequenceFileDir_Path=/data/usrhome/LabSSLin/user30/Desktop/SRA-AutomatedAnalysis/RefSeq
 Busco_database=enterobacterales_odb10
 Busco_mode=geno
 
