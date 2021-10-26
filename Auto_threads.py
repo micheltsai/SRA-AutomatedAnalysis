@@ -691,10 +691,10 @@ if __name__ == '__main__':
     print(setting_df.columns)
 
 
-    thread=str(setting_df['cpu_thread'])
-    gsize=str(setting_df['gsize'])
-    outdir=str(setting_df['output_dir'])
-    ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'])
+    thread=str(setting_df['cpu_thread'][0])
+    gsize=str(setting_df['gsize'][0])
+    outdir=str(setting_df['output_dir'][0])
+    ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
     buscoDB=str(setting_df['Busco_database'])
     buscoMode=str(setting_df['Busco_mode'])
     mlstS=str(setting_df['MLST_organism'])
