@@ -686,8 +686,8 @@ if __name__ == '__main__':
             settings_dict.update({line_[0]:line_[1]})
         i += 1
     print(settings_dict)
-    df=pd.DataFrame(settings_dict)
-    print(df)
+    setting_df=pd.DataFrame(settings_dict)
+    print(setting_df)
 
 
     thread = setList[1].strip("\n").split("=")[1]
