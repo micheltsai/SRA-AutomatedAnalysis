@@ -313,9 +313,12 @@ def Analysis(input,target_ref,anoutdir):
     inId = inId.split(".")[0]
     print("input Id: {}\n".format(inId))
 
+
     # workdir
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
+    relative_input = input.replace(current_path, ".")
+    print("relative input: {}\n".format(relative_input))
 
     origin_outdir = new_outdir
     allinfopath = os.path.join(origin_outdir, "info.txt")
@@ -378,7 +381,7 @@ def Analysis(input,target_ref,anoutdir):
         # mlst_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
         mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
                                                                                                           current_path,
-                                                                                                          input,
+                                                                                                          relative_input,
                                                                                                           mlst_outdir,
                                                                                                           mlst_organism)
         print(mlst_cmd, "\n")
@@ -411,7 +414,7 @@ def Analysis(input,target_ref,anoutdir):
         utils_.mkdir_join(plas_outdir)
         # plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
         plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(
-            PLASMID_DB, current_path, input, plas_outdir)
+            PLASMID_DB, current_path, relative_input, plas_outdir)
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
