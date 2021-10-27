@@ -561,11 +561,11 @@ def Analysis(input,target_ref,anoutdir):
     sub_list = list(amrdf.Element_subtype)
     for i in range(0, len(sym_list)):
         if sub_list[i] == "AMR":
-            if len(amr_format) > 0:
+            if len(amr_format) > 0 and i!=len(sub_list)-1:
                 amr_format += ","
             amr_format += sym_list[i]
         elif sub_list[i] == "POINT":
-            if len(point_format) > 0:
+            if len(point_format) > 0 and i!=len(sub_list)-1:
                 point_format += ","
             point_format += sym_list[i]
 
