@@ -607,7 +607,7 @@ def Analysis(input,target_ref,anoutdir):
     #        'sistr':sistrdf.serovar
     #        }
 
-    dict = {'Accession': sra_id,
+    dict = {'Accession': inId,
             'MLST': sequenceType,
             'AMR': amr_format,
             'Point': point_format,
