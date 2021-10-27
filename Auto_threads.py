@@ -561,7 +561,7 @@ def Analysis(input,target_ref,anoutdir):
     sub_list = list(amrdf.Element_subtype)
     for i in range(0, len(sym_list)):
         if sub_list[i] == "AMR":
-            if len(point_format) > 0:
+            if len(amr_format) > 0:
                 amr_format += ","
             amr_format += sym_list[i]
         elif sub_list[i] == "POINT":
@@ -802,7 +802,7 @@ if __name__ == '__main__':
             prog_num = 0
             finish_num=0
             finish_num=len(finish_run)
-            pool=multiprocessing.Pool(processes=1)
+            pool=multiprocessing.Pool(processes=4)
             for k in need_run:
                 print("########### hello %d ############\n"%prog_num)
                 print("########## {}/{} ###########".format(finish_num,count))
