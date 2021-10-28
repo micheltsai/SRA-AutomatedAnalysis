@@ -157,16 +157,12 @@ def QualityCheck(genome_Path):
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
     replace_path = outdir.replace(current_path, ".")
-    # fastani_outdir=os.path.join("./SRAtest/20200704/QualityCheck/fastani", '{}_ani.txt'.format(gID))
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
 
     print("-------------------------------fastANI start.-------------------------------")
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
-    # fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
-    # fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
-    # fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
     fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t 4 --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
@@ -229,28 +225,18 @@ def QualityCheck(genome_Path):
     # BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
     # use conda enterring the busco VM(vm name is "busco")
-
-    # db="enterobacterales_odb10"
-    # mode="geno"
     busco_time = time.time()
     outdir_bus = os.path.join(outdir, 'busco_db')
     busco_db = utils_.mkdir_join(outdir_bus)
-    # busco_db= os.path.join(outdir, 'busco_db')
-    # subprocess.run('bash -c "conda activate busco"', shell=True)
-    # run_cmd('bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco"')
+
     # -f overwrite
 
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c 4 -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         targetPath, gID, outdir, db, mode, busco_db)
-    # cmd_bus = 'busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
-    #   targetPath, gID, outdir, db, mode, busco_db)
-    # cmd_bus="busco -i {} -o bus_out --out_path {} -l {} -m {} --download_path {} -f".format(targetPath, outdir_bus, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
-    # subprocess.run('bash -c "conda deactivate"',shell=True)
-
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
     buscopath = os.path.join(outdir, "{}".format(gID))
     buscopath = os.path.join(buscopath, "run_{}".format(db))
@@ -266,9 +252,6 @@ def QualityCheck(genome_Path):
     print([float(s) for s in re.findall(r'-?\d+\.?\d*', b)])
 
     bC, bS, bD, bF, bM, bn = [float(s) for s in re.findall(r'-?\d+\.?\d*', b)]
-    # bC, bS, bD, bF, bM =np.fromstring(b,dtype=float,sep=":")
-    # bN=np.fromstring(b,dtype=int,sep="n:")
-
     print("c:{}%, d:{}%\n".format(bC, bD))
 
     with open(BUSCOresult, "a+") as f:
@@ -302,7 +285,6 @@ def QualityCheck(genome_Path):
 def Analysis(input,target_ref,anoutdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
-    # plasmidfinderDB=args.plasmidfinderDB
     amr_organism = amrS
     utils_.mkdir_join(anoutdir)
 
@@ -339,7 +321,6 @@ def Analysis(input,target_ref,anoutdir):
     outdir_list = anoutdir_.split("/")
     relative_path2 = anoutdir_.replace(current_path, ".")
     print("relative2: {}\n".format(relative_path2))
-    # relative_path="./"+outdir_list[len(outdir_list)-1]
     print("relative_path: {}".format(relative_path2))
 
     relative_path2 = os.path.join(relative_path2, inId)
@@ -372,13 +353,11 @@ def Analysis(input,target_ref,anoutdir):
         print("STEP{}\n".format(step + 1))
         print("********** Now MLST analysis running. **********\n")
         MLST_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
-        # mlst_outdir=os.path.join(outdir,"mlst")
         mlst_outdir = os.path.join(relative_path2, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         f = open(mlst_datajson, "a+")
         f.close()
-        # mlst_cmd="sudo docker run --rm -it \-v {}:/database \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,input,mlst_outdir,mlst_organism)
         mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
                                                                                                           current_path,
                                                                                                           relative_input,
@@ -409,10 +388,8 @@ def Analysis(input,target_ref,anoutdir):
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
         PLASMID_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
-        # plas_outdir=os.path.join(outdir,"plasmidfinder")
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        # plas_cmd="sudo docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB,current_path,input,plas_outdir)
         plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(
             PLASMID_DB, current_path, relative_input, plas_outdir)
         print(plas_cmd, "\n")
@@ -439,18 +416,14 @@ def Analysis(input,target_ref,anoutdir):
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now amrfinder analysis running. **********\n")
-        # amr_outdir=os.path.join(outdir,"amrfinder")
         amr_outdir = os.path.join(relative_path2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
-        # amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
-        # amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
         amr_cmd = "amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
         print(amr_cmd, "\n")
         amr = run_cmd(amr_cmd)
         with open(logpath, "a+") as f:
             if amr.returncode != 0:
-                # print (mlst.stdout.readline())
                 sys.exit()
             else:
                 f.write("amr is ok\n")
@@ -469,7 +442,6 @@ def Analysis(input,target_ref,anoutdir):
         step4_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now sistr analysis running. **********")
-        # sistr_outdir=os.path.join(outdir, "sistr")
         sistr_outdir = os.path.join(relative_path2, "sistr")
         utils_.mkdir_join(sistr_outdir)
         sistr_outdir = os.path.join(sistr_outdir, "sistr_out")
@@ -482,7 +454,6 @@ def Analysis(input,target_ref,anoutdir):
         sistr = run_cmd(sistr_cmd)
         with open(logpath, "a+") as f:
             if sistr.returncode != 0:
-                # print(mlst.stdout.readline())
                 sys.exit()
             else:
                 f.write("sistr is ok\n")
@@ -501,7 +472,6 @@ def Analysis(input,target_ref,anoutdir):
     # save data in analysis_final.csv and update DB
 
     # read mlst 'Sequence Type'
-    # mlst_file=os.path.join(outdir, "mlst/results.txt")
     mlst_file = os.path.join(relative_path2, "mlst/results.txt")
     with open(mlst_file, "r") as f:
         data = f.readlines()
@@ -514,8 +484,6 @@ def Analysis(input,target_ref,anoutdir):
 
     # read plasmidfinder 'gene'
     plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
-    # plas_file=os.path.join(outdir,"plasmidfinder/results_tab.tsv")
-    # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
     pladf = pd.read_table(plas_file, sep='\t')
     # print(df)
     pladf = pd.DataFrame(pladf)
@@ -533,9 +501,7 @@ def Analysis(input,target_ref,anoutdir):
 
     # read amrfinder 'Gene symbol', 'subtype'
     ##add amr "Point"
-    # amr_file = os.path.join(outdir, "amrfinder/amrout.tsv")
     amr_file = os.path.join(relative_path2, "amrfinder/amrout.tsv")
-    # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
     amrdf = pd.read_table(amr_file, sep='\t')
     # print(df)
     amrdf = pd.DataFrame(amrdf)
@@ -572,21 +538,9 @@ def Analysis(input,target_ref,anoutdir):
     print(amr_format)
     print(point_format)
 
-    # if len(aalist)!=0:
-    #    amr_format += ","
-    # for x in range(0,len(aalist)):
-    #    amr_format+=aalist[x]
-    #    amr_sub +=alist[x]
-    #    if x != len(aalist)-1:
-    #        amr_format += ","
-    #        amr_sub+=","
-
-    # read sistr 'serovar'
-    # sistr_file = os.path.join(outdir, "sistr/sistr_out.csv")
     sistr_file = os.path.join(relative_path2, "sistr")
     utils_.mkdir_join(sistr_file)
     sistr_file = os.path.join(sistr_file, "sistr_out.csv")
-    # plas_file = os.path.join(outdir, "./plastest/5524p/results_tab.tsv")
 
     sistrdf = pd.read_csv(sistr_file)
     # print(df)
@@ -594,18 +548,10 @@ def Analysis(input,target_ref,anoutdir):
     print(sistrdf)
     print(sistrdf.columns)
     print(sistrdf.serovar)
-    # dict={'Accession': pd.Series(input for a in range(0,3)),
-    #      'mlst':sequenceType,
-    # }
+
     in_abspath = input.replace(".", current_path)
 
-    # dict = {'Accession': input,
-    #        'mlst':sequenceType,
-    #        'plasmidfinder':pladf.Plasmid,
-    #        'amr_gane':amrdf.Gene_symbol,
-    #        'amr_subtype':amrdf.Element_subtype,
-    #        'sistr':sistrdf.serovar
-    #        }
+
 
     dict = {'Accession': inId,
             'MLST': sequenceType,
@@ -618,14 +564,8 @@ def Analysis(input,target_ref,anoutdir):
     finaldf = pd.DataFrame(dict)
     print(finaldf)
     finalfile = os.path.join(origin_outdir, "analysis_final.csv")
-    # if os.path.isfile(finalfile):
-    # beforedf=pd.read_csv(finalfile)
-    # beforedf=pd.DataFrame(beforedf)
-    # finaldf=pd.concat([beforedf,finaldf])
-    # print("merge df\n")
-    finaldf.to_csv(finalfile, mode='a+', header=False)
-    # finaldf.to_csv(finalfile)
 
+    finaldf.to_csv(finalfile, mode='a+', header=False)
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
@@ -702,26 +642,16 @@ if __name__ == '__main__':
     buscoMode=str(setting_df['Busco_mode'][0])
     mlstS=str(setting_df['MLST_organism'][0])
     amrS=str(setting_df['AMR_organism'][0])
-
+    #get (Date) to (Date)
     sd_Y = start_date.split("/")[0]
     sd_M = start_date.split("/")[1]
     sd_D = start_date.split("/")[2]
-
     ed_Y = expiry_date.split("/")[0]
     ed_M = expiry_date.split("/")[1]
     ed_D = expiry_date.split("/")[2]
     print(sd_Y,sd_M,sd_D)
     print(ed_Y,ed_M,ed_D)
-    #thread = setList[1].strip("\n").split("=")[1]
-    #gsize = setList[4].strip("\n").split("=")[1]
-    #n = setList[7].strip("\n").split("=")[1]
-    #outdir = setList[10].strip("\n").split("=")[1]
     utils_.mkdir_join(outdir)
-    #ref_dir = setList[12].strip("\n").split("=")[1]
-    #buscoDB = setList[13].strip("\n").split("=")[1]
-    #buscoMode = setList[14].strip("\n").split("=")[1]
-    #mlstS = setList[16].strip("\n").split("=")[1]
-    #amrS = setList[17].strip("\n").split("=")[1]
     thread=4
 
     #####################
@@ -738,28 +668,14 @@ if __name__ == '__main__':
             utils_.mkdir_join(new_outdir)
             print("output: {}\n".format(new_outdir))
 
-            #Downloadcheck_log = os.path.join(new_outdir, "Downloadcheck.log")
-            check_log =os.path.join(new_outdir,"Analysischeck.log")
             # commit
-            # run_cmd2("touch {}".format("check.log"))
-            #myfile = Path(Downloadcheck_log)
-            #myfile.touch(exist_ok=True)
-            #f = open(Downloadcheck_log, 'a+')
-            #t = str(datetime.datetime.now()).split(".")[0]
-            #f.write(t)
-            #f.write("\n")
-            #f.close()
+            check_log =os.path.join(new_outdir,"Analysischeck.log")
 
             myfile2 = Path(check_log)
             myfile2.touch(exist_ok=True)
             with open(check_log,"a+") as f:
                 f.write(str(datetime.datetime.now()).split(".")[0])
                 f.write("\n")
-
-            # mkdir_join(log_dir)
-            # check_log = os.path.join(log_dir, "check.log")
-
-            # print(date)
 
             pattern, count = utils_.count_egquery(pattern, date, date)
             print("pattern: {}\ncount: {}\n".format(pattern, count))
@@ -770,7 +686,6 @@ if __name__ == '__main__':
             print(idlist)
 
             runinfo = utils_.Get_RunInfo(idlist)
-            # progress_bar("get SRAfile name List stored in run_list")
             run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
             print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
@@ -808,7 +723,6 @@ if __name__ == '__main__':
                 print("########## {}/{} ###########".format(finish_num,count))
                 pool.apply_async(SRA_Analysis, (k,))
                 progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                #progress_list[prog_num].start()
                 prog_num += 1
                 finish_num+=1
             pool.close()
