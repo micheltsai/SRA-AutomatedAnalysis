@@ -185,7 +185,7 @@ def trimmingv2(forward_reads, reverse_reads, outdir, threads):
     crop, headcrop = crop_position(forward_reads)
     paired_1 = os.path.join(outdir, 'R1.fq')
     paired_2 = os.path.join(outdir, 'R2.fq')
-    cmd=f"fastp -i {forward_reads} -I {reverse_reads} -o {paired_1} -O {paired_2} --length_required 36 --detect_adapter_for_pe --cut_front 3 --cut_tail 3 -w {threads} -j /dev/null -h /dev/null"
+    cmd=f"/data/usrhome/LabSSLin/user30/Desktop/fastp -i {forward_reads} -I {reverse_reads} -o {paired_1} -O {paired_2} --length_required 36 --detect_adapter_for_pe --cut_front 3 --cut_tail 3 -w {threads} -j /dev/null -h /dev/null"
 
     run_cmd2(cmd)
     #progress_bar("trimming")
