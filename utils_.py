@@ -470,7 +470,8 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
         funcName = lastCallStack[2]  # 取得發生的函數名稱
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
-        sys.exit(e)
+        run_cmd("rm -rf {}".format(fastq_dir))
+        return run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
     if sra.layout != '2':
         sys.exit(f'File layout is not pair-end')
     print ("layout=2\n")
