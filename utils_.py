@@ -292,19 +292,13 @@ def Get_RunInfo(idlist):
         df = pd.read_csv(StringIO(d))
         df_all = df[df['Run'] != 'Run']
     return df_all
-def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
-    print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
-    path_ = os.path.join(sra_dir,sra_id)
-    path_=path_+"/"+sra_id+".sra"
-    #outdir__=os.path.join(outdir, "Assembled")
-    #mkdir_join(outdir__)
-    #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
-    print ("srafile_path: {}\n".format(path_))
-    seq_readArchive=time.time()
+
+def getlayout(path_):
+    seq_readArchive = time.time()
     try:
-        print ("SequenceReadArchive\n")
+        print("SequenceReadArchive\n")
         sra = SequenceReadArchive(path_)
-        #print("layout:", sra.layout)
+        # print("layout:", sra.layout)
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -318,8 +312,18 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
         sys.exit(e)
     if sra.layout != '2':
         sys.exit(f'File layout is not pair-end')
-    print ("layout=2\n")
+    print("layout=2\n")
     # if sra_layout==2 continue
+
+
+def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
+    print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
+    path_ = os.path.join(sra_dir,sra_id)
+    path_=path_+"/"+sra_id+".sra"
+    #outdir__=os.path.join(outdir, "Assembled")
+    #mkdir_join(outdir__)
+    #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
+    print ("srafile_path: {}\n".format(path_))
     # os.path.join(path, *paths)連接路徑
 
     #outdir = assem_dir + "/" + "".join(sra_id)
@@ -341,11 +345,6 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
         return 0
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "SequenceReadArchive", "time": str(time.time() - seq_readArchive)})
     dump_time=time.time()
     # 解壓縮成fastq
     print('Dump fastq.')
@@ -395,16 +394,16 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
         writer.writeheader()
         writer.writerow({"func": "trimming", "time": str(time.time() - trim_time)})
 
-    bases_percentage_time=time.time()
-    if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
-        #shutil.rmtree(outdir)
-        sys.exit('Reads quality is too low.')
+    #bases_percentage_time=time.time()
+    #if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
+    #    #shutil.rmtree(outdir)
+    #    sys.exit('Reads quality is too low.')
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
+    #with open("./ana_time.csv", "a+") as f:
+    #    fieldnames = ["func", "time"]
+    #    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    #    writer.writeheader()
+    #    writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
 
     # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
     #                                 --- depth<80 ---------> SPAdes

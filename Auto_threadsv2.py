@@ -574,6 +574,18 @@ def Analysis(input,target_ref,anoutdir):
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
     try:
+        #######Q30 base>=80%
+        if utils_.bases_percentage(r1, 30) < 80 and utils_.bases_percentage(r2, 30) < 80:
+            # shutil.rmtree(outdir)
+            sys.exit('Reads quality is too low.')
+
+        ###### layout = 2
+        print("SequenceReadArchive\n")
+        sra = utils_.SequenceReadArchive(sra_id)
+        if sra.layout != '2':
+            sys.exit(f'File layout is not pair-end')
+        print("layout=2\n")
+        # if sra_layout==2 continue
         Download(sra_id)
         Assembled(sra_id)
         #####
@@ -595,7 +607,7 @@ def SRA_Analysis(sra_id):
         print(errMsg)
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
-        return 0
+        sys.exit(e)
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -603,7 +615,7 @@ def SRA_Analysis(sra_id):
         writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
     #######
     with open(check_log,"a+") as f:
-        f.write("\nRun {} is ok.\n".format(sra_id))
+        f.write("Run {} is ok.\n".format(sra_id))
     return 0
 if __name__ == '__main__':
     start=time.time()
@@ -717,36 +729,16 @@ if __name__ == '__main__':
             prog_num = 0
             finish_num=0
             finish_num=len(finish_run)
-            try:
-                pool=multiprocessing.Pool(processes=4)
-                for k in need_run:
-                    print("########### hello %d ############\n"%prog_num)
-                    print("########## {}/{} ###########".format(finish_num,count))
-                    pool.apply_async(SRA_Analysis, (k,))
-                    progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                    prog_num += 1
-                    finish_num+=1
-                pool.close()
-                pool.join()
-            except KeyboardInterrupt:
-                print("Catch keyboardinterdinterupterror\n")
-                pid=os.getgid()
-                with open("./SRA_run_error.txt", "a+") as f:
-                    f.write("{} :\n".format("Catch keyboardinterdinterupterror"))
-                #os.popen("taskkill.exe /f /pid:%d"%pid)
-            except Exception as e:
-                error_class = e.__class__.__name__  # 取得錯誤類型
-                detail = e.args[0]  # 取得詳細內容
-                cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                lineNum = lastCallStack[1]  # 取得發生的行號
-                funcName = lastCallStack[2]  # 取得發生的函數名稱
-                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
-                print(errMsg)
-                with open("./SRA_run_error.txt", "a+") as f:
-                    f.write("{} :\n{}\n".format(errMsg))
-
+            pool=multiprocessing.Pool(processes=4)
+            for k in need_run:
+                print("########### hello %d ############\n"%prog_num)
+                print("########## {}/{} ###########".format(finish_num,count))
+                pool.apply_async(SRA_Analysis, (k,))
+                progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                prog_num += 1
+                finish_num+=1
+            pool.close()
+            pool.join()
             #for i in range(prog_num):
             #    progress_list[i].join()
 
@@ -757,8 +749,6 @@ if __name__ == '__main__':
             time.sleep(5)
     print('Done,total cost', time.time() - start, 'secs')
     ##########
-else:
-    print("quit normally\n")
 
 
 
