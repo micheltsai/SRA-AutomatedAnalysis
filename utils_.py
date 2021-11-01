@@ -230,7 +230,7 @@ class SequenceReadArchivev2:
         return self._stat_tree.find('Statistics').attrib['nreads']
 
     def base_percentage(self):
-        root = self.stat_tree.find('QualityCount')
+        root = self._stat_tree.find('QualityCount')
         for child in root:
             print(child.tag," : ",child.attrib)
         return 0
