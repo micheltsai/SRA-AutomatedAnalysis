@@ -201,6 +201,40 @@ def dump_fastq_from_sra(srafile, outdir):
     print("#################### dump_fastq_from_sra END ####################\n")
 
 
+class SequenceReadArchivev2:
+    #sra_file-->filepath
+    def __init__(self,sraid):
+       self._set_sraid(sraid)
+       self._get_stat()
+
+    #設置filepath
+    def _set_sraid(self,sraid):
+        self._sraid = sraid
+
+    #發出指令
+    def _get_stat(self):
+        #sra-stat統計sra文件
+        p = run_cmd2(f'sra-stat -x -s -b 1 -e 2 {self._sraid}')
+        #xml: ElementTree, xml節點: Element
+        #fromstring: 從xml_str構成Element賦予變數self._stat_tree
+        self._stat_tree = ET.fromstring(p.stdout.decode())
+
+    @property
+    def sraid(self):
+        return self._sraid
+
+    @property
+    def layout(self):
+        #find()從節點的直接子節點中查詢,非遞回
+        #.attrib: class dict
+        return self._stat_tree.find('Statistics').attrib['nreads']
+
+    def base_percentage(self):
+        root = self.stat_tree.find('QualityCount')
+        for child in root:
+            print(child.tag," : ",child.attrib)
+        return 0
+
 class SequenceReadArchive:
     #sra_file-->filepath
     def __init__(self,filepath):
@@ -235,11 +269,6 @@ class SequenceReadArchive:
         #.attrib: class dict
         return self._stat_tree.find('Statistics').attrib['nreads']
 
-    def base_percentage(self):
-        root = self.stat_tree.find('QualityCount')
-        for child in root:
-            print(child.tag," : ",child.attrib)
-        return 0
 
 def count_egquery(term, date_from , date_to, db = 'sra'):
     print("#################### count_egquery ####################\n")

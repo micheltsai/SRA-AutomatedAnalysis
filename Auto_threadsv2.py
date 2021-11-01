@@ -733,7 +733,7 @@ if __name__ == '__main__':
             finish_num=0
             finish_num=len(finish_run)
             try:
-                pool = multiprocessing.Pool(processes=4)
+                pool = multiprocessing.Pool(processes=1)
                 for k in need_run:
                     print("########### hello %d ############\n" % prog_num)
                     print("########## {}/{} ###########".format(finish_num, count))
