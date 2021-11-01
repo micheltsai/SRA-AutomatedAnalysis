@@ -576,11 +576,12 @@ def SRA_Analysis(sra_id):
     try:
         print("SequenceReadArchive\n")
         sra = utils_.SequenceReadArchivev2(sra_id)
+        _base_ = sra.base_percentage()*100
+        print("base percentage: ",_base_)
         #######Q30 base>=80%
-        #if utils_.bases_percentage(r1, 30) < 80 and utils_.bases_percentage(r2, 30) < 80:
-        #    # shutil.rmtree(outdir)
-        #    sys.exit('Reads quality is too low.')
-        sra.base_percentage()
+        if  _base_< 80 :
+            # shutil.rmtree(outdir)
+            sys.exit('Reads quality is too low.')
         ###### layout = 2
 
         if sra.layout != '2':
