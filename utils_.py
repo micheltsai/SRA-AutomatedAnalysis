@@ -234,9 +234,9 @@ class SequenceReadArchivev2:
         base=0
         for child in root:
             print(child.tag," : ",child.attrib['value'])
-            q30=int(child.attrib['value'])
-            if q30>=30:
-            base+=int(q30)
+            #q30=int(child.attrib['value'])
+            #if q30>=30:
+            #base+=int(q30)
         print(base)
         return base
 
