@@ -656,7 +656,7 @@ if __name__ == '__main__':
 
     #####################
     for mon in range(7, 8):
-        for d in range(1, 4):
+        for d in range(1, 3):
             pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
             ds = time.time()
 
@@ -728,6 +728,10 @@ if __name__ == '__main__':
                     finish_num+=1
                 pool.close()
                 pool.join()
+                with open("./Automate_check.log", "a+") as f:
+                    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                time.sleep(3)
             except KeyboardInterrupt:
                 print("Catch keyboardinterdinterupterror\n")
                 print("srart : {}\n".format(start))
@@ -749,15 +753,8 @@ if __name__ == '__main__':
                 print(errMsg)
                 with open("./SRA_run_error.txt", "a+") as f:
                     f.write("{} :\n{}\n".format(errMsg))
-
             #for i in range(prog_num):
             #    progress_list[i].join()
-
-
-            with open("./Automate_check.log", "a+") as f:
-                f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-            print("Download all {} ".format(date),'Done,total cost', time.time() - ds, 'secs')
-            time.sleep(5)
     print('Done,total cost', time.time() - start, 'secs')
     ##########
 else:
