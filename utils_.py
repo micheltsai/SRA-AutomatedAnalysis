@@ -231,7 +231,7 @@ class SequenceReadArchivev2:
 
     def base_percentage(self):
         root = self._stat_tree.find('QualityCount')
-        int base=0
+        base=0
         for child in root:
             print(child.tag," : ",child.attrib['value'])
             q30=int(child.attrib['value'])
