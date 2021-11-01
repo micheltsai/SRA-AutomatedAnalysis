@@ -163,7 +163,7 @@ def QualityCheck(genome_Path):
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
-    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t 4 --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
+    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t 1 --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -448,7 +448,7 @@ def Analysis(input,target_ref,anoutdir):
         input_list = input.split("/")
         input_name = input_list[len(input_list) - 1]
         print("name: ", input_name, "\n")
-        sistr_cmd = "sistr --threads 4 -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
+        sistr_cmd = "sistr --threads 1 -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
         print(sistr_cmd, "\n")
 
         sistr = run_cmd(sistr_cmd)
@@ -730,6 +730,9 @@ if __name__ == '__main__':
                 pool.join()
             except KeyboardInterrupt:
                 print("Catch keyboardinterdinterupterror\n")
+                print("srart : {}\n".format(start))
+                print("Download all ",'Done,total cost', time.time() - start, 'secs')
+                print("Download {} ".format(date),'Done,total cost', time.time() - ds, 'secs')
                 pid=os.getgid()
                 with open("./SRA_run_error.txt", "a+") as f:
                     f.write("{} :\n".format("Catch keyboardinterdinterupterror"))
