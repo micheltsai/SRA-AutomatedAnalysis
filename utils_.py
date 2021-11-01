@@ -231,9 +231,14 @@ class SequenceReadArchivev2:
 
     def base_percentage(self):
         root = self._stat_tree.find('QualityCount')
+        int base=0
         for child in root:
-            print(child.tag," : ",child.attrib)
-        return 0
+            print(child.tag," : ",child.attrib['value'])
+            q30=int(child.attrib['value'])
+            if q30>=30:
+            base+=int(q30)
+        print(base)
+        return base
 
 class SequenceReadArchive:
     #sra_file-->filepath
