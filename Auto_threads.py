@@ -563,7 +563,7 @@ def Analysis(input,target_ref,anoutdir):
 
     finaldf = pd.DataFrame(dict)
     print(finaldf)
-    finalfile = os.path.join(origin_outdir, "analysis_final.csv")
+    finalfile = os.path.join(outdir, "analysis_final.csv")
 
     finaldf.to_csv(finalfile, mode='a+', header=False)
     # after run all state, save ID in "Anackeck.log" and remove ./analysis

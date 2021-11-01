@@ -563,7 +563,7 @@ def Analysis(input,target_ref,anoutdir):
 
     finaldf = pd.DataFrame(dict)
     print(finaldf)
-    finalfile = os.path.join(origin_outdir, "analysis_final.csv")
+    finalfile = os.path.join(outdir, "analysis_final.csv")
 
     finaldf.to_csv(finalfile, mode='a+', header=False)
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
@@ -574,17 +574,20 @@ def Analysis(input,target_ref,anoutdir):
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
     try:
-        #######Q30 base>=80%
-        if utils_.bases_percentage(r1, 30) < 80 and utils_.bases_percentage(r2, 30) < 80:
-            # shutil.rmtree(outdir)
-            sys.exit('Reads quality is too low.')
-
-        ###### layout = 2
         print("SequenceReadArchive\n")
         sra = utils_.SequenceReadArchive(sra_id)
+        #######Q30 base>=80%
+        #if utils_.bases_percentage(r1, 30) < 80 and utils_.bases_percentage(r2, 30) < 80:
+        #    # shutil.rmtree(outdir)
+        #    sys.exit('Reads quality is too low.')
+        sra.base_percentage()
+        ###### layout = 2
+
         if sra.layout != '2':
             sys.exit(f'File layout is not pair-end')
         print("layout=2\n")
+
+        sys.exit("exit\n")
         # if sra_layout==2 continue
         Download(sra_id)
         Assembled(sra_id)
@@ -729,24 +732,44 @@ if __name__ == '__main__':
             prog_num = 0
             finish_num=0
             finish_num=len(finish_run)
-            pool=multiprocessing.Pool(processes=4)
-            for k in need_run:
-                print("########### hello %d ############\n"%prog_num)
-                print("########## {}/{} ###########".format(finish_num,count))
-                pool.apply_async(SRA_Analysis, (k,))
-                progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                prog_num += 1
-                finish_num+=1
-            pool.close()
-            pool.join()
-            #for i in range(prog_num):
+            try:
+                pool = multiprocessing.Pool(processes=4)
+                for k in need_run:
+                    print("########### hello %d ############\n" % prog_num)
+                    print("########## {}/{} ###########".format(finish_num, count))
+                    pool.apply_async(SRA_Analysis, (k,))
+                    progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                    prog_num += 1
+                    finish_num += 1
+                pool.close()
+                pool.join()
+                with open("./Automate_check.log", "a+") as f:
+                    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                time.sleep(3)
+            except KeyboardInterrupt:
+                print("Catch keyboardinterdinterupterror\n")
+                print("srart : {}\n".format(start))
+                print("Download all ", 'Done,total cost', time.time() - start, 'secs')
+                print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                pid = os.getgid()
+                with open("./SRA_run_error.txt", "a+") as f:
+                    f.write("{} :\n".format("Catch keyboardinterdinterupterror"))
+                # os.popen("taskkill.exe /f /pid:%d"%pid)
+            except Exception as e:
+                error_class = e.__class__.__name__  # 取得錯誤類型
+                detail = e.args[0]  # 取得詳細內容
+                cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                lineNum = lastCallStack[1]  # 取得發生的行號
+                funcName = lastCallStack[2]  # 取得發生的函數名稱
+                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+                print(errMsg)
+                with open("./SRA_run_error.txt", "a+") as f:
+                    f.write("{} :\n{}\n".format(errMsg))
+            # for i in range(prog_num):
             #    progress_list[i].join()
-
-
-            with open("./Automate_check.log", "a+") as f:
-                f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-            print("Download all {} ".format(date),'Done,total cost', time.time() - ds, 'secs')
-            time.sleep(5)
     print('Done,total cost', time.time() - start, 'secs')
     ##########
 

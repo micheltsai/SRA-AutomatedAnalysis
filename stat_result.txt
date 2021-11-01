@@ -1,0 +1,57 @@
+<Run accession="SRR12145901" read_length="fixed" spot_count="1" base_count="502" base_count_bio="502" spot_count_mates="1" base_count_bio_mates="502" spot_count_bad="0" base_count_bio_bad="0" spot_count_filtered="0" base_count_bio_filtered="0">
+  <Member member_name="14" spot_count="1" base_count="502" base_count_bio="502" spot_count_mates="1" base_count_bio_mates="502" spot_count_bad="0" base_count_bio_bad="0" spot_count_filtered="0" base_count_bio_filtered="0"/>
+  <Size value="255890368" units="bytes"/>
+  <Bases cs_native="false" count="502">
+    <Base value="A" count="133"/>
+    <Base value="C" count="106"/>
+    <Base value="G" count="99"/>
+    <Base value="T" count="164"/>
+    <Base value="N" count="0"/>
+  </Bases>
+  <AlignInfo>
+  </AlignInfo>
+  <Statistics nreads="2" nspots="1">
+    <Read index="0" count="1" average="251" stdev="0"/>
+    <Read index="1" count="1" average="251" stdev="0"/>
+  </Statistics>
+  <QualityCount>
+    <Quality value="2" count="92947"/>
+    <Quality value="12" count="10230686"/>
+    <Quality value="13" count="4926859"/>
+    <Quality value="14" count="12402587"/>
+    <Quality value="15" count="4873825"/>
+    <Quality value="16" count="5322564"/>
+    <Quality value="17" count="1532919"/>
+    <Quality value="18" count="1039126"/>
+    <Quality value="19" count="246363"/>
+    <Quality value="20" count="287382"/>
+    <Quality value="21" count="8661"/>
+    <Quality value="24" count="6205348"/>
+    <Quality value="25" count="1700623"/>
+    <Quality value="26" count="4895684"/>
+    <Quality value="27" count="1954282"/>
+    <Quality value="28" count="871336"/>
+    <Quality value="29" count="2274734"/>
+    <Quality value="30" count="4644546"/>
+    <Quality value="31" count="4330328"/>
+    <Quality value="32" count="11319507"/>
+    <Quality value="33" count="17956513"/>
+    <Quality value="34" count="11773545"/>
+    <Quality value="35" count="8084139"/>
+    <Quality value="36" count="13717424"/>
+    <Quality value="37" count="93891405"/>
+    <Quality value="38" count="103228864"/>
+    <Quality value="39" count="94901064"/>
+    <Quality value="40" count="44565"/>
+  </QualityCount>
+  <Databases>
+    <Database>
+      <Table name="SEQUENCE">
+        <Statistics source="meta">
+          <Rows count="894484"/>
+          <Elements count="422757826"/>
+        </Statistics>
+      </Table>
+    </Database>
+  </Databases>
+</Run>

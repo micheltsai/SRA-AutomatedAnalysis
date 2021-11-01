@@ -235,6 +235,12 @@ class SequenceReadArchive:
         #.attrib: class dict
         return self._stat_tree.find('Statistics').attrib['nreads']
 
+    def base_percentage(self):
+        root = self.stat_tree.find('QualityCount')
+        for child in root:
+            print(child.tag," : ",child.attrib)
+        return 0
+
 def count_egquery(term, date_from , date_to, db = 'sra'):
     print("#################### count_egquery ####################\n")
     pattern = term+f" AND {date_from}[PDAT]:{date_to}[PDAT]"
