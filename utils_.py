@@ -234,7 +234,7 @@ class SequenceReadArchivev2:
         no30_count=0
         q30_count=0
         for child in root:
-            print(child.tag,":",child.attrib['value'].strip())
+            #print(child.tag,":",child.attrib['value'].strip())
             q30=int(child.attrib['value'].strip())
             count=int(child.attrib['count'].strip())
             if q30>=30:

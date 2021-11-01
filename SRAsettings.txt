@@ -3,7 +3,7 @@ start_date=2020/08/01
 expiry_date=2020/08/03
 
 #Number of threads to use. default: 8
-cpu_thread=8
+cpu_thread=4
 
 #Estimated genome size(MB) eg. 3.2M. default: ''
 gsize=
