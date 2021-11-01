@@ -575,7 +575,7 @@ def SRA_Analysis(sra_id):
     SRA_start=time.time()
     try:
         print("SequenceReadArchive\n")
-        sra = utils_.SequenceReadArchive(sra_id)
+        sra = utils_.SequenceReadArchivev2(sra_id)
         #######Q30 base>=80%
         #if utils_.bases_percentage(r1, 30) < 80 and utils_.bases_percentage(r2, 30) < 80:
         #    # shutil.rmtree(outdir)
