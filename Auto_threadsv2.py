@@ -196,7 +196,7 @@ def QualityCheck(sra_id,genome_Path):
         else:
             not_num += 1
     # num =0
-    QC_error=os.path.join(new_outdir,"a+")
+    QC_error=os.path.join(new_outdir,"nofillQC.txt")
     if num==0:
         with open(QC_error, "a+") as f:
             f.write("{}: all ANI value < 95\n".format(sra_id))
@@ -576,7 +576,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
 
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
-    QC_error=os.path.join(new_outdir,"QC_problem.txt")
+    QC_error=os.path.join(new_outdir,"nofillQC.txt")
     try:
         print("SequenceReadArchive\n")
         sra = utils_.SequenceReadArchivev2(sra_id)

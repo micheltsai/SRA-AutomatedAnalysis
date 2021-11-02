@@ -429,7 +429,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     #print('Trim sequences.')
     trim_time=time.time()
-    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir_, threads)
+    r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
     with open("./ana_time.csv", "a+") as f:
@@ -589,7 +589,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
 
     #print('Trim sequences.')
     trim_time=time.time()
-    r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir_, threads)
+    r1, r2 = trimming(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
     with open("./ana_time.csv", "a+") as f:
