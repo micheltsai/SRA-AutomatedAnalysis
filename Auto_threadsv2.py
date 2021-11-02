@@ -659,8 +659,8 @@ if __name__ == '__main__':
 
     start_date=str(setting_df['start_date'][0])
     expiry_date=str(setting_df['expiry_date'][0])
-    thread=str(setting_df['cpu_thread'][0])
-    cpu_process = str(setting_df['process'][0])
+    thread=int(setting_df['cpu_thread'][0])
+    cpu_process = int(setting_df['process'][0])
     gsize=str(setting_df['gsize'][0])
     outdir=str(setting_df['output_dir'][0])
     ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
