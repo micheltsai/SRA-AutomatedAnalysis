@@ -643,12 +643,12 @@ if __name__ == '__main__':
     mlstS=str(setting_df['MLST_organism'][0])
     amrS=str(setting_df['AMR_organism'][0])
     #get (Date) to (Date)
-    sd_Y = start_date.split("/")[0]
-    sd_M = start_date.split("/")[1]
-    sd_D = start_date.split("/")[2]
-    ed_Y = expiry_date.split("/")[0]
-    ed_M = expiry_date.split("/")[1]
-    ed_D = expiry_date.split("/")[2]
+    sd_Y = int(start_date.split("/")[0])
+    sd_M = int(start_date.split("/")[1])
+    sd_D = int(start_date.split("/")[2])
+    ed_Y = int(expiry_date.split("/")[0])
+    ed_M = int(expiry_date.split("/")[1])
+    ed_D = int(expiry_date.split("/")[2])
     print(sd_Y,sd_M,sd_D)
     print(ed_Y,ed_M,ed_D)
     utils_.mkdir_join(outdir)
