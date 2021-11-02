@@ -692,19 +692,18 @@ if __name__ == '__main__':
                 Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
         ########
-        if sd_Y != ed_Y:
-            if sd_Y == yy:
-                sM = sd_M
-                eM = 12
-                sD = sd_D
-            elif yy != ed_Y:
-                sM = 1
-                eM = 12
-                sD = 1
-            else:
-                sM = 1
-                eM = ed_M
-                sD = 1
+        if sd_Y == yy:
+            sM = sd_M
+            eM = 12
+            sD = sd_D
+        elif yy != ed_Y:
+            sM = 1
+            eM = 12
+            sD = 1
+        else:
+            sM = 1
+            eM = ed_M
+            sD = 1
         ########
         for mon in range(sM, eM+1):
             ###########
