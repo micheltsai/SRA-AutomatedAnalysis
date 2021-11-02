@@ -2,14 +2,12 @@
 start_date=2020/08/01
 expiry_date=2020/08/03
 
-#Number of threads to use. default: 8
+#Number of package threads to use. default: 8
 cpu_thread=4
-
+#Number of threads to use.
+process=4
 #Estimated genome size(MB) eg. 3.2M. default: ''
 gsize=
-
-#count of download sra file eahc time
-Count_of_Download_File=3
 
 #Folder to save .
 output_dir=/data/usrhome/LabSSLin/user30/Desktop/SRA-AutomatedAnalysis/SRAtest

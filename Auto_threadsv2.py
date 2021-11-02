@@ -94,7 +94,7 @@ def Assembled(x):
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
 
-        utils_.run_for_114(x, sra_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, check_log)
+        utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
         #print("suERR_path: ", ERR_path, "\n")
@@ -163,7 +163,7 @@ def QualityCheck(sra_id,genome_Path):
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
-    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t 4 --rl {} -q {} -o {}".format(refPath, genome_Path, outfile)
+    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -199,7 +199,7 @@ def QualityCheck(sra_id,genome_Path):
     QC_error=os.path.join(new_outdir,"a+")
     if num==0:
         with open(QC_error, "a+") as f:
-            f.write("{}:basepercentage<80\n".format(sra_id))
+            f.write("{}: all ANI value < 95\n".format(sra_id))
         sys.exit("all ANI value <95\n")
     AverageANI = ANI_total / num  # if ANI>=95 ,calulate average value of ANI
     print("Average ANI: {}\ntotal number: {}\n>= quantity: {}\nmax ANI: {}\n".format(AverageANI, num + not_num, num,
@@ -238,8 +238,8 @@ def QualityCheck(sra_id,genome_Path):
 
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
-    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c 4 -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
-        targetPath, gID, outdir, db, mode, busco_db)
+    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+        thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
@@ -453,7 +453,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
         input_list = input.split("/")
         input_name = input_list[len(input_list) - 1]
         print("name: ", input_name, "\n")
-        sistr_cmd = "sistr --threads 4 -i {} {} -f csv -o {} -m".format(input, input_name, sistr_outdir)
+        sistr_cmd = "sistr --threads {} -i {} {} -f csv -o {} -m".format(thread,input, input_name, sistr_outdir)
         print(sistr_cmd, "\n")
 
         sistr = run_cmd(sistr_cmd)
@@ -556,8 +556,6 @@ def Analysis(sra_id,input,target_ref,anoutdir):
 
     in_abspath = input.replace(".", current_path)
 
-
-
     dict = {'Accession': sra_id,
             'MLST': sequenceType,
             'AMR': amr_format,
@@ -588,17 +586,17 @@ def SRA_Analysis(sra_id):
         if  _base_< 80 :
             # shutil.rmtree(outdir)
             with open(QC_error,"a+")as f:
-                f.write("{}:basepercentage<80\n".format(sra_id))
+                f.write("{}: Reads quality is too low\n".format(sra_id))
             sys.exit('Reads quality is too low.')
         ###### layout = 2
 
         if sra.layout != '2':
             with open(QC_error,"a+")as f:
-                f.write("{}:layout!=2\n".format(sra_id))
+                f.write("{}: File layout is not pair-end\n".format(sra_id))
             sys.exit(f'File layout is not pair-end')
+
         print("layout=2\n")
 
-        sys.exit("exit\n")
         # if sra_layout==2 continue
         Download(sra_id)
         Assembled(sra_id)
@@ -633,7 +631,7 @@ def SRA_Analysis(sra_id):
     return 0
 if __name__ == '__main__':
     start=time.time()
-    Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
     ########################
@@ -658,9 +656,11 @@ if __name__ == '__main__':
     #setting_df=pd.DataFrame(settings_dict)
     setting_df=pd.DataFrame.from_dict(settings_dict,orient='index').T
     print(setting_df.columns)
+
     start_date=str(setting_df['start_date'][0])
     expiry_date=str(setting_df['expiry_date'][0])
     thread=str(setting_df['cpu_thread'][0])
+    cpu_process = str(setting_df['process'][0])
     gsize=str(setting_df['gsize'][0])
     outdir=str(setting_df['output_dir'][0])
     ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
@@ -681,9 +681,44 @@ if __name__ == '__main__':
     thread=4
 
     #####################
-    for yy in range(sd_Y,ed_Y):
-        for mon in range(sd_M, ed_M):
-            for d in range(sd_D, ed_D):
+
+
+
+    for yy in range(sd_Y,ed_Y+1):
+        Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        ########
+        if (yy % 4) == 0:
+            if (yy % 100) == 0:
+                if (yy % 400) == 0:
+                    Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            else:
+                Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+        ########
+        if sd_Y != ed_Y:
+            if sd_Y == yy:
+                sM = sd_M
+                eM = 12
+                sD = sd_D
+            elif yy != ed_Y:
+                sM = 1
+                eM = 12
+                sD = 1
+            else:
+                sM = 1
+                eM = ed_M
+                sD = 1
+        ########
+        for mon in range(sM, eM+1):
+            ###########
+            if yy != ed_Y:
+                eD = Month[mon - 1]
+            elif mon != eM:
+                eD = Month[mon - 1]
+            else:
+                eD = ed_D
+            ########
+            for d in range(sD,eD+1):
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
 
@@ -745,7 +780,7 @@ if __name__ == '__main__':
                 finish_num = 0
                 finish_num = len(finish_run)
                 try:
-                    pool = multiprocessing.Pool(processes=1)
+                    pool = multiprocessing.Pool(processes=cpu_process)
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
@@ -767,6 +802,7 @@ if __name__ == '__main__':
                     pid = os.getgid()
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                    sys.exit("Catch keyboardinterdinterupterror")
                     # os.popen("taskkill.exe /f /pid:%d"%pid)
                 except Exception as e:
                     error_class = e.__class__.__name__  # 取得錯誤類型
