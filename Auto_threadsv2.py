@@ -812,7 +812,7 @@ if __name__ == '__main__':
                                                                            detail)
                     print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("{} :\n{}\n".format(errMsg))
+                        f.write("{} :\n{}\n".format(sra_id, errMsg))
                 # for i in range(prog_num):
                 #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
