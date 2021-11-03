@@ -1,2 +1,0 @@
-cgmlst_ST,cgmlst_distance,cgmlst_found_loci,cgmlst_genome_match,cgmlst_matching_alleles,cgmlst_subspecies,fasta_filepath,genome,h1,h2,mash_distance,mash_genome,mash_match,mash_serovar,mash_subspecies,o_antigen,serogroup,serovar,serovar_antigen,serovar_cgmlst
-3435354128,0.024242424242424288,330,SRR1207498,322,enterica,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/SRAtest/20200704/Assembled/SRR12145898_contig.fa,SRR12145898_contig.fa,b,-,0.000458924,SRR1207498,981,Paratyphi B var. Java,enterica,"1,4,[5],12",B,"I 1,4,[5],12:b:-","I 1,4,[5],12:b:-",Paratyphi B var. Java

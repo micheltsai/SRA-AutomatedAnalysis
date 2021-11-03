@@ -1,2 +1,0 @@
-cgmlst_ST,cgmlst_distance,cgmlst_found_loci,cgmlst_genome_match,cgmlst_matching_alleles,cgmlst_subspecies,fasta_filepath,genome,h1,h2,mash_distance,mash_genome,mash_match,mash_serovar,mash_subspecies,o_antigen,serogroup,serovar,serovar_antigen,serovar_cgmlst
-2677798041,0.030303030303030276,330,SRR1106315,320,enterica,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/SRAtest/20200704/Assembled/SRR12145899_contig.fa,SRR12145899_contig.fa,k,"1,5",0.000508006,65432,979,Thompson,enterica,"6,7,14",C1,Thompson,Galiema|Thompson|Pretoria|Abaetetuba,Thompson

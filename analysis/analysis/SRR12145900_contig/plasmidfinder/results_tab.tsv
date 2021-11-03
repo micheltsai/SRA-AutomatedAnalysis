@@ -1,3 +1,0 @@
-Database	Plasmid	Identity	Query / Template length	Contig	Position in contig	Note	Accession number
-enterobacteriaceae	IncFIB(S)	98.91	643 / 643	contig00013 len=49761 cov=17.6 corr=0 spades=NODE_13_length_49761_cov_17.586957_pilon	8586..9228		FN432031
-enterobacteriaceae	IncFII(S)	100.0	262 / 262	contig00018 len=5588 cov=18.8 corr=0 spades=NODE_18_length_5588_cov_18.754807_pilon	1927..2188		CP000858

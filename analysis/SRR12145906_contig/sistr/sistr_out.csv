@@ -1,2 +1,0 @@
-cgmlst_ST,cgmlst_distance,cgmlst_found_loci,cgmlst_genome_match,cgmlst_matching_alleles,cgmlst_subspecies,fasta_filepath,genome,h1,h2,mash_distance,mash_genome,mash_match,mash_serovar,mash_subspecies,o_antigen,serogroup,serovar,serovar_antigen,serovar_cgmlst
-2176555074,0.015151515151515138,330,SRR1965635,325,enterica,/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/SRAtest/20200704/Assembled/SRR12145906_contig.fa,SRR12145906_contig.fa,"g,m",-,2.38274e-05,17-9030,999,Agbeni,enterica,"1,13,23",G,Agbeni,Bron|Agbeni,Agbeni
