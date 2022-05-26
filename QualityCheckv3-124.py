@@ -10,7 +10,7 @@ import sys
 import time
 from datetime import datetime
 # -*- coding: utf-8 -*-
-#python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
+#python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/web/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
 
 #show program running
 from builtins import FileExistsError
@@ -101,7 +101,7 @@ def main():
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
     fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
-    #fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
+    #fastani_ = "sudo /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/FastANI/fastANI --rl {} -q {} -o {}".format(refPath,
                                                                                                     genome_Path,outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
@@ -176,7 +176,7 @@ def main():
 
 
     #genome is "one excuting"
-    #busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
+    #busco -i /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(targetPath, gID, outdir, db, mode, busco_db)
     #cmd_bus = 'busco -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
     #   targetPath, gID, outdir, db, mode, busco_db)

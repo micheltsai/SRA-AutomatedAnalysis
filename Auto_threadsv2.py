@@ -237,7 +237,7 @@ def QualityCheck(sra_id,genome_Path):
     # -f overwrite
 
     # genome is "one excuting"
-    # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
+    # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")

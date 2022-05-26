@@ -198,7 +198,7 @@ def main():
             print(x)
             genome_path=os.path.join(outdir__,"{}_contig.fa".format(x))
             ref_list=utils_.getRefListPath(ref_dir, outdir)
-            # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
+            # python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/web/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
             qual_cmd = "python3 QualityCheckv3-124.py -r {} -g {} -db {} -m {} -o {}".format(ref_list, genome_path, buscoDB, buscoMode,
                                                                                          outdir)
             print("run cmd: {}\n".format(qual_cmd))

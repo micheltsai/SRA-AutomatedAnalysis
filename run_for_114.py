@@ -118,9 +118,9 @@ def main():
     #計算時間
     start = time.time()
     #建立argparse.ArgumentParser()物件
-    parser = argparse.ArgumentParser("NCBI SRA assembly pipeline.")
+    parser = argparse.ArgumentParser("NCBI web assembly pipeline.")
     #告知parser需要的指令引數（選項引數）
-    parser.add_argument("--srafile", required=True, help="Path of SRA file")
+    parser.add_argument("--srafile", required=True, help="Path of web file")
     parser.add_argument("--outdir", required=True, help="Output folder")
     parser.add_argument("--tmpdir", default="/tmp", help="Directory of temp folder default: '/tmp'")
     parser.add_argument("--gsize", default='', help="Estimated genome size(MB) eg. 3.2M. default: ''")

@@ -7,7 +7,7 @@ import sys
 import time
 from datetime import datetime
 # -*- coding: utf-8 -*-
-#python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/SRA/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
+#python3 QualityCheck.py -r /data/usrhome/LabSSLin/user30/Desktop/RefSeq/ -g /data/usrhome/LabSSLin/user30/Desktop/web/test0812/assembly_result/contigs.fa -db enterobacterales_odb10 -m geno -o /data/usrhome/LabSSLin/user30/Desktop/QualityCheck
 
 #show program running
 from builtins import FileExistsError
@@ -50,7 +50,7 @@ def main():
     utils_.progress_bar("fastANI excuting")
     #fasani_=run_cmd("/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -h")
     #fastani_="/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,genome_Path,out_txt)
-    fastani_ = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,
+    fastani_ = "/data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/FastANI/fastANI --rl {} --ql {} -o {}".format(refPath,
                                                                                                     genome_Path,
                                                                                                     out_txt)
     print(fastani_+"\n")

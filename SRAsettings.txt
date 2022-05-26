@@ -1,0 +1,22 @@
+# (date) to (date)
+start_date=2020/08/01
+expiry_date=2020/08/03
+
+#Number of package threads to use. default: 8
+cpu_thread=4
+#Number of threads to use.
+process=4
+#Estimated genome size(MB) eg. 3.2M. default: ''
+gsize=
+
+#Folder to save .
+output_dir=/data/usrhome/LabSSLin/user30/Desktop/SRA-AutomatedAnalysis/SRAtest
+
+Busco_ReferenceSequenceFileDir_Path=/data/usrhome/LabSSLin/user30/Desktop/SRA-AutomatedAnalysis/RefSeq
+Busco_database=enterobacterales_odb10
+Busco_mode=geno
+
+MLST_organism=senterica
+AMR_organism=Salmonella
+
+

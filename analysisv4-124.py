@@ -217,7 +217,7 @@ def main():
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         amr_cmd="amrfinder -n {} -o {} -O {}".format(input,amr_outdir,amr_organism)
-        #amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(
+        #amr_cmd = "/data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/amrfinder/amrfinder -n {} -o {} -O {}".format(
         #    input, amr_outdir, amr_organism)
         print(amr_cmd, "\n")
         amr=run_cmd(amr_cmd)
@@ -273,12 +273,12 @@ def main():
         sequenceType=data[6].split(" ")
         sequenceType=sequenceType[len(sequenceType)-1].strip("\n")
 
-        ####update database table of "SRA" and table of "MLST"
+        ####update database table of "web" and table of "MLST"
         try:
             conn = pymysql.connect(**db_settings)
 
             with conn.cursor() as cursor:
-                insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
+                insertSRA = "INSERT INTO web(Genome) VALUES(%s);"
                 insertMLST = "INSERT INTO MLST(Profile,Organism,SequenceType) VALUES(%s,%s,%s);"
                 cursor.execute(
                     insertSRA, (inId))
